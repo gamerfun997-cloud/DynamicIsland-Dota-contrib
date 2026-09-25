@@ -249,6 +249,12 @@ internal static class Program
             {
                 await WriteJsonAsync(response, SystemWatcher.Current, AppJson.Context.SystemInfo);
             }
+            else if (path == "/key")
+            {
+                bool ok = int.TryParse(request.QueryString["vk"], out int vk) && KeyPress.Allowed(vk);
+                string how = ok ? KeyPress.Tap(vk, request.QueryString["global"] == "1") : "denied";
+                await WriteJsonAsync(response, new SoundResponse(how), AppJson.Context.SoundResponse);
+            }
             else if (path == "/level")
             {
                 await WriteJsonAsync(response, new LevelResponse(LevelMeter.Snapshot(), LevelMeter.Source, LevelMeter.Sessions, Math.Round(LevelMeter.Peak, 3)), AppJson.Context.LevelResponse);
