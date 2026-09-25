@@ -2294,6 +2294,7 @@ local function SaveAllConfig()
             if Sheet.SeenVer then f:write("seen_ver=" .. Sheet.SeenVer .. "\n") end
             if Sheet.BridgeHintSeen then f:write("bridge_hint=1\n") end
             if Hello.SetupDone then f:write("setup_done=1\n") end
+            if Hello.ChatPrev ~= nil then f:write("hello_chat=" .. (Hello.ChatPrev and "1" or "0") .. "\n") end
             if Hello.StampValue or Hello.SavedStamp then f:write("hello_stamp=" .. tostring(Hello.StampValue or Hello.SavedStamp) .. "\n") end
             if HUDCustomizer.Saved and #HUDCustomizer.Saved > 0 then f:write("saved_colors=" .. table.concat(HUDCustomizer.Saved, ",") .. "\n") end
             if Setup.Resume then f:write("setup_resume=" .. tostring(Setup.Resume) .. "\n") end
@@ -2428,6 +2429,8 @@ function Impl.LoadAllConfig()
             Sheet.BridgeHintSeen = true
         elseif line == "setup_done=1" then
             Hello.SetupDone = true
+        elseif line == "hello_chat=1" or line == "hello_chat=0" then
+            Hello.ChatPending = line == "hello_chat=1"
         elseif string.match(line, "^hello_stamp=%-?%d+$") then
             Hello.SavedStamp = tonumber(string.match(line, "^hello_stamp=(%-?%d+)$"))
         elseif string.sub(line, 1, 13) == "saved_colors=" then
@@ -11188,6 +11191,77 @@ function Hello.BakeGrain()
     return false
 end
 
+function Hello.ChatWidget()
+    if Hello.ChatW == nil then
+        local ok, w = pcall(Menu.Find, "Changer", "Main", "Better UI", "Main Menu", "Main Menu", "Chat", "Settings", "Hide")
+        Hello.ChatW = (ok and w) or false
+    end
+    return Hello.ChatW or nil
+end
+
+function Hello.HideChat()
+    local w = Hello.ChatWidget()
+    if not w then return end
+    if Hello.ChatPrev == nil then
+        local ok, v = pcall(w.Get, w)
+        if not ok then return end
+        Hello.ChatPrev = v == true
+        SaveAllConfig()
+    end
+    pcall(w.Set, w, true)
+    Hello.ChatHidden = true
+end
+
+function Hello.RestoreChat()
+    if Hello.ChatPrev == nil then return end
+    local w = Hello.ChatWidget()
+    if w then pcall(w.Set, w, Hello.ChatPrev) end
+    Hello.ChatPrev = nil
+    Hello.ChatHidden = false
+    SaveAllConfig()
+end
+
+Impl.KeyVK = nil
+
+function Impl.ButtonVK(code)
+    if not Impl.KeyVK then
+        local B = Enum.ButtonCode
+        local t = {}
+        local named = {
+            KEY_INSERT = 0x2D, KEY_DELETE = 0x2E, KEY_HOME = 0x24, KEY_END = 0x23, KEY_PAGEUP = 0x21, KEY_PAGEDOWN = 0x22,
+            KEY_BACKQUOTE = 0xC0, KEY_SCROLLLOCK = 0x91, KEY_BREAK = 0x13, KEY_APP = 0x5D
+        }
+        for name, vk in pairs(named) do
+            if B[name] then t[B[name]] = vk end
+        end
+        local letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        for i = 1, 26 do
+            local ch = letters:sub(i, i)
+            if B["KEY_" .. ch] then t[B["KEY_" .. ch]] = 0x40 + i end
+        end
+        for d = 0, 9 do
+            if B["KEY_" .. d] then t[B["KEY_" .. d]] = 0x30 + d end
+            if B["KEY_PAD_" .. d] then t[B["KEY_PAD_" .. d]] = 0x60 + d end
+        end
+        for f = 1, 24 do
+            if B["KEY_F" .. f] then t[B["KEY_F" .. f]] = 0x6F + f end
+        end
+        Impl.KeyVK = t
+    end
+    return code and Impl.KeyVK[code] or nil
+end
+
+function Hello.CloseMenu()
+    if not (Menu.Opened and Menu.Opened()) then return end
+    local ok, bind = pcall(Menu.Find, "SettingsHidden", "", "", "", "Main", "Menu Bind")
+    if not ok or not bind then return end
+    local ok2, code = pcall(bind.Get, bind)
+    if not ok2 then return end
+    local vk = Impl.ButtonVK(code)
+    if not vk then return end
+    pcall(HTTP.Request, "GET", "http://127.0.0.1:45455/key?vk=" .. tostring(vk), {}, function() end, "di_key")
+end
+
 function Hello.Stamp()
     return math.floor(os.time() - os.clock())
 end
@@ -11208,10 +11282,18 @@ function Hello.Start(forceSetup)
     Hello.RTDirty = true
     Hello.WantSetup = forceSetup or not Hello.SetupDone
     Hello.StampValue = Hello.Stamp()
+    Hello.ChatHidden = false
+    Hello.MenuWatchUntil = os.clock() + 3
+    Hello.MenuDone = false
+    Hello.ChatTry = 0
     SaveAllConfig()
 end
 
 function Hello.Init()
+    if Hello.ChatPending ~= nil then
+        Hello.ChatPrev = Hello.ChatPending
+        Hello.ChatPending = nil
+    end
     local inGame = Engine.IsInGame and Engine.IsInGame()
     if inGame or UI.Main.OnlyInGame:Get() or Journey.HiddenPhase() then return end
     local same = Hello.SavedStamp and math.abs(Hello.SavedStamp - Hello.Stamp()) <= 8
@@ -11221,6 +11303,7 @@ function Hello.Init()
         Hello.WantSetup = true
         Setup.Open()
     end
+    if Hello.Phase ~= "hello" then Hello.RestoreChat() end
 end
 
 function Hello.Finish()
@@ -11236,6 +11319,18 @@ function Hello.Commit(now)
 end
 
 function Hello.Tick(layout, now, dt)
+    if Hello.ChatPrev ~= nil and Hello.Phase ~= "hello" then Hello.RestoreChat() end
+    if Hello.Phase == "hello" then
+        if not Hello.MenuDone and now < (Hello.MenuWatchUntil or 0) and Menu.Opened and Menu.Opened() then
+            Hello.MenuDone = true
+            Hello.CloseMenu()
+        end
+        if not Hello.ChatHidden and now - (Hello.ChatTry or 0) > 0.25 then
+            Hello.ChatTry = now
+            if not Hello.ChatW then Hello.ChatW = nil end
+            Hello.HideChat()
+        end
+    end
     local inGame = Engine.IsInGame and Engine.IsInGame()
     local accept = Engine.CanAcceptMatch and Engine.CanAcceptMatch()
     if (inGame or accept) and Hello.Phase ~= "out" then
