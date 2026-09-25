@@ -618,15 +618,71 @@ local localization = qLocalization.new({
         di_ui_removed_from_spotify = "Removed from Spotify",
         di_ui_accepted = "Accepted",
         di_ui_match_found = "Match Found",
-        di_ui_weight = "Weight",
+        di_ui_weight = "Font",
         di_ui_color = "Color",
-        di_ui_palette = "Palette",
-        di_ui_format = "Format",
+        di_ui_format = "Style",
         di_ui_icon = "Icon",
-        di_ui_color_picker = "Color Picker",
+        di_ui_color_picker = "Colors",
         di_ui_reset = "Reset",
         di_ui_widgets = "Widgets",
-        di_ui_drawer_hint = "RMB: settings  \u{2022}  LMB: toggle  \u{2022}  drag: reorder",
+        di_cp_grid = "Grid",
+        di_cp_spectrum = "Spectrum",
+        di_cp_sliders = "Sliders",
+        di_cp_red = "RED",
+        di_cp_green = "GREEN",
+        di_cp_blue = "BLUE",
+        di_cp_hex = "Hex Color",
+        di_main_hello = "Hello on Launch",
+        di_main_setup = "Run Setup Again",
+        di_hello_swipe = "Swipe up to get started",
+        di_su_continue = "Continue",
+        di_su_later = "Set Up Later",
+        di_su_skip = "Skip",
+        di_su_finish = "Get Started",
+        di_su_bridge_t = "Media Bridge",
+        di_su_bridge_d = "A tiny helper that runs next to Dota. It brings music, one-click updates, fonts and system alerts to the island.",
+        di_su_bridge_on = "Bridge is running",
+        di_su_bridge_check = "Looking for the bridge…",
+        di_su_bridge_off = "Bridge not found",
+        di_su_bridge_how = "Download media_bridge.exe from the latest release and add this to Dota launch options in Steam:",
+        di_su_bridge_skip = "Continue Without Bridge",
+        di_su_fonts_t = "SF Pro Fonts",
+        di_su_fonts_d = "The island uses Apple's own typeface. It installs for your account only, no admin rights needed.",
+        di_su_position_t = "Position and Size",
+        di_su_position_d = "Pick where the island lives. Changes show up right away.",
+        di_su_pos_top = "Top",
+        di_su_pos_left = "Top Left",
+        di_su_pos_right = "Top Right",
+        di_su_size = "Size",
+        di_su_pos_hint = "Later you can drag it anywhere with Ctrl + LMB while the menu is open.",
+        di_su_look_t = "Appearance",
+        di_su_look_d = "Choose how the island looks. You can change it any time in the menu.",
+        di_su_look_dark = "Dark",
+        di_su_look_light = "Light",
+        di_su_look_glass = "Glass",
+        di_su_alerts_t = "Notifications",
+        di_su_alerts_d = "How much the island should tell you during a match.",
+        di_su_al_min_t = "Minimal",
+        di_su_al_min_d = "Kills, runes, lotuses and low HP",
+        di_su_al_mid_t = "Balanced",
+        di_su_al_mid_d = "Everything except stack timers",
+        di_su_al_all_t = "Everything",
+        di_su_al_all_d = "Every alert the island has",
+        di_su_likes_t = "Spotify Likes",
+        di_su_likes_d = "Like tracks right from the island. It needs Spicetify, the guide takes two minutes.",
+        di_su_likes_guide = "How to Set Up",
+        di_su_focus_t = "Focus",
+        di_su_focus_d = "Focus mutes minor alerts so nothing distracts you. Pick a key to toggle it.",
+        di_su_focus_key = "Hotkey",
+        di_su_focus_press = "Press a key…",
+        di_su_focus_none = "Not Set",
+        di_su_focus_hint = "Esc cancels, Backspace clears",
+        di_su_done_t = "You're All Set",
+        di_su_done_d = "The island is ready. Everything here can be changed later in the menu.",
+        di_ui_done = "Done",
+        di_ui_on_island_hdr = "ON ISLAND",
+        di_ui_add_hdr = "ADD WIDGETS",
+        di_ui_show_on_island = "Show on Island",
         di_ui_controls_hint = "Ctrl + LMB: move  \u{2022}  RMB: widgets",
         di_ui_music = "Music",
         di_ui_fight = "Fight",
@@ -784,8 +840,8 @@ local localization = qLocalization.new({
         di_island_clock = "Clock",
         di_island_kda = "KDA",
         di_island_gold = "Gold",
-        di_island_networth = "NW",
-        di_island_lasthits = "CS",
+        di_island_networth = "Net Worth",
+        di_island_lasthits = "Last Hits",
         di_island_hero = "Hero",
         di_island_fps = "FPS",
         di_island_ping = "Ping",
@@ -1071,15 +1127,71 @@ local localization = qLocalization.new({
         di_ui_removed_from_spotify = "Удалено из Spotify",
         di_ui_accepted = "Принято",
         di_ui_match_found = "Матч найден",
-        di_ui_weight = "Начертание",
+        di_ui_weight = "Шрифт",
         di_ui_color = "Цвет",
-        di_ui_palette = "Палитра",
-        di_ui_format = "Формат",
+        di_ui_format = "Вид",
         di_ui_icon = "Иконка",
-        di_ui_color_picker = "Выбор цвета",
+        di_ui_color_picker = "Цвета",
         di_ui_reset = "Сброс",
         di_ui_widgets = "Виджеты",
-        di_ui_drawer_hint = "ПКМ: опции  \u{2022}  ЛКМ: вкл/выкл  \u{2022}  тяни: порядок",
+        di_cp_grid = "Сетка",
+        di_cp_spectrum = "Спектр",
+        di_cp_sliders = "Ползунки",
+        di_cp_red = "КРАСНЫЙ",
+        di_cp_green = "ЗЕЛЁНЫЙ",
+        di_cp_blue = "СИНИЙ",
+        di_cp_hex = "Hex-цвет",
+        di_main_hello = "Приветствие при запуске",
+        di_main_setup = "Пройти настройку заново",
+        di_hello_swipe = "Смахни вверх, чтобы начать",
+        di_su_continue = "Продолжить",
+        di_su_later = "Настроить позже",
+        di_su_skip = "Пропустить",
+        di_su_finish = "Начать",
+        di_su_bridge_t = "Бридж",
+        di_su_bridge_d = "Маленькая программа рядом с дотой. Даёт островку музыку, обновления в один клик, шрифты и системные уведомления.",
+        di_su_bridge_on = "Бридж запущен",
+        di_su_bridge_check = "Ищу бридж…",
+        di_su_bridge_off = "Бридж не найден",
+        di_su_bridge_how = "Скачай media_bridge.exe из последнего релиза и добавь в параметры запуска доты в Steam:",
+        di_su_bridge_skip = "Продолжить без бриджа",
+        di_su_fonts_t = "Шрифты SF Pro",
+        di_su_fonts_d = "Островок рисуется фирменным шрифтом Apple. Ставится только для твоей учётки, без прав админа.",
+        di_su_position_t = "Позиция и размер",
+        di_su_position_d = "Выбери, где будет островок. Изменения видно сразу.",
+        di_su_pos_top = "Сверху",
+        di_su_pos_left = "Слева",
+        di_su_pos_right = "Справа",
+        di_su_size = "Размер",
+        di_su_pos_hint = "Потом его можно перетащить куда угодно: Ctrl + ЛКМ при открытом меню.",
+        di_su_look_t = "Оформление",
+        di_su_look_d = "Выбери, как выглядит островок. Поменять можно в любой момент в меню.",
+        di_su_look_dark = "Тёмное",
+        di_su_look_light = "Светлое",
+        di_su_look_glass = "Стекло",
+        di_su_alerts_t = "Уведомления",
+        di_su_alerts_d = "Сколько островок будет подсказывать в катке.",
+        di_su_al_min_t = "Минимум",
+        di_su_al_min_d = "Убийства, руны, лотосы и мало HP",
+        di_su_al_mid_t = "Сбалансированно",
+        di_su_al_mid_d = "Всё, кроме таймера стаков",
+        di_su_al_all_t = "Всё",
+        di_su_al_all_d = "Все уведомления островка",
+        di_su_likes_t = "Лайки Spotify",
+        di_su_likes_d = "Лайкай треки прямо с островка. Нужен Spicetify, по гайду это пара минут.",
+        di_su_likes_guide = "Как настроить",
+        di_su_focus_t = "Фокус",
+        di_su_focus_d = "Фокус глушит мелкие уведомления, чтобы ничего не отвлекало. Выбери клавишу для него.",
+        di_su_focus_key = "Хоткей",
+        di_su_focus_press = "Нажми клавишу…",
+        di_su_focus_none = "Не назначен",
+        di_su_focus_hint = "Esc отмена, Backspace сброс",
+        di_su_done_t = "Всё готово",
+        di_su_done_d = "Островок готов. Всё можно поменять потом в меню.",
+        di_ui_done = "Готово",
+        di_ui_on_island_hdr = "НА ОСТРОВКЕ",
+        di_ui_add_hdr = "ДОБАВИТЬ",
+        di_ui_show_on_island = "На островке",
         di_ui_controls_hint = "Ctrl + ЛКМ: двигать  \u{2022}  ПКМ: виджеты",
         di_ui_music = "Музыка",
         di_ui_fight = "Бой",
@@ -1237,8 +1349,8 @@ local localization = qLocalization.new({
         di_island_clock = "Часы",
         di_island_kda = "КДА",
         di_island_gold = "Золото",
-        di_island_networth = "NW",
-        di_island_lasthits = "CS",
+        di_island_networth = "Нетворс",
+        di_island_lasthits = "Добивания",
         di_island_hero = "Герой",
         di_island_fps = "ФПС",
         di_island_ping = "Пинг",
@@ -1424,6 +1536,7 @@ local Config = {
         HintBorder = Color(255, 255, 255, 20),
         SegTrack = Color(118, 118, 128, 61),
         SegThumb = Color(99, 99, 102, 255),
+        Group = Color(118, 118, 128, 61),
         Grabber = Color(235, 235, 245, 77),
         Placeholder = Color(58, 58, 60, 255)
     },
@@ -1723,11 +1836,12 @@ local HUDCustomizer = {
     InspectorBounds = {},
     TotalUIBounds = {},
     Anim = {
-        t = 0, h = 0, hVel = 0, LastId = false, Chips = {},
+        t = 0, h = 0, hVel = 0, LastId = false, Pos = {},
+        Page = { v = 0, vel = 0 },
         SegWeight = { v = 0, vel = 0 },
-        SegColor = { v = 0, vel = 0 },
         SegFormat = { v = 0, vel = 0 },
-        Knob = { v = 0, vel = 0 }
+        Knob = { v = 0, vel = 0 },
+        KnobOn = { v = 0, vel = 0 }
     }
 }
 
@@ -1875,6 +1989,8 @@ local SystemState = { LastPoll = 0, Seen = false }
 local Sheet = { Kind = nil, Hits = {}, Dismissed = false, SeenVer = nil, ConfigLoaded = false, MenuSince = nil, Forced = nil, Upd = { State = "idle", Progress = 0, Error = "", Version = "", LastPoll = 0, LastOk = 0 }, Fonts = { State = "idle", LastPoll = 0, LastOk = 0 } }
 local NotifCenter = { Items = {}, Hits = {} }
 local Demo = { Active = false, Step = 0, At = 0 }
+local Hello, Setup, Gesture = {}, {}, {}
+local Pointer, Swipe = {}, {}
 local SatelliteSubBounds = {}
 local ImageCache = {}
 
@@ -2022,6 +2138,10 @@ local VectorIcons = {
     ["search"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="#FFF" stroke-width="2.2"/><path d="M15.5 15.5 21 21" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     ["check"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#FFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     ["close"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="#FFF" stroke-width="2.6" stroke-linecap="round"/></svg>',
+    ["chevron"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M9 4.5l7.5 7.5L9 19.5" fill="none" stroke="#FFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    ["chevron_back"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M15.5 3.5L7 12l8.5 8.5" fill="none" stroke="#FFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    ["appearance"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="9" fill="none" stroke="#FFF" stroke-width="2.2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="#FFF"/></svg>',
+    ["plus"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 5v14M5 12h14" fill="none" stroke="#FFF" stroke-width="3" stroke-linecap="round"/></svg>',
     ["bolt"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M13.6 2.2 4.8 13.1a.8.8 0 0 0 .6 1.3h5.4l-1.2 7.1c-.1.7.8 1.1 1.2.5l8.7-10.9a.8.8 0 0 0-.6-1.3h-5.4l1.2-7.1c.1-.7-.8-1.1-1.1-.5z" fill="#FFF"/></svg>',
     ["music"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M18.5 3.6v11.2a3.1 3.1 0 1 1-1.8-2.8V7.9l-7.4 1.9v7.3a3.1 3.1 0 1 1-1.8-2.8V6.3c0-.6.4-1.1 1-1.3l8.9-2.3c.6-.1 1.1.3 1.1.9z" fill="#FFF"/></svg>',
     ["headphones"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M4.4 15.4V12a7.6 7.6 0 0 1 15.2 0v3.4" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><rect x="3.2" y="13.2" width="4.8" height="7.6" rx="2" fill="#FFF"/><rect x="16" y="13.2" width="4.8" height="7.6" rx="2" fill="#FFF"/></svg>',
@@ -2173,6 +2293,10 @@ local function SaveAllConfig()
             f:write(string.format("drag_center=%d,%d\n", math.floor(DragState.CustomX or -1), math.floor(DragState.CustomY or -1)))
             if Sheet.SeenVer then f:write("seen_ver=" .. Sheet.SeenVer .. "\n") end
             if Sheet.BridgeHintSeen then f:write("bridge_hint=1\n") end
+            if Hello.SetupDone then f:write("setup_done=1\n") end
+            if Hello.StampValue or Hello.SavedStamp then f:write("hello_stamp=" .. tostring(Hello.StampValue or Hello.SavedStamp) .. "\n") end
+            if HUDCustomizer.Saved and #HUDCustomizer.Saved > 0 then f:write("saved_colors=" .. table.concat(HUDCustomizer.Saved, ",") .. "\n") end
+            if Setup.Resume then f:write("setup_resume=" .. tostring(Setup.Resume) .. "\n") end
 
             for id, cfg in pairs(HUDCustomizer.WidgetConfigs) do
                 f:write(string.format("cfg_%s=%s,%d,%d,%s,%s\n", id, cfg.bold and "1" or "0", cfg.colorMode or 1, cfg.format or 1, cfg.showIcon and "1" or "0", cfg.customHex or ""))
@@ -2302,6 +2426,17 @@ function Impl.LoadAllConfig()
             Sheet.SeenVer = seenMatch
         elseif line == "bridge_hint=1" then
             Sheet.BridgeHintSeen = true
+        elseif line == "setup_done=1" then
+            Hello.SetupDone = true
+        elseif string.match(line, "^hello_stamp=%-?%d+$") then
+            Hello.SavedStamp = tonumber(string.match(line, "^hello_stamp=(%-?%d+)$"))
+        elseif string.sub(line, 1, 13) == "saved_colors=" then
+            HUDCustomizer.Saved = {}
+            for hx in string.gmatch(string.sub(line, 14), "%x%x%x%x%x%x") do
+                HUDCustomizer.Saved[#HUDCustomizer.Saved + 1] = string.upper(hx)
+            end
+        elseif string.match(line, "^setup_resume=%d+$") then
+            Setup.Resume = tonumber(string.match(line, "^setup_resume=(%d+)$"))
         elseif activeMatch then
             local newActive = {}
             for item in string.gmatch(activeMatch, "[%w_]+") do
@@ -2902,6 +3037,10 @@ function Impl.InitMenu()
     M.ExpandMode:Icon("\u{f065}")
     M.ExpandMode:ToolTip("di_main_expand_tip")
     M.Demo = gMore:Button("di_main_demo", function() Demo.Start() end)
+    M.Hello = gMore:Switch("di_main_hello", true, "\u{f256}")
+    M.SetupAgain = gMore:Button("di_main_setup", function()
+        if not (Engine.IsInGame and Engine.IsInGame()) then Hello.Start(true) end
+    end)
     M.Debug = gMore:Switch("di_main_debug", false, "\u{f188}")
     M.Debug:ToolTip("di_main_debug_tip")
     T.ToastDuration = gAll:Slider("di_timings_toast_duration", 1, 10, 4, "%d s")
@@ -2936,6 +3075,7 @@ function Impl.InitMenu()
     M.ToggleHUDMode = gLook:Button("di_main_widget_editor", function()
         HUDCustomizer.IsOpen = not HUDCustomizer.IsOpen
         HUDCustomizer.InspectedChip = nil
+        HUDCustomizer.ColorPickerOpen = false
     end)
 
     M.PureGlass = gLookGear:Switch("di_main_pure_glass", false, "\u{f06e}")
@@ -3736,6 +3876,15 @@ local function IsMediaActive()
 end
 
 function Impl.AdvancePosition(dt)
+    local back = DragState.Back
+    if back and not DragState.IsDragging then
+        DragState.CustomX, back.vx = MotionEngine.Step(DragState.CustomX, back.vx, back.x, dt, "BOUNCY")
+        DragState.CustomY, back.vy = MotionEngine.Step(DragState.CustomY, back.vy, back.y, dt, "BOUNCY")
+        if math.abs(DragState.CustomX - back.x) + math.abs(DragState.CustomY - back.y) < 0.5 and math.abs(back.vx) + math.abs(back.vy) < 5 then
+            DragState.CustomX, DragState.CustomY, DragState.Back = back.x, back.y, nil
+            SaveAllConfig()
+        end
+    end
     SeekDrag.Grow, SeekDrag.GrowVel = MotionEngine.Step(SeekDrag.Grow, SeekDrag.GrowVel, SeekDrag.Active and 1 or 0, dt, "SNAPPY")
     if MediaData.IsPlaying then
         MediaData.PosSmooth = MediaData.PosSmooth + dt
@@ -3755,6 +3904,35 @@ IsNotifDeferred = function(notif)
     if not (Engine.IsInGame and Engine.IsInGame()) then return false end
     if not IsMediaActive() then return false end
     return (notif.Priority or DEFAULT_NOTIF_PRIORITY) <= UI.Priority.Media:Get()
+end
+
+Impl.WaveWeights = { 0.62, 0.86, 1.0, 0.8, 0.58 }
+
+function Impl.PollLevel()
+    if not UI or not UI.Media.Enabled:Get() or Demo.Active then return end
+    if not MediaData.IsPlaying or not Sheet.BridgeOnline() then return end
+    local S = StateMachine.States
+    local st = StateMachine.TargetState
+    if st ~= S.COMPACT_MEDIA and st ~= S.LARGE_MEDIA and Satellite.Right.kind ~= "combat" then return end
+    local now = os.clock()
+    if now - (MediaData.LevelPoll or 0) < 0.04 then return end
+    if MediaData.LevelBusy and now - MediaData.LevelBusy < 0.5 then return end
+    MediaData.LevelPoll = now
+    MediaData.LevelBusy = now
+    pcall(HTTP.Request, "GET", "http://127.0.0.1:45455/level", {}, function(res)
+        MediaData.LevelBusy = nil
+        if not res or not res.response then return end
+        local body = string.match(res.response, '"l"%s*:%s*%[([^%]]*)%]')
+        if not body then return end
+        local lv, i = MediaData.Level or {}, 1
+        for num in string.gmatch(body, "[%d%.eE%-]+") do
+            lv[i] = tonumber(num) or 0
+            i = i + 1
+            if i > 5 then break end
+        end
+        MediaData.Level = lv
+        MediaData.LevelAt = os.clock()
+    end, "di_level")
 end
 
 function Impl.PollMediaBridge()
@@ -5073,7 +5251,8 @@ local function GetIslandLayout()
     local x = math.floor(centerX - w * 0.5)
     local y = math.floor(manualY)
 
-    if preset == 1 and DragState.CustomX >= 0 and DragState.CustomY >= 0 then
+    local freeDrag = preset == 1 and (DragState.IsDragging or DragState.Back ~= nil)
+    if preset == 1 and ((DragState.CustomX >= 0 and DragState.CustomY >= 0) or freeDrag) then
         x = math.floor(DragState.CustomX - w * 0.5)
         y = math.floor(DragState.CustomY)
     elseif preset == 2 then
@@ -5090,9 +5269,11 @@ local function GetIslandLayout()
         y = math.floor(scr.y - h - 35 + manualY - 20)
     end
 
-    local margin = 4
-    x = math.max(margin, math.min(x, scr.x - w - margin))
-    y = math.max(margin, math.min(y, scr.y - h - margin))
+    if not freeDrag then
+        local margin = 4
+        x = math.max(margin, math.min(x, scr.x - w - margin))
+        y = math.max(margin, math.min(y, scr.y - h - margin))
+    end
 
     local res = {
         x = x,
@@ -5102,6 +5283,7 @@ local function GetIslandLayout()
         r = r,
         scale = scale
     }
+    res.x = res.x + math.floor(Swipe.IslandX + 0.5)
     if Haptic and Haptic.ApplyTransform then
         Haptic.ApplyTransform(res)
     end
@@ -5299,15 +5481,6 @@ function Impl.IsChipInActiveList(chipId)
     return false
 end
 
-function Impl.ChipAnim(chipId)
-    local a = HUDCustomizer.Anim.Chips[chipId]
-    if not a then
-        a = { fill = Impl.IsChipInActiveList(chipId) and 1 or 0, fillVel = 0, scale = 1, scaleVel = 0 }
-        HUDCustomizer.Anim.Chips[chipId] = a
-    end
-    return a
-end
-
 function Impl.ToggleChipInActiveList(chipId)
     local foundIdx = nil
     for idx, id in ipairs(HUDCustomizer.ActiveChips) do
@@ -5319,16 +5492,20 @@ function Impl.ToggleChipInActiveList(chipId)
     if foundIdx then
         if #HUDCustomizer.ActiveChips > 1 then
             table.remove(HUDCustomizer.ActiveChips, foundIdx)
-            if HUDCustomizer.InspectedChip == chipId then
-                HUDCustomizer.InspectedChip = nil
-            end
         end
     else
         table.insert(HUDCustomizer.ActiveChips, chipId)
     end
-    local a = Impl.ChipAnim(chipId)
-    a.scale, a.scaleVel = 0.86, -2.2
     SaveAllConfig()
+end
+
+function Impl.CloseEditor()
+    HUDCustomizer.IsOpen = false
+    HUDCustomizer.InspectedChip = nil
+    HUDCustomizer.ColorPickerOpen = false
+    HUDCustomizer.RowPress, HUDCustomizer.RowDrag = nil, nil
+    SaveAllConfig()
+    if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
 end
 
 function Impl.GetFountainPosition(hero, courier)
@@ -5738,6 +5915,23 @@ function Impl.ProcessCourierTracker()
 end
 
 function DynamicIsland.OnKeyEvent(data)
+    if Hello.Phase then
+        if Setup.Capture then return Setup.OnKey(data) end
+        if Hello.Blocking() and (data.key == Enum.ButtonCode.KEY_MOUSE1 or data.key == Enum.ButtonCode.KEY_MOUSE2) then
+            return false
+        end
+    end
+    if HUDCustomizer.IsOpen and data.key == Enum.ButtonCode.KEY_ESCAPE and data.event == Enum.EKeyEvent.EKeyEvent_KEY_DOWN then
+        if HUDCustomizer.ColorPickerOpen then
+            HUDCustomizer.ColorPickerOpen = false
+        elseif HUDCustomizer.InspectedChip then
+            HUDCustomizer.InspectedChip = nil
+        else
+            Impl.CloseEditor()
+        end
+        if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
+        return false
+    end
     if HUDCustomizer.IsOpen and Menu.Opened and Menu.Opened() then
         if data.key == Enum.ButtonCode.KEY_MOUSE1 or data.key == Enum.ButtonCode.KEY_MOUSE2 then
             return false
@@ -5827,6 +6021,18 @@ function DynamicIsland.OnKeyEvent(data)
     return true
 end
 
+function Impl.NotifHold(cx, cy)
+    local S = StateMachine.States
+    local st = StateMachine.TargetState
+    if st == S.NOTIF_CENTER then return "nc" end
+    if HUDCustomizer.IsOpen or Hello.Blocking() or SeekDrag.Active then return "hold" end
+    if st == S.LARGE_IDLE or st == S.LARGE_MEDIA or st == S.COURIER_LARGE then
+        local l = GetIslandLayout()
+        if cx >= l.x - 12 and cx <= l.x + l.w + 12 and cy >= l.y - 12 and cy <= l.y + l.h + 12 then return "hold" end
+    end
+    return nil
+end
+
 function Impl.HandleInteractions()
     if not UI or not UI.Main.Enabled:Get() then return end
 
@@ -5838,11 +6044,19 @@ function Impl.HandleInteractions()
     local isRMouseDown = Input.IsKeyDown(Enum.ButtonCode.KEY_MOUSE2)
     local isLeftClicked = isLMouseDown and not MouseInput.LeftPressed
     local isRightClicked = isRMouseDown and not MouseInput.RightPressed
+    local helloBlock = Hello.Blocking()
+    if helloBlock then
+        isLeftClicked, isRightClicked = false, false
+    end
 
     MouseInput.LeftPressed = isLMouseDown
     MouseInput.RightPressed = isRMouseDown
 
     local cx, cy = Input.GetCursorPos()
+    if helloBlock then
+        cx, cy = -10000, -10000
+        isLMouseDown, isRMouseDown = false, false
+    end
 
     if SeekDrag.Active then
         local hit = ButtonHits.MediaSeek
@@ -5868,7 +6082,13 @@ function Impl.HandleInteractions()
     local isWheelUp = Input.IsKeyDown(Enum.ButtonCode.KEY_MWHEELUP) or Input.IsKeyDown(124)
     local isWheelDown = Input.IsKeyDown(Enum.ButtonCode.KEY_MWHEELDOWN) or Input.IsKeyDown(125)
 
+    local notifHold = Impl.NotifHold(cx, cy)
     if Demo.Active then
+    elseif notifHold == "nc" and not NotificationQueue.Active then
+        while #NotificationQueue.List > 0 do
+            Impl.PopHighestPriorityNotif()
+        end
+    elseif notifHold == "hold" and not NotificationQueue.Active then
     elseif NotificationQueue.Active then
         local elapsed = nowClk - NotificationQueue.StartTime
         if elapsed >= NotificationQueue.Active.Duration then
@@ -5998,6 +6218,7 @@ function Impl.HandleInteractions()
     if isMenuOpen and isCtrlOnly then
         if isHover and isLMouseDown and not DragState.IsDragging then
             DragState.IsDragging = true
+            DragState.Back = nil
             DragState.OffsetX = cx - (layout.x + layout.w / 2)
             DragState.OffsetY = cy - layout.y
         end
@@ -6006,11 +6227,34 @@ function Impl.HandleInteractions()
     if DragState.IsDragging then
         if not isLMouseDown or not isMenuOpen then
             DragState.IsDragging = false
+            local bb = DragState.Bounds
+            if bb then
+                local tx = math.max(bb[1], math.min(bb[2], DragState.CustomX))
+                local ty = math.max(bb[3], math.min(bb[4], DragState.CustomY))
+                if tx ~= DragState.CustomX or ty ~= DragState.CustomY then
+                    DragState.Back = { x = tx, y = ty, vx = 0, vy = 0 }
+                end
+            end
             SaveAllConfig()
         else
             local rawX = cx - DragState.OffsetX
             local rawY = cy - DragState.OffsetY
-            local mid = Render.ScreenSize().x / 2
+            local scrS = Render.ScreenSize()
+            local mid = scrS.x / 2
+            local lx1, lx2 = layout.w / 2 + 6, scrS.x - layout.w / 2 - 6
+            local ly1, ly2 = 6, scrS.y - layout.h - 6
+            local rb = 40 * layout.scale
+            if rawX < lx1 then
+                rawX = lx1 + Gesture.Rubber(rawX - lx1, rb)
+            elseif rawX > lx2 then
+                rawX = lx2 + Gesture.Rubber(rawX - lx2, rb)
+            end
+            if rawY < ly1 then
+                rawY = ly1 + Gesture.Rubber(rawY - ly1, rb)
+            elseif rawY > ly2 then
+                rawY = ly2 + Gesture.Rubber(rawY - ly2, rb)
+            end
+            DragState.Bounds = { lx1, lx2, ly1, ly2 }
             local snap = math.abs(rawX - mid) <= 14 * layout.scale
             if snap and not DragState.SnapX then Haptic.Silent(Haptic.Types.RATCHET_NOTCH) end
             DragState.SnapX = snap
@@ -6060,52 +6304,11 @@ function Impl.HandleInteractions()
                 if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_MEDIUM) end
                 return
             end
-        else
-            local kind = (NotificationQueue.Active and IsNotifDeferred(NotificationQueue.Active)) and "notif" or "aegis"
-            if MouseInput.SatClickKind == kind and nowClk - (MouseInput.SatClickAt or -10) < 0.4 then
-                MouseInput.SatClickAt = -10
-                if kind == "notif" then
-                    NotificationQueue.LastDismissed = NotificationQueue.Active
-                    NotificationQueue.Active = nil
-                    if #NotificationQueue.List > 0 then
-                        NotificationQueue.Active = Impl.PopHighestPriorityNotif()
-                        NotificationQueue.StartTime = nowClk
-                    end
-                else
-                    GameTracker.Roshan.Dismissed = true
-                end
-                HapticPlaySound("toast_dismiss", 0.45)
-            else
-                MouseInput.SatClickAt = nowClk
-                MouseInput.SatClickKind = kind
-                if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
-            end
         end
         return
     end
 
     if isLeftClicked and isHover and StateMachine.TargetState == StateMachine.States.NOTIFICATION and not isCtrlOnly then
-        NotificationQueue.LastDismissed = NotificationQueue.Active
-        NotificationQueue.Active = nil
-        HapticPlaySound("toast_dismiss", 0.45)
-        if StateMachine.Spring and StateMachine.Spring.Squish then
-            StateMachine.Spring.Squish.value = -0.32
-            StateMachine.Spring.Squish.vel = -2.2
-        end
-        if Haptic and Haptic.State then
-            Haptic.State.GlowAlpha = 70
-            Haptic.State.GlowColor = Color(255, 255, 255, 255)
-        end
-        if #NotificationQueue.List > 0 then
-            NotificationQueue.Active = Impl.PopHighestPriorityNotif()
-            NotificationQueue.StartTime = nowClk
-        end
-        if NotificationQueue.Active and not IsNotifDeferred(NotificationQueue.Active) then
-            TriggerStateTransition(StateMachine.States.NOTIFICATION)
-        else
-            local target = inCombat and StateMachine.States.COMPACT_FIGHT or (mediaActive and StateMachine.States.COMPACT_MEDIA or StateMachine.States.COMPACT_IDLE)
-            TriggerStateTransition(target)
-        end
         return
     end
 
@@ -6119,17 +6322,16 @@ function Impl.HandleInteractions()
         elseif HUDCustomizer.IsOpen then
             local clickedDrawerChip = false
             for _, b in ipairs(HUDCustomizer.DrawerBounds) do
-                if cx >= b.x1 and cx <= b.x2 and cy >= b.y1 and cy <= b.y2 then
-                    HUDCustomizer.InspectedChip = (HUDCustomizer.InspectedChip == b.id) and nil or b.id
+                if b.id and cx >= b.x1 and cx <= b.x2 and cy >= b.y1 and cy <= b.y2 then
+                    HUDCustomizer.InspectedChip = b.id
+                    HUDCustomizer.ColorPickerOpen = false
                     clickedDrawerChip = true
                     if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
                     break
                 end
             end
             if not clickedDrawerChip then
-                HUDCustomizer.IsOpen = false
-                HUDCustomizer.InspectedChip = nil
-                if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
+                Impl.CloseEditor()
             end
         end
     elseif isMenuOpen and HUDCustomizer.IsOpen and isLeftClicked then
@@ -6138,41 +6340,44 @@ function Impl.HandleInteractions()
             if cx >= b.x1 and cx <= b.x2 and cy >= b.y1 and cy <= b.y2 then
                 local id = HUDCustomizer.InspectedChip
                 local cfg = HUDCustomizer.WidgetConfigs[id]
-                if cfg and b.action == "set_bold" then
+                if b.action == "done" then
+                    Impl.CloseEditor()
+                elseif b.action == "back" then
+                    HUDCustomizer.InspectedChip = nil
+                    HUDCustomizer.ColorPickerOpen = false
+                    if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
+                elseif cfg and b.action == "set_bold" then
                     cfg.bold = (b.val == 1)
                     SaveAllConfig()
                     if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_MEDIUM) end
-                elseif cfg and b.action == "set_color" then
-                    cfg.colorMode = b.val
-                    if b.val == 3 and not cfg.customColor then
+                elseif cfg and b.action == "swatch" then
+                    cfg.colorMode = b.mode
+                    if b.mode == 3 then
+                        cfg.customColor = Color(b.r, b.g, b.b, 255)
+                        cfg.customHex = b.hex
+                    end
+                    HUDCustomizer.ColorPickerOpen = false
+                    SaveAllConfig()
+                    if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
+                elseif cfg and b.action == "custom_color" then
+                    if cfg.colorMode ~= 3 or not cfg.customColor then
                         local dCol, dHex = GetDefaultWidgetColor(id)
                         cfg.customColor = dCol
                         cfg.customHex = dHex
                     end
-                    if b.val ~= 3 then
-                        HUDCustomizer.ColorPickerOpen = false
-                    end
-                    SaveAllConfig()
-                    if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_MEDIUM) end
-                elseif b.action == "toggle_color_picker" then
+                    cfg.colorMode = 3
                     HUDCustomizer.ColorPickerOpen = not HUDCustomizer.ColorPickerOpen
+                    SaveAllConfig()
                     if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
+                elseif b.action == "toggle_active" then
+                    if Impl.IsChipInActiveList(id) and #HUDCustomizer.ActiveChips <= 1 then
+                        if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.BOUNDARY_BUMP) end
+                    else
+                        Impl.ToggleChipInActiveList(id)
+                        if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_MEDIUM) end
+                    end
                 elseif b.action == "close_color_picker" then
                     HUDCustomizer.ColorPickerOpen = false
-                    SaveAllConfig()
-                    if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
-                elseif cfg and b.action == "drag_hue" then
-                    HUDCustomizer.DraggingHue = { barX = b.barX, barW = b.barW, id = id }
-                    local frac = math.min(1, math.max(0, (cx - b.barX) / b.barW))
-                    local h = frac * 360
-                    local curCol = cfg.customColor or GetDefaultWidgetColor(id)
-                    local _, curSat, curVal = RGBtoHSV(curCol.r, curCol.g, curCol.b)
-                    if curSat < 0.15 then curSat = 0.85 end
-                    if curVal < 0.25 then curVal = 1.0 end
-                    local hr, hg, hb = HSVtoRGB(h, curSat, curVal)
-                    cfg.colorMode = 3
-                    cfg.customColor = Color(hr, hg, hb, 255)
-                    cfg.customHex = string.format("%02X%02X%02X", hr, hg, hb)
                     SaveAllConfig()
                     if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
                 elseif cfg and b.action == "drag_pop_sv" then
@@ -6231,9 +6436,6 @@ function Impl.HandleInteractions()
                     cfg.showIcon = not (cfg.showIcon ~= false)
                     SaveAllConfig()
                     if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_MEDIUM) end
-                elseif b.action == "close_inspector" then
-                    HUDCustomizer.InspectedChip = nil
-                    if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
                 end
                 clickedInspector = true
                 break
@@ -6244,51 +6446,81 @@ function Impl.HandleInteractions()
             if HUDCustomizer.ColorPickerOpen then
                 HUDCustomizer.ColorPickerOpen = false
             end
+            local hitDrawer = false
             for _, b in ipairs(HUDCustomizer.DrawerBounds) do
                 if cx >= b.x1 and cx <= b.x2 and cy >= b.y1 and cy <= b.y2 then
-                    if b.action == "toggle" then
+                    hitDrawer = true
+                    if b.action == "done" then
+                        Impl.CloseEditor()
+                    elseif b.action == "remove" or b.action == "add" then
                         Impl.ToggleChipInActiveList(b.id)
                         if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_MEDIUM) end
+                    elseif b.action == "row" then
+                        HUDCustomizer.RowPress = { id = b.id, y = cy, off = cy - b.y1 }
                     end
                     break
                 end
             end
 
-            for idx, b in ipairs(HUDCustomizer.PillBounds) do
-                if not DragState.IsDragging and cx >= b.x1 and cx <= b.x2 and cy >= b.y1 and cy <= b.y2 then
-                    HUDCustomizer.DraggedId = b.id
-                    HUDCustomizer.DragStartX = cx
-                    HUDCustomizer.DragCurrentX = cx
-                    break
+            if not hitDrawer then
+                for idx, b in ipairs(HUDCustomizer.PillBounds) do
+                    if not DragState.IsDragging and cx >= b.x1 and cx <= b.x2 and cy >= b.y1 and cy <= b.y2 then
+                        HUDCustomizer.DraggedId = b.id
+                        HUDCustomizer.DragStartX = cx
+                        HUDCustomizer.DragCurrentX = cx
+                        break
+                    end
                 end
             end
         end
     end
 
-    if isMenuOpen and HUDCustomizer.IsOpen and (HUDCustomizer.DraggingHue or HUDCustomizer.DraggingPopSV or HUDCustomizer.DraggingPopHue or HUDCustomizer.DraggingPopVal) then
+    local press = HUDCustomizer.RowPress
+    if press then
+        local geo = HUDCustomizer.EditorGeo
+        if not (isMenuOpen and HUDCustomizer.IsOpen) or not geo or HUDCustomizer.InspectedChip then
+            HUDCustomizer.RowPress, HUDCustomizer.RowDrag = nil, nil
+        elseif not isLMouseDown then
+            if HUDCustomizer.RowDrag then
+                SaveAllConfig()
+            else
+                HUDCustomizer.InspectedChip = press.id
+                HUDCustomizer.ColorPickerOpen = false
+                if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
+            end
+            HUDCustomizer.RowPress, HUDCustomizer.RowDrag = nil, nil
+        else
+            if not HUDCustomizer.RowDrag and math.abs(cy - press.y) > 4 * geo.s then
+                HUDCustomizer.RowDrag = press.id
+                if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
+            end
+            if HUDCustomizer.RowDrag then
+                local relY = cy - press.off - geo.py
+                HUDCustomizer.RowDragY = relY
+                local list = HUDCustomizer.ActiveChips
+                local idx = math.max(1, math.min(#list, math.floor((relY - geo.top) / geo.rowH + 0.5) + 1))
+                for i, cid in ipairs(list) do
+                    if cid == press.id then
+                        if i ~= idx then
+                            table.remove(list, i)
+                            table.insert(list, idx, cid)
+                            if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.RATCHET_NOTCH) end
+                        end
+                        break
+                    end
+                end
+            end
+        end
+    end
+
+    if isMenuOpen and HUDCustomizer.IsOpen and (HUDCustomizer.DraggingPopSV or HUDCustomizer.DraggingPopHue or HUDCustomizer.DraggingPopVal) then
         if not isLMouseDown then
-            HUDCustomizer.DraggingHue = nil
             HUDCustomizer.DraggingPopSV = nil
             HUDCustomizer.DraggingPopHue = nil
             HUDCustomizer.DraggingPopVal = nil
             SaveAllConfig()
         else
-            if HUDCustomizer.DraggingHue then
-                local dh = HUDCustomizer.DraggingHue
-                local cfg = HUDCustomizer.WidgetConfigs[dh.id]
-                if cfg then
-                    local frac = math.min(1, math.max(0, (cx - dh.barX) / dh.barW))
-                    local h = frac * 360
-                    local curCol = cfg.customColor or GetDefaultWidgetColor(dh.id)
-                    local _, curSat, curVal = RGBtoHSV(curCol.r, curCol.g, curCol.b)
-                    if curSat < 0.15 then curSat = 0.85 end
-                    if curVal < 0.25 then curVal = 1.0 end
-                    local hr, hg, hb = HSVtoRGB(h, curSat, curVal)
-                    cfg.colorMode = 3
-                    cfg.customColor = Color(hr, hg, hb, 255)
-                    cfg.customHex = string.format("%02X%02X%02X", hr, hg, hb)
-                end
-            elseif HUDCustomizer.DraggingPopSV then
+            if HUDCustomizer.DraggingPopSV then
                 local d = HUDCustomizer.DraggingPopSV
                 local cfg = HUDCustomizer.WidgetConfigs[d.id]
                 if cfg then
@@ -6385,10 +6617,10 @@ function Impl.HandleInteractions()
                 detected = isSearching and StateMachine.States.MENU_SEARCHING or StateMachine.States.MENU_IDLE
             end
             Sheet.MenuSince = Sheet.MenuSince or nowClk
-            if detected == StateMachine.States.MENU_IDLE and Sheet.Pick(nowClk) then
+            if detected == StateMachine.States.MENU_IDLE and not Hello.Blocking() and Sheet.Pick(nowClk) then
                 detected = StateMachine.States.SHEET
             end
-            if HUDCustomizer.IsOpen and detected ~= StateMachine.States.MENU_MATCH_FOUND then
+            if (HUDCustomizer.IsOpen or Hello.Blocking()) and detected ~= StateMachine.States.MENU_MATCH_FOUND then
                 detected = StateMachine.States.COMPACT_IDLE
             end
             if detected ~= StateMachine.States.MENU_MATCH_FOUND and StateMachine.TargetState ~= StateMachine.States.MENU_MATCH_FOUND then
@@ -6751,12 +6983,17 @@ local function DrawAppleWaveform(x, y, maxH, count, isPlaying, scale, customColo
     local harmonicMults = { 1.618, 1.414, 1.732, 1.528, 1.667 }
     local beat = (math.sin(now * 4.2) * 0.28 + 0.72)
     local volMul = math.max(0.45, math.min(1.0, ((MediaData.Volume or 100) / 100.0)))
+    local live = isPlaying and MediaData.Level and MediaData.LevelAt and (now - MediaData.LevelAt) < 0.5
 
     for i = 1, count do
         local bx = math.floor(x + (i - 1) * (barW + barGap))
         local targetH = 2.0 * scale
 
-        if isPlaying then
+        if live then
+            local lv = math.max(0, math.min(1, MediaData.Level[i] or 0))
+            local wgt = Impl.WaveWeights[i] or 0.8
+            targetH = (2.2 + (0.16 + 0.84 * lv) * wgt * (maxH - 3.2)) * scale
+        elseif isPlaying then
             local f = baseFreqs[i] or (3.5 + i * 0.9)
             local ph = phaseOffsets[i] or (i * 1.25)
             local hm = harmonicMults[i] or 1.618
@@ -7117,8 +7354,14 @@ local function IslandSurface(p1, p2, radius, borderCol, thickness, aMul)
 end
 
 local function DrawerSurface(p1, p2, radius, aMul)
-    local bg = UI.Main.IslandBgColor:Get()
-    Render.FilledRect(p1, p2, FadeColor(Color(bg.r, bg.g, bg.b, 255), aMul), radius)
+    if IsPureGlass() then
+        if aMul > 0.01 then
+            Render.Blur(p1, p2, 1.0, aMul, radius, Enum.DrawFlags.None)
+        end
+    else
+        local bg = UI.Main.IslandBgColor:Get()
+        Render.FilledRect(p1, p2, FadeColor(Color(bg.r, bg.g, bg.b, 255), aMul), radius)
+    end
     Render.Rect(p1, p2, FadeColor(Config.Colors.Border, aMul), radius, Enum.DrawFlags.None, 1.0)
 end
 
@@ -7387,6 +7630,7 @@ function Satellite.Draw(layout, st, side, fullW, content)
     local edge = (side > 0) and (layout.x + layout.w) or layout.x
     local travel = (gap + d / 2) * p - d / 2
     local x1 = (side > 0) and (edge + travel) or (edge - travel - w)
+    if side > 0 then x1 = x1 + Swipe.SatX end
     x1 = math.floor(x1 + 0.5)
     local y1 = math.floor(cy - d / 2 + 0.5)
     local x2 = x1 + math.floor(w + 0.5)
@@ -7531,11 +7775,13 @@ end
 function Impl.RenderSegmented(x, y, w, h, items, sel, spring, dt, scale, aMul, action)
     local n = #items
     spring.v, spring.vel = MotionEngine.Step(spring.v, spring.vel, sel - 1, dt, "SNAPPY")
-    Render.FilledRect(Vec2(x, y), Vec2(x + w, y + h), FadeColor(Config.Colors.SegTrack, aMul), h / 2)
+    local rT = math.floor(h * 0.3)
+    local rK = math.floor((h - 4) * 0.28)
+    Render.FilledRect(Vec2(x, y), Vec2(x + w, y + h), FadeColor(Config.Colors.SegTrack, aMul), rT)
     local segW = w / n
     local tx = x + 2 + spring.v * segW
-    SoftShadow(Vec2(tx, y + 2), Vec2(tx + segW - 4, y + h - 2), (h - 4) / 2, Color(0, 0, 0, math.floor(60 * aMul)), 5, Vec2(0, 1))
-    Render.FilledRect(Vec2(tx, y + 2), Vec2(tx + segW - 4, y + h - 2), FadeColor(Config.Colors.SegThumb, aMul), (h - 4) / 2)
+    SoftShadow(Vec2(tx, y + 2), Vec2(tx + segW - 4, y + h - 2), rK, Color(0, 0, 0, math.floor(60 * aMul)), 5, Vec2(0, 1))
+    Render.FilledRect(Vec2(tx, y + 2), Vec2(tx + segW - 4, y + h - 2), FadeColor(Config.Colors.SegThumb, aMul), rK)
     for i, it in ipairs(items) do
         local act = (i == sel)
         local f, s = TF("Caption", scale)
@@ -7559,332 +7805,667 @@ function Impl.RenderSwitch(x, y, w, h, on, spring, dt, aMul)
 end
 
 Impl.SEG_WEIGHT = { { label = "di_drawer_bold", val = 1 }, { label = "di_drawer_regular", val = 2 } }
-Impl.SEG_COLOR = { { label = "di_drawer_white", val = 1 }, { label = "di_drawer_dim", val = 2 }, { label = "di_drawer_custom", val = 3 } }
 Impl.SEG_FORMAT = { { label = "di_drawer_standard", val = 1 }, { label = "di_drawer_minimal", val = 2 }, { label = "di_drawer_detailed", val = 3 } }
 
-function Impl.RenderSettingsLabel(x, y, rowH, label, scale, aMul)
-    local f, s = TF("Footnote", scale)
-    local ts = Render.TextSize(f, s, label)
-    Render.Text(f, s, label, Vec2(x, math.floor(y + (rowH - ts.y) / 2)), FadeColor(Config.Colors.TextPrimary, aMul))
+Impl.CHIP_TINT = { clock = "Orange", kda = "Red", gold = "Yellow", networth = "Blue", lasthits = "Gray", heroname = "Indigo", fps = "Green", ping = "Teal" }
+Impl.SWATCHES = {
+    { mode = 1 },
+    { mode = 2 },
+    { mode = 3, r = 255, g = 69, b = 58, hex = "FF453A" },
+    { mode = 3, r = 255, g = 159, b = 10, hex = "FF9F0A" },
+    { mode = 3, r = 255, g = 214, b = 10, hex = "FFD60A" },
+    { mode = 3, r = 48, g = 209, b = 88, hex = "30D158" },
+    { mode = 3, r = 10, g = 132, b = 255, hex = "0A84FF" },
+    { mode = 3, r = 191, g = 90, b = 242, hex = "BF5AF2" }
+}
+
+function Impl.ChipLabel(id)
+    for _, c in ipairs(HUDCustomizer.AvailableChips) do
+        if c.id == id then return L(c.label) end
+    end
+    return id
 end
 
-function Impl.RenderWidgetSettings(cx, cw, cy, scale, aMul, dt)
-    local id = HUDCustomizer.InspectedChip
+function Impl.EdPos(id)
+    local P = HUDCustomizer.Anim.Pos[id]
+    if not P then
+        P = { x = 0, y = 0, s = 0, a = 0, vx = 0, vy = 0, vs = 0, va = 0, fresh = true }
+        HUDCustomizer.Anim.Pos[id] = P
+    end
+    return P
+end
+
+function Impl.EdMove(P, x, y, s, a, dt)
+    if P.fresh then
+        P.x, P.y, P.s, P.a, P.fresh = x, y, s, a, false
+        return
+    end
+    P.x, P.vx = MotionEngine.Step(P.x, P.vx, x, dt, "SMOOTH")
+    P.y, P.vy = MotionEngine.Step(P.y, P.vy, y, dt, "SMOOTH")
+    P.s, P.vs = MotionEngine.Step(P.s, P.vs, s, dt, "SMOOTH")
+    P.a, P.va = MotionEngine.Step(P.a, P.va, a, dt, "SMOOTH")
+end
+
+function Impl.EdIcon(id, x, y, sz, a)
+    local tint = Config.Colors[Impl.CHIP_TINT[id] or "Gray"] or Config.Colors.Gray
+    Render.FilledRect(Vec2(x, y), Vec2(x + sz, y + sz), FadeColor(tint, a), sz * 0.24)
+    local gc = id == "gold" and Color(0, 0, 0, 215) or Color(255, 255, 255, 255)
+    Glyph(id, x + sz / 2, y + sz / 2, math.floor(sz * 0.6), FadeColor(gc, a))
+end
+
+function Impl.EdDone(x0, py, cardW, s, a, bounds)
+    local f, sz = TF("Headline", s)
+    local t = L("di_ui_done")
+    local ts = Render.TextSize(f, sz, t)
+    local tx = math.floor(x0 + cardW - 14 * s - ts.x)
+    local my = py + 30 * s
+    local _, pk = Pointer.Button(bounds == HUDCustomizer.DrawerBounds and "ed_done_l" or "ed_done_d", tx - 6 * s, my - 14 * s, x0 + cardW - 6 * s, my + 14 * s)
+    Render.Text(f, sz, t, Vec2(tx, math.floor(my - ts.y / 2)), FadeColor(Config.Colors.Blue, a * (1 - 0.45 * pk)))
+    if bounds then
+        table.insert(bounds, { x1 = tx - 6 * s, y1 = my - 14 * s, x2 = x0 + cardW - 6 * s, y2 = my + 14 * s, action = "done" })
+    end
+end
+
+function Impl.EdHeader(x, y, text, s, a)
+    local f, sz = TF("Footnote", s)
+    Render.Text(f, sz, text, Vec2(math.floor(x), math.floor(y)), FadeColor(Config.Colors.TextSecondary, a))
+end
+
+function Impl.EditorListH(s)
+    local n = #HUDCustomizer.ActiveChips
+    local m = #HUDCustomizer.AvailableChips - n
+    local h = 68 * s + n * 36 * s
+    if m <= 0 then return h + 12 * s end
+    local rows = math.ceil(m / (m > 5 and 4 or 5))
+    return h + 32 * s + (22 + rows * 56 + (rows - 1) * 10) * s + 12 * s
+end
+
+function Impl.EdRow(id, P, x0, py, cardW, s, a, first, isDrag, hl)
+    local C = Config.Colors
+    local rowH = 36 * s
+    local gl, gr = x0 + 12 * s, x0 + cardW - 12 * s
+    local top = py + P.ry
+    local my = top + rowH / 2
+    if hl > 0.01 then
+        Render.FilledRect(Vec2(gl + 4 * s, top + 3 * s), Vec2(gr - 4 * s, top + rowH - 3 * s), FadeColor(C.FillQuaternary, a * hl), 7 * s)
+    end
+    if not first and not isDrag then
+        Render.Line(Vec2(gl + 74 * s, math.floor(top) + 0.5), Vec2(gr, math.floor(top) + 0.5), FadeColor(C.Separator, a), 1.0)
+    end
+    local canRemove = #HUDCustomizer.ActiveChips > 1
+    local ma = a * (canRemove and 1 or 0.35)
+    local mx = gl + 18 * s
+    Render.FilledCircle(Vec2(mx, my), 9 * s, FadeColor(C.Red, ma), 0, 1.0, 24)
+    Render.FilledRect(Vec2(mx - 4.5 * s, my - 1 * s), Vec2(mx + 4.5 * s, my + 1 * s), FadeColor(Color(255, 255, 255, 255), ma), 1 * s)
+
+    local f, sz = TF("Body", s)
+    local label = Impl.ChipLabel(id)
+    local ls = Render.TextSize(f, sz, label)
+    local lx = math.floor(gl + 74 * s)
+    Render.Text(f, sz, label, Vec2(lx, math.floor(my - ls.y / 2)), FadeColor(C.TextPrimary, a))
+
+    local gx2 = gr - 12 * s
+    local gx1 = gx2 - 14 * s
+    for k = -1, 1 do
+        local yy = math.floor(my + k * 4 * s) + 0.5
+        Render.Line(Vec2(gx1, yy), Vec2(gx2, yy), FadeColor(C.TextMuted, a), 1.5 * s)
+    end
+    local chx = gx1 - 14 * s
+    Glyph("chevron", chx, my, math.floor(12 * s), FadeColor(C.TextMuted, a))
+
+    local c = GetChipContent(id)
+    local right = chx - 14 * s
+    local maxW = right - (lx + ls.x + 12 * s)
+    if maxW > 8 * s then
+        local txt = c.text
+        local vw = Odometer.Width(f, sz, txt)
+        if vw > maxW then
+            txt = TruncateToWidth(f, sz, txt, maxW)
+            local ts = Render.TextSize(f, sz, txt)
+            Render.Text(f, sz, txt, Vec2(math.floor(right - ts.x), math.floor(my - ts.y / 2)), FadeColor(C.TextSecondary, a))
+        else
+            Odometer.Text("ed_" .. id, f, sz, txt, Vec2(math.floor(right - vw), math.floor(my - ls.y / 2)), FadeColor(C.TextSecondary, a), id == "fps" or id == "ping")
+        end
+    end
+    return gl, gr, top, canRemove
+end
+
+function Impl.RenderEditorList(cx, py, cardW, s, a, dt, offX, live)
+    local C = Config.Colors
+    local anim = HUDCustomizer.Anim
+    local pad = 12 * s
+    local rowH = 36 * s
+    local x0 = cx + offX
+    local gl, gr = x0 + pad, x0 + cardW - pad
+    local bounds = live and HUDCustomizer.DrawerBounds or nil
+    local mx, my = Input.GetCursorPos()
+
+    local fT, sT = TF("Headline", s)
+    local title = L("di_ui_widgets")
+    local tsz = Render.TextSize(fT, sT, title)
+    Render.Text(fT, sT, title, Vec2(math.floor(gl + 2 * s), math.floor(py + 30 * s - tsz.y / 2)), FadeColor(C.TextPrimary, a))
+    Impl.EdDone(x0, py, cardW, s, a, bounds)
+
+    local act = HUDCustomizer.ActiveChips
+    local n = #act
+    local g1Top = 68 * s
+    HUDCustomizer.EditorGeo = { py = py, top = g1Top, rowH = rowH, s = s }
+
+    local shelf = {}
+    for _, c in ipairs(HUDCustomizer.AvailableChips) do
+        if not Impl.IsChipInActiveList(c.id) then shelf[#shelf + 1] = c.id end
+    end
+    local m = #shelf
+    local cols = m > 5 and 4 or 5
+    local rows = math.max(1, math.ceil(m / cols))
+    local shelfH = m > 0 and (22 + rows * 56 + (rows - 1) * 10) * s or 0
+
+    if not anim.G1 then
+        anim.G1, anim.G1v, anim.G2, anim.G2v = n * rowH, 0, shelfH, 0
+    end
+    anim.G1, anim.G1v = MotionEngine.Step(anim.G1, anim.G1v, n * rowH, dt, "SMOOTH")
+    anim.G2, anim.G2v = MotionEngine.Step(anim.G2, anim.G2v, shelfH, dt, "SMOOTH")
+    local g1H = math.max(0, anim.G1)
+    local g2H = math.max(0, anim.G2)
+    local g2Top = g1Top + g1H + 32 * s
+
+    Impl.EdHeader(gl + 6 * s, py + 50 * s, L("di_ui_on_island_hdr"), s, a)
+    Render.FilledRect(Vec2(gl, py + g1Top), Vec2(gr, py + g1Top + g1H), FadeColor(C.Group, a), 10 * s)
+    if g2H > 1 then
+        local ha = a * math.min(1, g2H / (40 * s))
+        Impl.EdHeader(gl + 6 * s, py + g2Top - 18 * s, L("di_ui_add_hdr"), s, ha)
+        Render.FilledRect(Vec2(gl, py + g2Top), Vec2(gr, py + g2Top + g2H), FadeColor(C.Group, ha), 10 * s)
+    end
+
+    local drag = HUDCustomizer.RowDrag
+    local press = HUDCustomizer.RowPress
+    local isz = 26 * s
+    for i, id in ipairs(act) do
+        local P = Impl.EdPos(id)
+        local ry = g1Top + (i - 1) * rowH
+        if drag == id then
+            ry = math.max(g1Top, math.min(g1Top + (n - 1) * rowH, HUDCustomizer.RowDragY or ry))
+        end
+        if not P.ry or P.a < 0.05 or drag == id then
+            P.ry, P.vry = ry, 0
+        else
+            P.ry, P.vry = MotionEngine.Step(P.ry, P.vry, ry, dt, "SMOOTH")
+        end
+        Impl.EdMove(P, pad + 38 * s, ry + (rowH - isz) / 2, isz, 1, dt)
+        if drag == id then
+            P.x, P.y, P.s, P.vx, P.vy, P.vs = pad + 38 * s, P.ry + (rowH - isz) / 2, isz, 0, 0, 0
+        end
+    end
+    local cellW = (gr - gl) / cols
+    local ssz = 38 * s
+    for j, id in ipairs(shelf) do
+        local P = Impl.EdPos(id)
+        local col = (j - 1) % cols
+        local row = math.floor((j - 1) / cols)
+        Impl.EdMove(P, pad + (col + 0.5) * cellW - ssz / 2, g2Top + 12 * s + row * 66 * s, ssz, 0, dt)
+    end
+
+    for i, id in ipairs(act) do
+        if id ~= drag then
+            local P = Impl.EdPos(id)
+            local top = py + P.ry
+            local over = not drag and mx >= gl and mx <= gr and my >= top and my <= top + rowH
+            local hl = (press and press.id == id) and 1.6 or (over and 1 or 0)
+            local ra = a * math.max(0, math.min(1, P.a))
+            local _, _, _, canRemove = Impl.EdRow(id, P, x0, py, cardW, s, ra, i == 1, false, hl)
+            if bounds and not drag and P.a > 0.9 then
+                if canRemove then
+                    table.insert(bounds, { x1 = gl, y1 = top, x2 = gl + 30 * s, y2 = top + rowH, action = "remove", id = id })
+                end
+                table.insert(bounds, { x1 = gl + 30 * s, y1 = top, x2 = gr, y2 = top + rowH, action = "row", id = id })
+            end
+        end
+    end
+
+    local fC, sC = TF("Caption", s)
+    for j, id in ipairs(shelf) do
+        local P = Impl.EdPos(id)
+        local sa = a * math.max(0, math.min(1, 1 - P.a))
+        if sa > 0.01 then
+            local ccx = x0 + P.x + P.s / 2
+            local lbl = TruncateToWidth(fC, sC, Impl.ChipLabel(id), math.floor(cellW - 6 * s))
+            local lsz = Render.TextSize(fC, sC, lbl)
+            Render.Text(fC, sC, lbl, Vec2(math.floor(ccx - lsz.x / 2), math.floor(py + P.y + P.s + 5 * s)), FadeColor(C.TextSecondary, sa))
+        end
+        if bounds and P.a < 0.1 then
+            local col = (j - 1) % cols
+            table.insert(bounds, { x1 = gl + col * cellW, y1 = py + P.y - 6 * s, x2 = gl + (col + 1) * cellW, y2 = py + P.y + P.s + 20 * s, action = "add", id = id })
+        end
+    end
+
+    for _, c in ipairs(HUDCustomizer.AvailableChips) do
+        local id = c.id
+        if id ~= drag then
+            local P = Impl.EdPos(id)
+            if not P.fresh then
+                Impl.EdIcon(id, x0 + P.x, py + P.y, P.s, a)
+                local ba = a * math.max(0, math.min(1, 1 - P.a * 1.6))
+                if ba > 0.01 then
+                    local bc = Vec2(x0 + P.x + P.s - 3 * s, py + P.y + 3 * s)
+                    local br = 8.5 * s
+                    SoftShadow(Vec2(bc.x - br, bc.y - br), Vec2(bc.x + br, bc.y + br), br, Color(0, 0, 0, math.floor(90 * ba)), 5, Vec2(0, 1))
+                    Render.FilledCircle(bc, br, FadeColor(C.SegThumb, ba), 0, 1.0, 20)
+                    Glyph("plus", bc.x, bc.y, math.floor(11 * s), FadeColor(C.TextPrimary, ba))
+                end
+            end
+        end
+    end
+
+    if drag then
+        local P = Impl.EdPos(drag)
+        local top = py + P.ry
+        local bg = IsPureGlass() and Color(28, 28, 30, 225) or UI.Main.IslandBgColor:Get()
+        SoftShadow(Vec2(gl, top), Vec2(gr, top + rowH), 10 * s, Color(0, 0, 0, math.floor(140 * a)), 18, Vec2(0, 5))
+        Render.FilledRect(Vec2(gl, top), Vec2(gr, top + rowH), FadeColor(Color(bg.r, bg.g, bg.b, IsPureGlass() and bg.a or 255), a), 10 * s)
+        Render.FilledRect(Vec2(gl, top), Vec2(gr, top + rowH), FadeColor(C.Group, a), 10 * s)
+        Impl.EdRow(drag, P, x0, py, cardW, s, a, true, true, 0)
+        Impl.EdIcon(drag, x0 + P.x, py + P.y, P.s, a)
+    end
+end
+
+function Impl.EditorDetailH(s)
+    return 304 * s
+end
+
+function Impl.RenderEditorDetail(cx, py, cardW, s, a, dt, offX, id, live, pb)
     local cfg = HUDCustomizer.WidgetConfigs[id]
     if not cfg then return end
-
+    local C = Config.Colors
     local anim = HUDCustomizer.Anim
-    local padX = 14 * scale
-
-    local label = id
-    for _, c in ipairs(HUDCustomizer.AvailableChips) do
-        if c.id == id then label = L(c.label) end
+    local rowH = 36 * s
+    local x0 = cx + offX
+    if offX > 0.5 and not IsPureGlass() then
+        if pb.x2 - x0 < pb.r * 2 then return end
+        local c = UI.Main.IslandBgColor:Get()
+        Render.FilledRect(Vec2(x0, py), Vec2(pb.x2, pb.y2), FadeColor(Color(c.r, c.g, c.b, 255), a), pb.r)
     end
+    local gl, gr = x0 + 12 * s, x0 + cardW - 12 * s
+    local bounds = live and HUDCustomizer.InspectorBounds or nil
+    local my = py + 30 * s
 
-    local hdrY = cy + 11 * scale
-    local fH, sH = TF("FootnoteEm", scale)
-    Render.Text(fH, sH, label, Vec2(cx + padX, hdrY), FadeColor(Config.Colors.TextPrimary, aMul))
-
-    local closeR = 9 * scale
-    local closeX = cx + cw - padX - closeR
-    local closeY = hdrY + 5 * scale
-    Render.FilledCircle(Vec2(closeX, closeY), closeR, FadeColor(Config.Colors.SegTrack, aMul), 0, 1.0, 20)
-    Glyph("close", closeX, closeY, math.floor(closeR * 1.05), FadeColor(Config.Colors.TextSecondary, aMul))
-    if aMul > 0.6 then
-        table.insert(HUDCustomizer.InspectorBounds, { x1 = closeX - closeR, y1 = closeY - closeR, x2 = closeX + closeR, y2 = closeY + closeR, action = "close_inspector" })
+    local fB, sB = TF("Body", s)
+    local back = L("di_ui_widgets")
+    local bs = Render.TextSize(fB, sB, back)
+    Glyph("chevron_back", gl + 5 * s, my, math.floor(17 * s), FadeColor(C.Blue, a))
+    Render.Text(fB, sB, back, Vec2(math.floor(gl + 14 * s), math.floor(my - bs.y / 2)), FadeColor(C.Blue, a))
+    if bounds then
+        table.insert(bounds, { x1 = gl - 6 * s, y1 = my - 14 * s, x2 = gl + 18 * s + bs.x, y2 = my + 14 * s, action = "back" })
     end
+    local fT, sT = TF("Headline", s)
+    local title = Impl.ChipLabel(id)
+    local ts = Render.TextSize(fT, sT, title)
+    Render.Text(fT, sT, title, Vec2(math.floor(x0 + (cardW - ts.x) / 2), math.floor(my - ts.y / 2)), FadeColor(C.TextPrimary, a))
+    Impl.EdDone(x0, py, cardW, s, a, bounds)
 
-    local rowH = 30 * scale
-    local segW = 172 * scale
-    local segH = 24 * scale
-    local segX = cx + cw - padX - segW
-    local rowY = cy + 30 * scale
-
-    Impl.RenderSettingsLabel(cx + padX, rowY, rowH, L("di_ui_weight"), scale, aMul)
-    Impl.RenderSegmented(segX, rowY + (rowH - segH) / 2, segW, segH, Impl.SEG_WEIGHT, cfg.bold and 1 or 2, anim.SegWeight, dt, scale, aMul, "set_bold")
-
-    rowY = rowY + rowH
-    Impl.RenderSettingsLabel(cx + padX, rowY, rowH, L("di_ui_color"), scale, aMul)
-    Impl.RenderSegmented(segX, rowY + (rowH - segH) / 2, segW, segH, Impl.SEG_COLOR, cfg.colorMode or 1, anim.SegColor, dt, scale, aMul, "set_color")
-
-    if cfg.colorMode == 3 then
-        rowY = rowY + rowH
-        local curCol = cfg.customColor or GetDefaultWidgetColor(id)
-        local curHex = cfg.customHex or select(2, GetDefaultWidgetColor(id))
-
-        Impl.RenderSettingsLabel(cx + padX, rowY, rowH, L("di_ui_palette"), scale, aMul)
-        local fL, sL = TF("Footnote", scale)
-        local lblSize = Render.TextSize(fL, sL, L("di_ui_palette"))
-
-        local prevR = 8 * scale
-        local prevX = cx + padX + lblSize.x + 14 * scale
-        local prevY = rowY + rowH / 2
-        SoftShadow(Vec2(prevX - prevR, prevY - prevR), Vec2(prevX + prevR, prevY + prevR), prevR, Color(0, 0, 0, math.floor(110 * aMul)), 6, Vec2(0, 1))
-        Render.FilledCircle(Vec2(prevX, prevY), prevR, FadeColor(curCol, aMul), 0, 1.0, 22)
-        local ringCol = HUDCustomizer.ColorPickerOpen and Config.Colors.Blue or Config.Colors.TextSecondary
-        Render.Circle(Vec2(prevX, prevY), prevR + 1.5 * scale, FadeColor(ringCol, aMul), 1.8 * scale)
-        if aMul > 0.6 then
-            table.insert(HUDCustomizer.InspectorBounds, {
-                x1 = prevX - prevR - 6 * scale, y1 = prevY - prevR - 6 * scale,
-                x2 = prevX + prevR + 6 * scale, y2 = prevY + prevR + 6 * scale,
-                action = "toggle_color_picker",
-                px = prevX, py = prevY
-            })
+    local function Group(top, rows, h)
+        local y1 = py + top
+        Render.FilledRect(Vec2(gl, y1), Vec2(gr, y1 + (h or rows * rowH)), FadeColor(C.Group, a), 10 * s)
+        for k = 1, rows - 1 do
+            local yy = math.floor(y1 + k * rowH) + 0.5
+            Render.Line(Vec2(gl + 14 * s, yy), Vec2(gr, yy), FadeColor(C.Separator, a), 1.0)
         end
-
-        local barH = 8 * scale
-        local barY = rowY + (rowH - barH) / 2
-        local barR = barH / 2
-        local segSteps = 6
-        local midW = segW - barR * 2
-
-        local c0r, c0g, c0b = HSVtoRGB(0, 0.90, 1.0)
-        Render.FilledCircle(Vec2(segX + barR, barY + barR), barR, FadeColor(Color(c0r, c0g, c0b, 255), aMul), 0, 1.0, 16)
-        local c1r, c1g, c1b = HSVtoRGB(360, 0.90, 1.0)
-        Render.FilledCircle(Vec2(segX + segW - barR, barY + barR), barR, FadeColor(Color(c1r, c1g, c1b, 255), aMul), 0, 1.0, 16)
-
-        for i = 0, segSteps - 1 do
-            local ar, ag, ab = HSVtoRGB(i / segSteps * 360, 0.90, 1.0)
-            local br, bg, bb = HSVtoRGB((i + 1) / segSteps * 360, 0.90, 1.0)
-            local x1 = segX + barR + (i / segSteps) * midW
-            local x2 = segX + barR + ((i + 1) / segSteps) * midW + (i < segSteps - 1 and 0.6 or 0)
-            local ca, cb = FadeColor(Color(ar, ag, ab, 255), aMul), FadeColor(Color(br, bg, bb, 255), aMul)
-            Render.Gradient(Vec2(x1, barY), Vec2(x2, barY + barH), ca, cb, ca, cb, 0)
-        end
-        Render.Rect(Vec2(segX, barY), Vec2(segX + segW, barY + barH), FadeColor(Color(255, 255, 255, 55), aMul), barR, Enum.DrawFlags.None, 1.0)
-
-        local curHue = RGBtoHue(curCol.r, curCol.g, curCol.b)
-        local knobX = segX + (curHue / 360) * segW
-        local knobY = barY + barH / 2
-        local knobR = 6.5 * scale
-
-        SoftShadow(Vec2(knobX - knobR, knobY - knobR), Vec2(knobX + knobR, knobY + knobR), knobR, Color(0, 0, 0, math.floor(120 * aMul)), 6, Vec2(0, 1.5))
-        Render.FilledCircle(Vec2(knobX, knobY), knobR, FadeColor(Color(255, 255, 255, 255), aMul), 0, 1.0, 20)
-        Render.FilledCircle(Vec2(knobX, knobY), knobR - 2.2 * scale, FadeColor(curCol, aMul), 0, 1.0, 16)
-        Render.Circle(Vec2(knobX, knobY), knobR, FadeColor(Color(255, 255, 255, 220), aMul), 1.0)
-
-        if aMul > 0.6 then
-            table.insert(HUDCustomizer.InspectorBounds, {
-                x1 = segX - 4, y1 = barY - 5,
-                x2 = segX + segW + 4, y2 = barY + barH + 5,
-                action = "drag_hue",
-                barX = segX, barW = segW
-            })
+    end
+    local function Label(text, top, ca)
+        local ls = Render.TextSize(fB, sB, text)
+        Render.Text(fB, sB, text, Vec2(math.floor(gl + 14 * s), math.floor(py + top + (rowH - ls.y) / 2)), FadeColor(C.TextPrimary, ca or a))
+    end
+    local swW, swH = 42 * s, 25 * s
+    local function Switch(top, on, spring, action, sa)
+        local sx = gr - 12 * s - swW
+        local sy = py + top + (rowH - swH) / 2
+        Impl.RenderSwitch(sx, sy, swW, swH, on, spring, dt, sa or a)
+        if bounds then
+            table.insert(bounds, { x1 = gl, y1 = py + top, x2 = gr, y2 = py + top + rowH, action = action })
         end
     end
 
-    rowY = rowY + rowH
-    Impl.RenderSettingsLabel(cx + padX, rowY, rowH, L("di_ui_format"), scale, aMul)
-    Impl.RenderSegmented(segX, rowY + (rowH - segH) / 2, segW, segH, Impl.SEG_FORMAT, cfg.format or 1, anim.SegFormat, dt, scale, aMul, "set_format")
+    local onIsland = Impl.IsChipInActiveList(id)
+    local locked = onIsland and #HUDCustomizer.ActiveChips <= 1
+    Group(50 * s, 2)
+    Label(L("di_ui_show_on_island"), 50 * s)
+    Switch(50 * s, onIsland, anim.KnobOn, "toggle_active", a * (locked and 0.5 or 1))
+    Label(L("di_ui_icon"), 50 * s + rowH)
+    Switch(50 * s + rowH, cfg.showIcon ~= false, anim.Knob, "toggle_icon")
 
-    rowY = rowY + rowH
-    Impl.RenderSettingsLabel(cx + padX, rowY, rowH, L("di_ui_icon"), scale, aMul)
-    local swW, swH = 42 * scale, 25 * scale
-    local swX = cx + cw - padX - swW
-    local swY = rowY + (rowH - swH) / 2
-    Impl.RenderSwitch(swX, swY, swW, swH, cfg.showIcon ~= false, anim.Knob, dt, aMul)
-    if aMul > 0.6 then
-        table.insert(HUDCustomizer.InspectorBounds, { x1 = swX, y1 = swY, x2 = swX + swW, y2 = swY + swH, action = "toggle_icon" })
+    local segH = 26 * s
+    local top2 = 136 * s
+    Group(top2, 2)
+    Label(L("di_ui_weight"), top2)
+    local segW1 = 150 * s
+    local segY1 = py + top2 + (rowH - segH) / 2
+    Impl.RenderSegmented(gr - 8 * s - segW1, segY1, segW1, segH, Impl.SEG_WEIGHT, cfg.bold and 1 or 2, anim.SegWeight, dt, s, a, "set_bold")
+    Label(L("di_ui_format"), top2 + rowH)
+    local segW2 = 176 * s
+    local segY2 = py + top2 + rowH + (rowH - segH) / 2
+    Impl.RenderSegmented(gr - 8 * s - segW2, segY2, segW2, segH, Impl.SEG_FORMAT, cfg.format or 1, anim.SegFormat, dt, s, a, "set_format")
+    if not bounds then
+        local B = HUDCustomizer.InspectorBounds
+        for k = #B, 1, -1 do
+            if B[k].action == "set_bold" or B[k].action == "set_format" then table.remove(B, k) end
+        end
     end
+
+    local top3 = 222 * s
+    Group(top3, 1, 70 * s)
+    local hy = py + top3 + 16 * s
+    local cl = L("di_ui_color")
+    local cs = Render.TextSize(fB, sB, cl)
+    Render.Text(fB, sB, cl, Vec2(math.floor(gl + 14 * s), math.floor(hy - cs.y / 2)), FadeColor(C.TextPrimary, a))
+    local mode = cfg.colorMode or 1
+    local vk = mode == 1 and "di_drawer_white" or (mode == 2 and "di_drawer_dim" or "di_drawer_custom")
+    local vt = L(vk)
+    local vs = Render.TextSize(fB, sB, vt)
+    Render.Text(fB, sB, vt, Vec2(math.floor(gr - 14 * s - vs.x), math.floor(hy - vs.y / 2)), FadeColor(C.TextSecondary, a))
+
+    local d = 22 * s
+    local count = #Impl.SWATCHES + 1
+    local span = (gr - gl) - 28 * s
+    local gap = (span - count * d) / (count - 1)
+    local scy = py + top3 + 48 * s
+    local hex = string.upper(cfg.customHex or "")
+    local matched = false
+    for k, q in ipairs(Impl.SWATCHES) do
+        local qx = gl + 14 * s + d / 2 + (k - 1) * (d + gap)
+        local col
+        if q.mode == 1 then col = C.TextPrimary
+        elseif q.mode == 2 then col = C.Gray
+        else col = Color(q.r, q.g, q.b, 255) end
+        local sel = (q.mode == mode) and (mode ~= 3 or q.hex == hex)
+        if sel then matched = true end
+        local r = sel and (d / 2 - 3.5 * s) or d / 2
+        Render.FilledCircle(Vec2(qx, scy), r, FadeColor(col, a), 0, 1.0, 28)
+        if q.mode == 1 and not sel then
+            Render.Circle(Vec2(qx, scy), d / 2, FadeColor(C.Separator, a), 1.0, 0, 1.0, false, 32)
+        end
+        if sel then
+            Render.Circle(Vec2(qx, scy), d / 2 - 1 * s, FadeColor(col, a), 2 * s, 0, 1.0, false, 32)
+        end
+        if bounds then
+            table.insert(bounds, { x1 = qx - d / 2 - gap / 2, y1 = scy - d / 2 - 4 * s, x2 = qx + d / 2 + gap / 2, y2 = scy + d / 2 + 4 * s, action = "swatch", mode = q.mode, r = q.r, g = q.g, b = q.b, hex = q.hex })
+        end
+    end
+    local rx = gl + 14 * s + d / 2 + (count - 1) * (d + gap)
+    local rc = Vec2(rx, scy)
+    local custom = mode == 3 and not matched
+    local rr = d / 2 - 1.5 * s
+    for q = 0, 11 do
+        local cr, cg, cb = HSVtoRGB(q * 30, 0.85, 1.0)
+        Render.Circle(rc, rr, FadeColor(Color(cr, cg, cb, 255), a), 3 * s, (q * 30 + 270) % 360, 1 / 12 + 0.004, false, 6)
+    end
+    if custom then
+        Render.FilledCircle(rc, d / 2 - 5 * s, FadeColor(cfg.customColor or C.TextPrimary, a), 0, 1.0, 24)
+    else
+        Glyph("plus", rx, scy, math.floor(10 * s), FadeColor(C.TextPrimary, a))
+    end
+    if HUDCustomizer.ColorPickerOpen then
+        Render.Circle(rc, d / 2 + 2.5 * s, FadeColor(C.Blue, a), 1.5 * s, 0, 1.0, false, 32)
+    end
+    if bounds then
+        table.insert(bounds, { x1 = rx - d / 2 - gap / 2, y1 = scy - d / 2 - 4 * s, x2 = rx + d / 2 + gap / 2, y2 = scy + d / 2 + 4 * s, action = "custom_color" })
+    end
+end
+
+Impl.PickerTabs = { { label = "di_cp_grid", val = 1 }, { label = "di_cp_spectrum", val = 2 }, { label = "di_cp_sliders", val = 3 } }
+
+function Impl.GridColor(col, row)
+    if row == 0 then
+        local g = math.floor(255 * (1 - col / 11) + 0.5)
+        return g, g, g
+    end
+    local t = (row - 1) / 8
+    local sat, val
+    if t < 0.5 then
+        sat, val = 1, 0.32 + t / 0.5 * 0.68
+    else
+        sat, val = 1 - (t - 0.5) / 0.5 * 0.7, 1
+    end
+    return HSVtoRGB(col / 12 * 360, sat, val)
+end
+
+function Impl.ApplyPicked(cfg, r, g, b)
+    r, g, b = math.floor(r + 0.5), math.floor(g + 0.5), math.floor(b + 0.5)
+    cfg.colorMode = 3
+    cfg.customColor = Color(r, g, b, 255)
+    cfg.customHex = string.format("%02X%02X%02X", r, g, b)
+    HUDCustomizer.PickDirty = true
+end
+
+function Impl.PickIn(x1, y1, x2, y2)
+    return Pointer.down and Pointer.px >= x1 and Pointer.px <= x2 and Pointer.py >= y1 and Pointer.py <= y2
 end
 
 function Impl.RenderColorPickerPopover(cx, cy, cardW, scale, dt)
     local anim = HUDCustomizer.Anim
     anim.ColorPickerT = anim.ColorPickerT or 0
     anim.ColorPickerT = math.min(1, math.max(0, anim.ColorPickerT + dt / 0.18 * (HUDCustomizer.ColorPickerOpen and 1 or -1.8)))
+    if HUDCustomizer.PickDirty and not Pointer.down then
+        HUDCustomizer.PickDirty = false
+        SaveAllConfig()
+    end
     if anim.ColorPickerT <= 0 then return end
 
     local id = HUDCustomizer.InspectedChip
     local cfg = id and HUDCustomizer.WidgetConfigs[id]
     if not cfg then return end
 
+    local s = scale
+    local C = Config.Colors
     local curCol = cfg.customColor or GetDefaultWidgetColor(id)
-    local curHex = cfg.customHex or select(2, GetDefaultWidgetColor(id))
-    if not curHex then curHex = string.format("%02X%02X%02X", curCol.r, curCol.g, curCol.b) end
-    local curHue, curSat, curVal = RGBtoHSV(curCol.r, curCol.g, curCol.b)
+    local cr, cg, cb = curCol.r, curCol.g, curCol.b
+    local curHex = string.format("%02X%02X%02X", cr, cg, cb)
 
-    local SWATCHES = {
-        { 255, 69, 58, "FF453A" }, { 255, 159, 10, "FF9F0A" }, { 255, 214, 10, "FFD60A" }, { 48, 209, 88, "30D158" },
-        { 99, 230, 226, "63E6E2" }, { 64, 200, 224, "40C8E0" }, { 100, 210, 255, "64D2FF" }, { 10, 132, 255, "0A84FF" },
-        { 94, 92, 230, "5E5CE6" }, { 191, 90, 242, "BF5AF2" }, { 255, 55, 95, "FF375F" }, { 172, 142, 104, "AC8E68" },
-        { 142, 142, 147, "8E8E93" }, { 255, 255, 255, "FFFFFF" }
-    }
-
-    local pad = 12 * scale
-    local popW = 216 * scale
-    local gap = 6 * scale
-    local cols = 7
-    local sw = (popW - pad * 2 - gap * (cols - 1)) / cols
-    local gridTop = 34 * scale
-    local gridH = sw * 2 + gap
-    local canvasTop = gridTop + gridH + 12 * scale
-    local canvasH = 70 * scale
-    local previewR = 8 * scale
-    local popH = canvasTop + canvasH + 9 * scale + 8 * scale + 6 * scale + 8 * scale + 12 * scale + previewR * 2 + pad
+    local pad = 14 * s
+    local popW = math.floor(296 * s)
+    local innerW = popW - pad * 2
+    local cell = innerW / 12
+    local contentH = cell * 10
+    local popH = math.floor(46 * s + 28 * s + 12 * s + contentH + 14 * s + 50 * s + pad)
 
     local scr = Render.ScreenSize()
-    local scrW, scrH = scr.x, scr.y
-    local popX = cx + cardW + 10 * scale
-    local popY = cy + 32 * scale
-    if popX + popW > scrW - 10 then
-        popX = cx - popW - 10 * scale
-    end
+    local popX = cx + cardW + 10 * s
+    local popY = cy
+    if popX + popW > scr.x - 10 then popX = cx - popW - 10 * s end
     if popX < 10 then
         popX = math.floor(cx + (cardW - popW) / 2)
-        popY = cy + 180 * scale
+        popY = cy + 180 * s
     end
-    if popY + popH > scrH - 10 then
-        popY = scrH - popH - 10
-    end
+    if popY + popH > scr.y - 10 then popY = scr.y - popH - 10 end
     if popY < 10 then popY = 10 end
+    popX, popY = math.floor(popX), math.floor(popY)
 
-    local popA = anim.ColorPickerT
-    local p1 = Vec2(popX, popY)
-    local p2 = Vec2(popX + popW, popY + popH)
-    local popRad = 16 * scale
+    local a = anim.ColorPickerT
+    local live = a > 0.9
+    local p1, p2 = Vec2(popX, popY), Vec2(popX + popW, popY + popH)
+    local rad = 18 * s
+    SoftShadow(p1, p2, rad, Color(0, 0, 0, math.floor(220 * a)), 28, Vec2(0, 8))
+    DrawerSurface(p1, p2, rad, a)
+    if live then
+        table.insert(HUDCustomizer.InspectorBounds, { x1 = popX, y1 = popY, x2 = popX + popW, y2 = popY + popH, action = "pop_noop" })
+    end
 
-    SoftShadow(p1, p2, popRad, Color(0, 0, 0, math.floor(220 * popA)), 28, Vec2(0, 8))
-    DrawerSurface(p1, p2, popRad, popA)
-
-    local hdrY = math.floor(popY + 11 * scale)
-    local fH, sH = TF("FootnoteEm", scale)
-    Render.Text(fH, sH, L("di_ui_color_picker"), Vec2(popX + pad, hdrY), FadeColor(Config.Colors.TextPrimary, popA))
-
-    local closeR = 9 * scale
+    local fH, sH = TF("Headline", s)
+    local title = L("di_ui_color_picker")
+    local ts = Render.TextSize(fH, sH, title)
+    local hy = popY + 23 * s
+    Render.Text(fH, sH, title, Vec2(math.floor(popX + (popW - ts.x) / 2), math.floor(hy - ts.y / 2)), FadeColor(C.TextPrimary, a))
+    local closeR = 12 * s
     local closeX = popX + popW - pad - closeR
-    local closeY = hdrY + Render.TextSize(fH, sH, "Ag").y / 2
-    Render.FilledCircle(Vec2(closeX, closeY), closeR, FadeColor(Config.Colors.SegTrack, popA), 0, 1.0, 18)
-    Glyph("close", closeX, closeY, math.floor(closeR * 1.05), FadeColor(Config.Colors.TextSecondary, popA))
-
-    if popA > 0.6 then
-        table.insert(HUDCustomizer.InspectorBounds, {
-            x1 = closeX - closeR - 4, y1 = closeY - closeR - 4,
-            x2 = closeX + closeR + 4, y2 = closeY + closeR + 4,
-            action = "close_color_picker"
-        })
+    local _, cpk = Pointer.Button("cp_close", closeX - closeR, hy - closeR, closeX + closeR, hy + closeR)
+    Render.FilledCircle(Vec2(closeX, hy), closeR, FadeColor(C.SegTrack, a * (1 + 0.6 * cpk)), 0, 1.0, 24)
+    Glyph("close", closeX, hy, math.floor(closeR * 0.95), FadeColor(C.TextSecondary, a))
+    if live then
+        table.insert(HUDCustomizer.InspectorBounds, 1, { x1 = closeX - closeR - 4, y1 = hy - closeR - 4, x2 = closeX + closeR + 4, y2 = hy + closeR + 4, action = "close_color_picker" })
     end
 
-    for i, q in ipairs(SWATCHES) do
-        local col = (i - 1) % cols
-        local row = math.floor((i - 1) / cols)
-        local qx = popX + pad + col * (sw + gap) + sw / 2
-        local qy = popY + gridTop + row * (sw + gap) + sw / 2
-        local r = sw / 2
-        local selected = string.upper(curHex) == q[4]
-        local rr = selected and (r - 3.5 * scale) or r
-        Render.FilledCircle(Vec2(qx, qy), rr, FadeColor(Color(q[1], q[2], q[3], 255), popA), 0, 1.0, 24)
-        if q[4] == "FFFFFF" then
-            Render.Circle(Vec2(qx, qy), rr, FadeColor(Config.Colors.Separator, popA), 1.0, 0, 1.0, false, 32)
-        end
-        if selected then
-            Render.Circle(Vec2(qx, qy), r - 1, FadeColor(Color(q[1], q[2], q[3], 255), popA), 2 * scale, 0, 1.0, false, 32)
-        end
-        if popA > 0.6 then
-            table.insert(HUDCustomizer.InspectorBounds, {
-                x1 = qx - r, y1 = qy - r, x2 = qx + r, y2 = qy + r,
-                action = "pop_pick_quick",
-                r = q[1], g = q[2], b = q[3], hex = q[4], id = id
-            })
+    local tab = HUDCustomizer.PickerTab or 1
+    anim.PickerSeg = anim.PickerSeg or { v = tab - 1, vel = 0 }
+    local segY = popY + 46 * s
+    local keep = HUDCustomizer.InspectorBounds
+    HUDCustomizer.InspectorBounds = {}
+    Impl.RenderSegmented(popX + pad, segY, innerW, 28 * s, Impl.PickerTabs, tab, anim.PickerSeg, dt, s, a, "pick_tab")
+    local segHits = HUDCustomizer.InspectorBounds
+    HUDCustomizer.InspectorBounds = keep
+    if live and Pointer.pressed then
+        for _, b in ipairs(segHits) do
+            if Pointer.x >= b.x1 and Pointer.x <= b.x2 and Pointer.y >= b.y1 and Pointer.y <= b.y2 and b.val ~= tab then
+                HUDCustomizer.PickerTab = b.val
+                if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
+            end
         end
     end
 
-    local canvasX = popX + pad
-    local canvasY = popY + canvasTop
-    local canvasW = popW - pad * 2
+    local ax, ay = popX + pad, segY + 28 * s + 12 * s
+    local aw, ah = innerW, contentH
+    local hit = live and Impl.PickIn(ax, ay, ax + aw, ay + ah)
+    local mx = math.max(ax, math.min(ax + aw - 0.01, Pointer.x))
+    local my = math.max(ay, math.min(ay + ah - 0.01, Pointer.y))
+    local rr = 10 * s
 
-    Render.Line(Vec2(popX + pad, canvasY - 6 * scale), Vec2(popX + popW - pad, canvasY - 6 * scale), FadeColor(Config.Colors.Separator, popA), 1.0)
-
-    local pr, pg, pb = HSVtoRGB(curHue, 1, 1)
-    local cA, cB = Vec2(canvasX, canvasY), Vec2(canvasX + canvasW, canvasY + canvasH)
-    local white, pure = FadeColor(Color(255, 255, 255, 255), popA), FadeColor(Color(pr, pg, pb, 255), popA)
-    local clear, black = Color(0, 0, 0, 0), FadeColor(Color(0, 0, 0, 255), popA)
-    Render.Gradient(cA, cB, white, pure, white, pure, 4 * scale)
-    Render.Gradient(cA, cB, clear, clear, black, black, 4 * scale)
-    Render.Rect(Vec2(canvasX, canvasY), Vec2(canvasX + canvasW, canvasY + canvasH), FadeColor(Config.Colors.Border, popA), 4 * scale, Enum.DrawFlags.None, 1.0)
-
-    local reticleX = canvasX + curSat * canvasW
-    local reticleY = canvasY + (1.0 - curVal) * canvasH
-    local retR = 6 * scale
-    SoftShadow(Vec2(reticleX - retR, reticleY - retR), Vec2(reticleX + retR, reticleY + retR), retR, Color(0, 0, 0, math.floor(110 * popA)), 4, Vec2(0, 1))
-    Render.FilledCircle(Vec2(reticleX, reticleY), retR, FadeColor(Color(255, 255, 255, 255), popA), 0, 1.0, 18)
-    Render.FilledCircle(Vec2(reticleX, reticleY), retR - 2 * scale, FadeColor(curCol, popA), 0, 1.0, 16)
-
-    if popA > 0.6 then
-        table.insert(HUDCustomizer.InspectorBounds, {
-            x1 = canvasX - 2, y1 = canvasY - 2,
-            x2 = canvasX + canvasW + 2, y2 = canvasY + canvasH + 2,
-            action = "drag_pop_sv",
-            x = canvasX, y = canvasY, w = canvasW, h = canvasH, id = id
-        })
+    if tab == 1 then
+        local selX, selY
+        for row = 0, 9 do
+            for col = 0, 11 do
+                local r, g, b = Impl.GridColor(col, row)
+                local x1, y1 = ax + col * cell, ay + row * cell
+                local flags, rnd = Enum.DrawFlags.None, 0
+                if row == 0 and col == 0 then flags, rnd = Enum.DrawFlags.RoundCornersTopLeft, rr
+                elseif row == 0 and col == 11 then flags, rnd = Enum.DrawFlags.RoundCornersTopRight, rr
+                elseif row == 9 and col == 0 then flags, rnd = Enum.DrawFlags.RoundCornersBottomLeft, rr
+                elseif row == 9 and col == 11 then flags, rnd = Enum.DrawFlags.RoundCornersBottomRight, rr end
+                Render.FilledRect(Vec2(x1, y1), Vec2(x1 + cell + 0.6, y1 + cell + 0.6), FadeColor(Color(r, g, b, 255), a), rnd, flags)
+                if string.format("%02X%02X%02X", r, g, b) == curHex then selX, selY = x1, y1 end
+            end
+        end
+        if selX then
+            local lum = cr * 0.299 + cg * 0.587 + cb * 0.114
+            Render.Rect(Vec2(selX - 1, selY - 1), Vec2(selX + cell + 1, selY + cell + 1), FadeColor(lum > 150 and Color(0, 0, 0, 255) or Color(255, 255, 255, 255), a), 3 * s, Enum.DrawFlags.None, 2.5 * s)
+        end
+        if hit then
+            local col = math.min(11, math.floor((mx - ax) / cell))
+            local row = math.min(9, math.floor((my - ay) / cell))
+            local r, g, b = Impl.GridColor(col, row)
+            if string.format("%02X%02X%02X", r, g, b) ~= curHex then
+                Impl.ApplyPicked(cfg, r, g, b)
+                if Haptic and Haptic.Silent then Haptic.Silent(Haptic.Types.RATCHET_NOTCH) end
+            end
+        end
+    elseif tab == 2 then
+        local seg = aw / 6
+        for i = 0, 5 do
+            local r1, g1, b1 = HSVtoRGB(i * 60, 1, 1)
+            local r2, g2, b2 = HSVtoRGB((i + 1) * 60, 1, 1)
+            local c1, c2 = FadeColor(Color(r1, g1, b1, 255), a), FadeColor(Color(r2, g2, b2, 255), a)
+            local flags, rnd = Enum.DrawFlags.None, 0
+            if i == 0 then flags, rnd = Enum.DrawFlags.RoundCornersLeft, rr elseif i == 5 then flags, rnd = Enum.DrawFlags.RoundCornersRight, rr end
+            Render.Gradient(Vec2(ax + i * seg, ay), Vec2(ax + (i + 1) * seg + (i < 5 and 0.6 or 0), ay + ah), c1, c2, c1, c2, rnd, flags)
+        end
+        local w0, w1 = FadeColor(Color(255, 255, 255, 255), a), Color(255, 255, 255, 0)
+        local k0, k1 = Color(0, 0, 0, 0), FadeColor(Color(0, 0, 0, 255), a)
+        Render.Gradient(Vec2(ax, ay), Vec2(ax + aw, ay + ah / 2), w0, w0, w1, w1, rr, Enum.DrawFlags.RoundCornersTop)
+        Render.Gradient(Vec2(ax, ay + ah / 2), Vec2(ax + aw, ay + ah), k0, k0, k1, k1, rr, Enum.DrawFlags.RoundCornersBottom)
+        local h, sv, v = RGBtoHSV(cr, cg, cb)
+        local fy = v >= 0.995 and sv * 0.5 or (0.5 + (1 - v) * 0.5)
+        local kx, ky = ax + (h / 360) * aw, ay + fy * ah
+        local kr = 11 * s
+        SoftShadow(Vec2(kx - kr, ky - kr), Vec2(kx + kr, ky + kr), kr, Color(0, 0, 0, math.floor(120 * a)), 6, Vec2(0, 1))
+        Render.FilledCircle(Vec2(kx, ky), kr, FadeColor(Color(255, 255, 255, 255), a), 0, 1.0, 28)
+        Render.FilledCircle(Vec2(kx, ky), kr - 3 * s, FadeColor(curCol, a), 0, 1.0, 24)
+        if hit then
+            local fx = (mx - ax) / aw
+            local fy2 = (my - ay) / ah
+            local nh = fx * 360
+            local ns, nv
+            if fy2 < 0.5 then ns, nv = fy2 / 0.5, 1 else ns, nv = 1, 1 - (fy2 - 0.5) / 0.5 end
+            local r, g, b = HSVtoRGB(nh, ns, nv)
+            Impl.ApplyPicked(cfg, r, g, b)
+        end
+    else
+        local names = { "di_cp_red", "di_cp_green", "di_cp_blue" }
+        local vals = { cr, cg, cb }
+        local fL, sL = TF("Caption", s)
+        local fV, sV = TF("Body", s)
+        local boxW = 52 * s
+        local trackW = aw - boxW - 10 * s
+        local th2 = 26 * s
+        for i = 1, 3 do
+            local ry = ay + (i - 1) * 60 * s
+            Render.Text(fL, sL, L(names[i]), Vec2(math.floor(ax + 2 * s), math.floor(ry)), FadeColor(C.TextSecondary, a))
+            local ty = ry + 18 * s
+            local lo = { cr, cg, cb }
+            local hi = { cr, cg, cb }
+            lo[i], hi[i] = 0, 255
+            local c1 = FadeColor(Color(lo[1], lo[2], lo[3], 255), a)
+            local c2 = FadeColor(Color(hi[1], hi[2], hi[3], 255), a)
+            Render.Gradient(Vec2(ax, ty), Vec2(ax + trackW, ty + th2), c1, c2, c1, c2, th2 / 2)
+            local kx = ax + th2 / 2 + (trackW - th2) * (vals[i] / 255)
+            local kc = Vec2(kx, ty + th2 / 2)
+            SoftShadow(Vec2(kx - th2 / 2, ty), Vec2(kx + th2 / 2, ty + th2), th2 / 2, Color(0, 0, 0, math.floor(110 * a)), 6, Vec2(0, 1))
+            Render.FilledCircle(kc, th2 / 2 - 1 * s, FadeColor(Color(255, 255, 255, 255), a), 0, 1.0, 28)
+            local bx = ax + trackW + 10 * s
+            Render.FilledRect(Vec2(bx, ty), Vec2(bx + boxW, ty + th2), FadeColor(C.Group, a), 7 * s)
+            local vt = tostring(vals[i])
+            local vs = Render.TextSize(fV, sV, vt)
+            Render.Text(fV, sV, vt, Vec2(math.floor(bx + (boxW - vs.x) / 2), math.floor(ty + (th2 - vs.y) / 2)), FadeColor(C.TextPrimary, a))
+            if live and Impl.PickIn(ax - 6 * s, ty - 6 * s, ax + trackW + 6 * s, ty + th2 + 6 * s) then
+                local f = math.max(0, math.min(1, (Pointer.x - ax - th2 / 2) / (trackW - th2)))
+                local nv = { cr, cg, cb }
+                nv[i] = f * 255
+                Impl.ApplyPicked(cfg, nv[1], nv[2], nv[3])
+            end
+        end
+        local hy2 = ay + 3 * 60 * s + 2 * s
+        local hl = L("di_cp_hex")
+        Render.Text(fL, sL, hl, Vec2(math.floor(ax + 2 * s), math.floor(hy2 + 3 * s)), FadeColor(C.TextSecondary, a))
+        local hexT = "#" .. curHex
+        local hs = Render.TextSize(fV, sV, hexT)
+        Odometer.Draw(fV, sV, hexT, Vec2(math.floor(ax + aw - hs.x - 2 * s), math.floor(hy2)), FadeColor(C.TextPrimary, a))
     end
 
-    local function Bar(barY, steps, colorAt, knobT, knobCol, action)
-        local barH = 8 * scale
-        local barR = barH / 2
-        local midW = canvasW - barR * 2
-        local c0 = colorAt(0)
-        local c1 = colorAt(1)
-        Render.FilledCircle(Vec2(canvasX + barR, barY + barR), barR, FadeColor(c0, popA), 0, 1.0, 16)
-        Render.FilledCircle(Vec2(canvasX + canvasW - barR, barY + barR), barR, FadeColor(c1, popA), 0, 1.0, 16)
-        for i = 0, steps - 1 do
-            local x1 = canvasX + barR + (i / steps) * midW
-            local x2 = canvasX + barR + ((i + 1) / steps) * midW + (i < steps - 1 and 0.6 or 0)
-            local ca, cb = FadeColor(colorAt(i / steps), popA), FadeColor(colorAt((i + 1) / steps), popA)
-            Render.Gradient(Vec2(x1, barY), Vec2(x2, barY + barH), ca, cb, ca, cb, 0)
+    local sepY = ay + ah + 14 * s
+    Render.Line(Vec2(popX + pad, math.floor(sepY) + 0.5), Vec2(popX + popW - pad, math.floor(sepY) + 0.5), FadeColor(C.Separator, a), 1.0)
+    local by = sepY + 12 * s
+    local big = 38 * s
+    Render.FilledRect(Vec2(ax, by), Vec2(ax + big, by + big), FadeColor(curCol, a), 9 * s)
+    Render.Rect(Vec2(ax, by), Vec2(ax + big, by + big), FadeColor(C.Border, a), 9 * s, Enum.DrawFlags.None, 1.0)
+    local saved = HUDCustomizer.Saved or {}
+    local d = 26 * s
+    local gap = 8 * s
+    local sx = ax + big + 16 * s
+    local scy = by + big / 2
+    local slots = math.floor((ax + aw - sx + gap) / (d + gap))
+    local shown = math.min(#saved, slots - 1)
+    for i = 1, shown do
+        local hx = saved[i]
+        local r, g, b = tonumber(hx:sub(1, 2), 16) or 0, tonumber(hx:sub(3, 4), 16) or 0, tonumber(hx:sub(5, 6), 16) or 0
+        local ccx = sx + (i - 1) * (d + gap) + d / 2
+        local _, pk = Pointer.Button("cp_saved" .. i, ccx - d / 2, scy - d / 2, ccx + d / 2, scy + d / 2)
+        local rad2 = d / 2 * (1 - 0.1 * pk)
+        Render.FilledCircle(Vec2(ccx, scy), rad2, FadeColor(Color(r, g, b, 255), a), 0, 1.0, 28)
+        if hx == curHex then
+            Render.Circle(Vec2(ccx, scy), d / 2 + 3 * s, FadeColor(Color(r, g, b, 255), a), 2 * s, 0, 1.0, false, 32)
         end
-        local kx = canvasX + knobT * canvasW
-        local ky = barY + barH / 2
-        local kr = 6 * scale
-        SoftShadow(Vec2(kx - kr, ky - kr), Vec2(kx + kr, ky + kr), kr, Color(0, 0, 0, math.floor(110 * popA)), 4, Vec2(0, 1))
-        Render.FilledCircle(Vec2(kx, ky), kr, FadeColor(Color(255, 255, 255, 255), popA), 0, 1.0, 18)
-        Render.FilledCircle(Vec2(kx, ky), kr - 2 * scale, FadeColor(knobCol, popA), 0, 1.0, 16)
-        if popA > 0.6 then
-            table.insert(HUDCustomizer.InspectorBounds, {
-                x1 = canvasX - 2, y1 = barY - 4,
-                x2 = canvasX + canvasW + 2, y2 = barY + barH + 4,
-                action = action,
-                x = canvasX, w = canvasW, id = id
-            })
+        if live and Pointer.pressed and Pointer.x >= ccx - d / 2 and Pointer.x <= ccx + d / 2 and Pointer.y >= scy - d / 2 and Pointer.y <= scy + d / 2 then
+            Impl.ApplyPicked(cfg, r, g, b)
+            if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
         end
-        return barY + barH
     end
-
-    local hr0, hg0, hb0 = HSVtoRGB(curHue, 0.90, 1.0)
-    local hEnd = Bar(canvasY + canvasH + 9 * scale, 6, function(t)
-        local r, g, b = HSVtoRGB(t * 360, 0.90, 1.0)
-        return Color(r, g, b, 255)
-    end, curHue / 360, Color(hr0, hg0, hb0, 255), "drag_pop_hue")
-    local vEnd = Bar(hEnd + 6 * scale, 1, function(t)
-        local r, g, b = HSVtoRGB(curHue, curSat, t)
-        return Color(r, g, b, 255)
-    end, curVal, curCol, "drag_pop_val")
-
-    local btmY = vEnd + 12 * scale
-    local fC, sC = TF("Caption", scale)
-    Render.FilledCircle(Vec2(canvasX + previewR, btmY + previewR), previewR, FadeColor(curCol, popA), 0, 1.0, 20)
-    Render.Circle(Vec2(canvasX + previewR, btmY + previewR), previewR, FadeColor(Config.Colors.Border, popA), 1.0, 0, 1.0, false, 24)
-    local hexLabel = "#" .. string.upper(curHex)
-    local hexSz = Render.TextSize(fC, sC, hexLabel)
-    Odometer.Draw(fC, sC, hexLabel, Vec2(math.floor(canvasX + previewR * 2 + 8 * scale), math.floor(btmY + previewR - hexSz.y / 2)), FadeColor(Config.Colors.TextSecondary, popA))
-
-    local rstText = L("di_ui_reset")
-    local rstS = Render.TextSize(fC, sC, rstText)
-    local rstW = rstS.x + 16 * scale
-    local rstH = 20 * scale
-    local rstX = popX + popW - pad - rstW
-    local rstY = btmY + previewR - rstH / 2
-    Render.FilledRect(Vec2(rstX, rstY), Vec2(rstX + rstW, rstY + rstH), FadeColor(Config.Colors.SegTrack, popA), rstH / 2)
-    Render.Text(fC, sC, rstText, Vec2(math.floor(rstX + (rstW - rstS.x) / 2), math.floor(rstY + (rstH - rstS.y) / 2)), FadeColor(Config.Colors.TextPrimary, popA))
-
-    if popA > 0.6 then
-        table.insert(HUDCustomizer.InspectorBounds, {
-            x1 = rstX, y1 = rstY, x2 = rstX + rstW, y2 = rstY + rstH,
-            action = "pop_reset", id = id
-        })
-        table.insert(HUDCustomizer.InspectorBounds, {
-            x1 = popX, y1 = popY, x2 = popX + popW, y2 = popY + popH,
-            action = "pop_noop"
-        })
+    local pcx = sx + shown * (d + gap) + d / 2
+    local _, ppk = Pointer.Button("cp_add", pcx - d / 2, scy - d / 2, pcx + d / 2, scy + d / 2)
+    Render.FilledCircle(Vec2(pcx, scy), d / 2 * (1 - 0.1 * ppk), FadeColor(C.SegTrack, a), 0, 1.0, 28)
+    Glyph("plus", pcx, scy, math.floor(12 * s), FadeColor(C.TextSecondary, a))
+    if live and Pointer.pressed and Pointer.x >= pcx - d / 2 and Pointer.x <= pcx + d / 2 and Pointer.y >= scy - d / 2 and Pointer.y <= scy + d / 2 then
+        local list = { curHex }
+        for _, hx in ipairs(saved) do
+            if hx ~= curHex and #list < 12 then list[#list + 1] = hx end
+        end
+        HUDCustomizer.Saved = list
+        SaveAllConfig()
+        if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_MEDIUM) end
     end
 end
 
@@ -7892,8 +8473,11 @@ function Impl.RenderHUDDrawer(layout, dt)
     local anim = HUDCustomizer.Anim
     if not HUDCustomizer.IsOpen and anim.t <= 0 then
         anim.h, anim.hVel = 0, 0
+        anim.Pos, anim.G1, anim.G2 = {}, nil, nil
+        anim.Page.v, anim.Page.vel, anim.PageId = 0, 0, nil
         HUDCustomizer.DrawerBounds = {}
         HUDCustomizer.InspectorBounds = {}
+        HUDCustomizer.RowPress, HUDCustomizer.RowDrag = nil, nil
         return
     end
 
@@ -7905,35 +8489,35 @@ function Impl.RenderHUDDrawer(layout, dt)
     local contentA = math.min(1, math.max(0, (anim.t - 0.58) / 0.42))
 
     local cardW = math.floor(300 * scale)
-    local padX = 14 * scale
-    local gap = 7 * scale
-    local chipW = (cardW - padX * 2 - gap * 3) / 4
-    local chipH = 30 * scale
-    local chipsTop = 36 * scale
-    local baseH = chipsTop + chipH * 2 + gap + 12 * scale
+    local id = HUDCustomizer.InspectedChip
+    if id then anim.PageId = id end
 
-    local hintsOn = UI.Media.Hints:Get()
-    local idInspected = HUDCustomizer.InspectedChip
-    local cfgInspected = idInspected and HUDCustomizer.WidgetConfigs[idInspected]
-    local isCustomColor = cfgInspected and (cfgInspected.colorMode == 3)
-    local extraH = isCustomColor and (30 * scale) or 0
-    local targetH = baseH + (idInspected and (162 * scale + extraH) or 0) + (hintsOn and 22 * scale or 0)
-
-    if anim.LastId ~= HUDCustomizer.InspectedChip then
-        anim.LastId = HUDCustomizer.InspectedChip
-        local cfg = HUDCustomizer.WidgetConfigs[HUDCustomizer.InspectedChip]
+    if anim.LastId ~= id then
+        anim.LastId = id
+        local cfg = HUDCustomizer.WidgetConfigs[id]
         if cfg then
             anim.SegWeight.v, anim.SegWeight.vel = cfg.bold and 0 or 1, 0
-            anim.SegColor.v, anim.SegColor.vel = (cfg.colorMode or 1) - 1, 0
             anim.SegFormat.v, anim.SegFormat.vel = (cfg.format or 1) - 1, 0
             anim.Knob.v, anim.Knob.vel = cfg.showIcon ~= false and 1 or 0, 0
+            anim.KnobOn.v, anim.KnobOn.vel = Impl.IsChipInActiveList(id) and 1 or 0, 0
         end
     end
+
+    local want = id and 1 or 0
+    local hL, hD = Impl.EditorListH(scale), Impl.EditorDetailH(scale)
+    local hMax = math.max(hL, hD)
+    local moving = anim.Page.v > 0.002 and anim.Page.v < 0.998
+    if moving or math.abs(anim.Page.v - want) < 0.002 or anim.h >= hMax - 1.5 then
+        anim.Page.v, anim.Page.vel = MotionEngine.Step(anim.Page.v, anim.Page.vel, want, dt, "SMOOTH")
+    end
+    local pg = math.min(1, math.max(0, anim.Page.v))
+    local settled = math.abs(pg - want) < 0.002
+    local targetH = settled and (id and hD or hL) or hMax
 
     if anim.h <= 0 then
         anim.h, anim.hVel = targetH, 0
     else
-        anim.h, anim.hVel = MotionEngine.Step(anim.h, anim.hVel, targetH, dt, "SMOOTH")
+        anim.h, anim.hVel = MotionEngine.Step(anim.h, anim.hVel, targetH, dt, settled and "SMOOTH" or "SNAPPY")
     end
 
     local panelW = layout.w + (cardW - layout.w) * widen
@@ -7956,57 +8540,26 @@ function Impl.RenderHUDDrawer(layout, dt)
     HUDCustomizer.DrawerBounds = {}
     HUDCustomizer.InspectorBounds = {}
 
-    Render.PushClip(p1, p2)
+    Render.PushClip(Vec2(px + math.ceil(3 * scale), py), Vec2(px + panelW - math.ceil(3 * scale), py + panelH))
 
     local cx = math.floor(layout.x + (layout.w - cardW) / 2)
+
+    local live = contentA > 0.6
+    local glass = IsPureGlass()
+    if pg < 0.99 then
+        Impl.RenderEditorList(cx, py, cardW, scale, contentA * (glass and math.max(0, 1 - pg * 2) or (1 - 0.8 * pg)), dt, math.floor(-pg * cardW * 0.3), live and pg < 0.05)
+    end
+    if pg > 0.01 and anim.PageId then
+        Impl.RenderEditorDetail(cx, py, cardW, scale, contentA * (glass and math.max(0, pg * 2 - 1) or 1), dt, math.floor((1 - pg) * cardW), anim.PageId, live and pg > 0.95, { x2 = p2.x, y2 = p2.y, r = rad })
+    end
+
     local grabW = 34 * scale
     Render.FilledRect(Vec2(cx + (cardW - grabW) / 2, py + 8 * scale), Vec2(cx + (cardW + grabW) / 2, py + 12 * scale), FadeColor(Config.Colors.Grabber, contentA), 2 * scale)
-    local fW, sW = TF("Footnote", scale)
-    Render.Text(fW, sW, L("di_ui_widgets"), Vec2(cx + padX, py + 18 * scale), FadeColor(Config.Colors.TextSecondary, contentA))
-
-    local chipY = py + chipsTop
-    for i, chip in ipairs(HUDCustomizer.AvailableChips) do
-        local bx = math.floor(cx + padX + ((i - 1) % 4) * (chipW + gap))
-        local by = math.floor(chipY + math.floor((i - 1) / 4) * (chipH + gap))
-        local active = Impl.IsChipInActiveList(chip.id)
-
-        local ca = Impl.ChipAnim(chip.id)
-        ca.fill, ca.fillVel = MotionEngine.Step(ca.fill, ca.fillVel, active and 1 or 0, dt, "SMOOTH")
-        ca.scale, ca.scaleVel = MotionEngine.Step(ca.scale, ca.scaleVel, 1.0, dt, "SNAPPY")
-        local insetX = chipW * (1 - ca.scale) / 2
-        local insetY = chipH * (1 - ca.scale) / 2
-        local q1 = Vec2(bx + insetX, by + insetY)
-        local q2 = Vec2(bx + chipW - insetX, by + chipH - insetY)
-        local qr = (chipH - insetY * 2) / 2
-
-        Render.FilledRect(q1, q2, FadeColor(LerpColor(Config.Colors.ChipInactive, Config.Colors.ChipActiveBorder, ca.fill), contentA), qr)
-        Render.Rect(q1, q2, FadeColor(Config.Colors.ChipInactiveBorder, contentA * (1 - ca.fill)), qr, Enum.DrawFlags.None, 1.0)
-        if HUDCustomizer.InspectedChip == chip.id then
-            Render.Rect(Vec2(q1.x - 2 * scale, q1.y - 2 * scale), Vec2(q2.x + 2 * scale, q2.y + 2 * scale), FadeColor(Config.Colors.Blue, contentA), qr + 2 * scale, Enum.DrawFlags.None, 1.5)
-        end
-
-        local f, s = TF("Footnote", scale)
-        if ca.fill > 0.5 then f = Config.Fonts.Semibold end
-        local ls = Render.TextSize(f, s, L(chip.label))
-        Render.Text(f, s, L(chip.label), Vec2(math.floor(bx + (chipW - ls.x) / 2), math.floor(by + (chipH - ls.y) / 2)), FadeColor(LerpColor(Config.Colors.TextPrimary, Config.Colors.TextInverse, ca.fill), contentA))
-
-        if contentA > 0.6 then
-            table.insert(HUDCustomizer.DrawerBounds, { x1 = bx, y1 = by, x2 = bx + chipW, y2 = by + chipH, id = chip.id, action = "toggle" })
-        end
-    end
-
-    if HUDCustomizer.InspectedChip then
-        Impl.RenderWidgetSettings(cx, cardW, py + baseH - 12 * scale, scale, contentA, dt)
-    end
-
-    if hintsOn then
-        local fh, sh = TF("Caption", scale)
-        local hint = TruncateToWidth(fh, sh, L("di_ui_drawer_hint"), math.floor(cardW - 24 * scale))
-        local hs = Render.TextSize(fh, sh, hint)
-        Render.Text(fh, sh, hint, Vec2(math.floor(cx + (cardW - hs.x) / 2), math.floor(py + anim.h - 18 * scale)), FadeColor(Config.Colors.TextSecondary, contentA))
-    end
 
     Render.PopClip()
+    if pg > 0.01 and pg < 0.99 then
+        Render.Rect(p1, p2, FadeColor(Config.Colors.Border, emerge), rad, Enum.DrawFlags.None, 1.0)
+    end
 
     if HUDCustomizer.IsOpen and HUDCustomizer.InspectedChip then
         Impl.RenderColorPickerPopover(px, py, cardW, scale, dt)
@@ -8768,7 +9321,7 @@ function Impl.RenderLargeMedia(layout, alphaMul, yOffset)
         if inAlpha > 0.02 then
             Render.Text(fontBold, titleSz, titleStr, Vec2(infoX + inOffset, infoY), FadeColor(Config.Colors.TextPrimary, inAlpha))
             Render.Text(fontMain, artistSz, artistStr, Vec2(infoX + inOffset, infoY + 22 * scale), FadeColor(Config.Colors.TextSecondary, inAlpha))
-            DrawAlbumThumbnail(artX, artY, artSize, math.floor(12 * scale), inAlpha, 0.85 + t * 0.15)
+            DrawAlbumThumbnail(artX, artY, artSize, math.floor(12 * scale), inAlpha, (0.85 + t * 0.15) * (MediaData.ArtK or 1))
         end
     else
         local titleSize = Render.TextSize(fontBold, titleSz, titleStr)
@@ -8787,7 +9340,14 @@ function Impl.RenderLargeMedia(layout, alphaMul, yOffset)
             Render.Text(fontMain, artistSz, artistStr, Vec2(infoX, artYPos), subCol)
         end
 
-        DrawAlbumThumbnail(artX, artY, artSize, math.floor(12 * scale), aMul)
+        local ak = MediaData.ArtK or 1
+        local sh = math.max(0, math.min(1, (ak - 0.84) / 0.16))
+        if sh > 0.02 then
+            local isz = artSize * ak
+            local ix, iy = artX + (artSize - isz) / 2, artY + (artSize - isz) / 2
+            SoftShadow(Vec2(ix, iy), Vec2(ix + isz, iy + isz), 12 * scale * ak, Color(0, 0, 0, math.floor(120 * sh * aMul)), 12, Vec2(0, 3))
+        end
+        DrawAlbumThumbnail(artX, artY, artSize, math.floor(12 * scale), aMul, ak)
     end
 
     local progressY = math.floor(artY + artSize + 14 * scale)
@@ -8826,77 +9386,46 @@ function Impl.RenderLargeMedia(layout, alphaMul, yOffset)
     local ctrlY = math.floor(timeY + 16 * scale)
     local midX = math.floor(layout.x + layout.w / 2)
 
-    local playScale = ButtonSprings.MediaPlay.scale
     local playX = midX
     local playY = math.floor(ctrlY + 16 * scale)
     local ctrlCol = FadeColor(Config.Colors.TextPrimary, aMul)
-    Glyph(MediaData.IsPlaying and "media_pause" or "media_play", playX, playY, math.floor(26 * scale * playScale), ctrlCol)
-
-    ButtonHits.MediaPlay = {
-        x1 = playX - 22,
-        y1 = playY - 22,
-        x2 = playX + 22,
-        y2 = playY + 22
-    }
-
-    local prevScale = ButtonSprings.MediaPrev.scale
     local prevX = math.floor(playX - 54 * scale)
-    local prevY = playY
-    Glyph("media_prev", prevX, prevY, math.floor(24 * scale * prevScale), ctrlCol)
-
-    ButtonHits.MediaPrev = {
-        x1 = prevX - 18,
-        y1 = prevY - 18,
-        x2 = prevX + 18,
-        y2 = prevY + 18
-    }
-
-    local nextScale = ButtonSprings.MediaNext.scale
     local nextX = math.floor(playX + 54 * scale)
-    local nextY = playY
-    Glyph("media_next", nextX, nextY, math.floor(24 * scale * nextScale), ctrlCol)
-
-    ButtonHits.MediaNext = {
-        x1 = nextX - 18,
-        y1 = nextY - 18,
-        x2 = nextX + 18,
-        y2 = nextY + 18
-    }
-
-    local shufScale = ButtonSprings.MediaShuffle.scale
     local shufX = math.floor(layout.x + pad + 12 * scale)
-    local shufY = playY
+    local repX = math.floor(layout.x + layout.w - pad - 12 * scale)
+    local hb = 20 * scale
+    local sb2 = 14 * scale
+    ButtonHits.MediaPlay = { x1 = playX - 22 * scale, y1 = playY - 22 * scale, x2 = playX + 22 * scale, y2 = playY + 22 * scale }
+    ButtonHits.MediaPrev = { x1 = prevX - hb, y1 = playY - hb, x2 = prevX + hb, y2 = playY + hb }
+    ButtonHits.MediaNext = { x1 = nextX - hb, y1 = playY - hb, x2 = nextX + hb, y2 = playY + hb }
+    ButtonHits.MediaShuffle = { x1 = shufX - sb2, y1 = playY - sb2, x2 = shufX + sb2, y2 = playY + sb2 }
+    ButtonHits.MediaRepeat = { x1 = repX - sb2, y1 = playY - sb2, x2 = repX + sb2, y2 = playY + sb2 }
+
+    local k, d = Impl.PointerBlob("m_play", playX, playY, 22 * scale, ButtonHits.MediaPlay, aMul)
+    Glyph(MediaData.IsPlaying and "media_pause" or "media_play", playX, playY, math.floor(26 * scale * ButtonSprings.MediaPlay.scale * k), FadeColor(ctrlCol, d))
+    k, d = Impl.PointerBlob("m_prev", prevX, playY, 19 * scale, ButtonHits.MediaPrev, aMul)
+    Glyph("media_prev", prevX, playY, math.floor(24 * scale * ButtonSprings.MediaPrev.scale * k), FadeColor(ctrlCol, d))
+    k, d = Impl.PointerBlob("m_next", nextX, playY, 19 * scale, ButtonHits.MediaNext, aMul)
+    Glyph("media_next", nextX, playY, math.floor(24 * scale * ButtonSprings.MediaNext.scale * k), FadeColor(ctrlCol, d))
+
     local shufH = GetVectorIcon("shuffle")
+    k, d = Impl.PointerBlob("m_shuf", shufX, playY, 15 * scale, ButtonHits.MediaShuffle, aMul)
     if shufH then
         local shufCol = MediaData.Shuffle and Config.Colors.TextPrimary or Config.Colors.TextSecondary
-        local sSz = 14 * scale * shufScale
-        Render.Image(shufH, Vec2(shufX - sSz / 2, shufY - sSz / 2), Vec2(sSz, sSz), FadeColor(shufCol, aMul), 0)
+        local sSz = 14 * scale * ButtonSprings.MediaShuffle.scale * k
+        Render.Image(shufH, Vec2(shufX - sSz / 2, playY - sSz / 2), Vec2(sSz, sSz), FadeColor(shufCol, aMul * d), 0)
     end
-    ButtonHits.MediaShuffle = {
-        x1 = shufX - 14 * scale,
-        y1 = shufY - 14 * scale,
-        x2 = shufX + 14 * scale,
-        y2 = shufY + 14 * scale
-    }
 
-    local repScale = ButtonSprings.MediaRepeat.scale
-    local repX = math.floor(layout.x + layout.w - pad - 12 * scale)
-    local repY = playY
     local repH = GetVectorIcon("repeat")
+    k, d = Impl.PointerBlob("m_rep", repX, playY, 15 * scale, ButtonHits.MediaRepeat, aMul)
     if repH then
         local repCol = (MediaData.RepeatMode > 0) and Config.Colors.TextPrimary or Config.Colors.TextSecondary
-        local rSz = 14 * scale * repScale
-        Render.Image(repH, Vec2(repX - rSz / 2, repY - rSz / 2), Vec2(rSz, rSz), FadeColor(repCol, aMul), 0)
+        local rSz = 14 * scale * ButtonSprings.MediaRepeat.scale * k
+        Render.Image(repH, Vec2(repX - rSz / 2, playY - rSz / 2), Vec2(rSz, rSz), FadeColor(repCol, aMul * d), 0)
         if MediaData.RepeatMode == 2 then
-            Render.Text(fontTiny, tinySz, "1", Vec2(repX + 5 * scale, repY - 8 * scale), FadeColor(Config.Colors.TextPrimary, aMul))
+            Render.Text(fontTiny, tinySz, "1", Vec2(repX + 5 * scale, playY - 8 * scale), FadeColor(Config.Colors.TextPrimary, aMul * d))
         end
     end
-    ButtonHits.MediaRepeat = {
-        x1 = repX - 14 * scale,
-        y1 = repY - 14 * scale,
-        x2 = repX + 14 * scale,
-        y2 = repY + 14 * scale
-    }
 
     if UI.Media.SpotifyLike:Get() then
         local likeScale = ButtonSprings.MediaLike.scale
@@ -8904,17 +9433,18 @@ function Impl.RenderLargeMedia(layout, alphaMul, yOffset)
         local likeX = math.floor(layout.x + layout.w - pad - 8 * scale)
         local likeY = math.floor(artY + artSize - 10 * scale)
         local heartH = GetVectorIcon(isLiked and "heart_fill" or "heart_outline")
-        if heartH then
-            local heartCol = isLiked and Config.Colors.Red or Config.Colors.TextSecondary
-            local lSz = 16 * scale * likeScale
-            Render.Image(heartH, Vec2(likeX - lSz / 2, likeY - lSz / 2), Vec2(lSz, lSz), FadeColor(heartCol, aMul), 0)
-        end
         ButtonHits.MediaLike = {
             x1 = likeX - 14 * scale,
             y1 = likeY - 14 * scale,
             x2 = likeX + 14 * scale,
             y2 = likeY + 14 * scale
         }
+        local lk, ld = Impl.PointerBlob("m_like", likeX, likeY, 14 * scale, ButtonHits.MediaLike, aMul)
+        if heartH then
+            local heartCol = isLiked and Config.Colors.Red or Config.Colors.TextSecondary
+            local lSz = 16 * scale * likeScale * lk
+            Render.Image(heartH, Vec2(likeX - lSz / 2, likeY - lSz / 2), Vec2(lSz, lSz), FadeColor(heartCol, aMul * ld), 0)
+        end
     else
         ButtonHits.MediaLike = nil
     end
@@ -9689,10 +10219,13 @@ end
 
 function Sheet.Button(x, y, w, h, label, primary, action, aMul, s)
     local C = Config.Colors
-    Render.FilledRect(Vec2(x, y), Vec2(x + w, y + h), FadeColor(primary and C.Blue or C.FillSecondary, aMul), h / 2)
+    local _, pk = Pointer.Button("sb_" .. tostring(action or label), x, y, x + w, y + h)
+    local kx, ky = w * 0.0175 * pk, h * 0.0175 * pk
+    local dim = aMul * (1 - 0.22 * pk)
+    Render.FilledRect(Vec2(x + kx, y + ky), Vec2(x + w - kx, y + h - ky), FadeColor(primary and C.Blue or C.FillSecondary, dim), (h - ky * 2) / 2)
     local f, sz = TF("Headline", s)
     local ts = Render.TextSize(f, sz, label)
-    Render.Text(f, sz, label, Vec2(math.floor(x + (w - ts.x) / 2), math.floor(y + (h - ts.y) / 2)), FadeColor(primary and Color(255, 255, 255, 255) or C.TextPrimary, aMul))
+    Render.Text(f, sz, label, Vec2(math.floor(x + (w - ts.x) / 2), math.floor(y + (h - ts.y) / 2)), FadeColor(primary and Color(255, 255, 255, 255) or C.TextPrimary, dim))
     if aMul > 0.9 and action then
         table.insert(Sheet.Hits, { x1 = x, y1 = y, x2 = x + w, y2 = y + h, action = action })
     end
@@ -9818,13 +10351,47 @@ end
 
 function NotifCenter.Add(n)
     table.insert(NotifCenter.Items, 1, { tag = n.Tag or "", title = n.Title or "", accent = n.AccentColor, fb = n.FallbackSvg, icon = n.Icon, t = os.clock() })
-    while #NotifCenter.Items > 5 do table.remove(NotifCenter.Items) end
+    while #NotifCenter.Items > 24 do table.remove(NotifCenter.Items) end
+end
+
+NotifCenter.Open = {}
+NotifCenter.RowHits = {}
+NotifCenter.RowH = 44
+NotifCenter.StackH = 8
+
+function NotifCenter.Rows()
+    local groups, order = {}, {}
+    for _, it in ipairs(NotifCenter.Items) do
+        local g = groups[it.tag]
+        if not g then
+            g = { key = it.tag, items = {} }
+            groups[it.tag] = g
+            order[#order + 1] = g
+        end
+        g.items[#g.items + 1] = it
+    end
+    local rows = {}
+    for i = 1, math.min(5, #order) do
+        local g = order[i]
+        if #g.items > 1 and NotifCenter.Open[g.key] then
+            for j = 1, math.min(5, #g.items) do
+                rows[#rows + 1] = { item = g.items[j], group = g, count = 1, open = true }
+            end
+        else
+            rows[#rows + 1] = { item = g.items[1], group = g, count = #g.items }
+        end
+    end
+    return rows
 end
 
 function NotifCenter.Height()
-    local n = #NotifCenter.Items
-    if n == 0 then return 96 end
-    return 46 + n * 42 + 6
+    local rows = NotifCenter.Rows()
+    if #rows == 0 then return 96 end
+    local h = 46
+    for _, r in ipairs(rows) do
+        h = h + NotifCenter.RowH + (r.count > 1 and NotifCenter.StackH or 0)
+    end
+    return h + 6
 end
 
 function NotifCenter.Ago(t)
@@ -9834,18 +10401,45 @@ function NotifCenter.Ago(t)
     return string.format(L("di_nc_hour"), math.floor(d / 3600))
 end
 
+function NotifCenter.Remove(row)
+    local list = NotifCenter.Items
+    for i = #list, 1, -1 do
+        local it = list[i]
+        if it == row.item or (row.count > 1 and it.tag == row.group.key) then
+            table.remove(list, i)
+        end
+    end
+    local left = 0
+    for _, it in ipairs(list) do
+        if it.tag == row.group.key then left = left + 1 end
+    end
+    if left < 2 then NotifCenter.Open[row.group.key] = nil end
+end
+
+function NotifCenter.Toggle(row)
+    if row.count > 1 then
+        NotifCenter.Open[row.group.key] = true
+    elseif row.open then
+        NotifCenter.Open[row.group.key] = nil
+    else
+        return
+    end
+    if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
+end
+
 function NotifCenter.Render(layout, alphaMul, yOffset)
     local a = alphaMul or 1
     local s = layout.scale
     local C = Config.Colors
     local pad = math.floor(16 * s)
     local yOff = yOffset or 0
-    local items = NotifCenter.Items
     local fH, sH = TF("FootnoteEm", s)
     local hy = math.floor(layout.y + 16 * s + yOff)
     Render.Text(fH, sH, L("di_nc_title"), Vec2(layout.x + pad, hy), FadeColor(C.TextSecondary, a))
+    NotifCenter.RowHits = {}
 
-    if #items == 0 then
+    local rows = NotifCenter.Rows()
+    if #rows == 0 then
         local fE, sE = TF("Subhead", s)
         local msg = L("di_nc_empty")
         local ts = Render.TextSize(fE, sE, msg)
@@ -9855,19 +10449,53 @@ function NotifCenter.Render(layout, alphaMul, yOffset)
 
     local clr = L("di_nc_clear")
     local cs = Render.TextSize(fH, sH, clr)
-    local cx = math.floor(layout.x + layout.w - pad - cs.x)
-    Render.Text(fH, sH, clr, Vec2(cx, hy), FadeColor(C.Blue, a))
+    local ccx = math.floor(layout.x + layout.w - pad - cs.x)
+    local _, cpk = Pointer.Button("nc_clear", ccx - 6, hy - 6, ccx + cs.x + 6, hy + cs.y + 6)
+    Render.Text(fH, sH, clr, Vec2(ccx, hy), FadeColor(C.Blue, a * (1 - 0.4 * cpk)))
     if a > 0.9 then
-        table.insert(NotifCenter.Hits, { x1 = cx - 6, y1 = hy - 6, x2 = cx + cs.x + 6, y2 = hy + cs.y + 6, action = "nc_clear" })
+        table.insert(NotifCenter.Hits, { x1 = ccx - 6, y1 = hy - 6, x2 = ccx + cs.x + 6, y2 = hy + cs.y + 6, action = "nc_clear" })
     end
 
+    local dt = Pointer.dt
     local fT, sT = TF("Caption", s)
     local fB, sB = TF("Subhead", s)
-    local isz = math.floor(28 * s)
-    local rowY = math.floor(layout.y + 46 * s + yOff)
-    for i, it in ipairs(items) do
-        local ry = rowY + (i - 1) * math.floor(42 * s)
-        local icx, icy = layout.x + pad + isz / 2, ry + isz / 2 + math.floor(2 * s)
+    local isz = math.floor(26 * s)
+    local gl, gr = layout.x + 10 * s, layout.x + layout.w - 10 * s
+    local w = gr - gl
+    local cardH = (NotifCenter.RowH - 6) * s
+    local dragItem = Swipe.Target == "nc" and Swipe.Row and Swipe.Row.item or nil
+    local y = 42 * s
+    local th = Render.TextSize(fT, sT, "Ag").y
+    for _, r in ipairs(rows) do
+        local it = r.item
+        if not it._y then it._y, it._yv = y, 0 end
+        it._y, it._yv = MotionEngine.Step(it._y, it._yv, y, dt, "SMOOTH")
+        local xo = it._x or 0
+        if dragItem ~= it then
+            local tx = it._gone and -(w + 40 * s) or 0
+            it._x, it._xv = MotionEngine.Step(xo, it._xv or 0, tx, dt, it._gone and "SNAPPY" or "BOUNCY")
+            xo = it._x
+        end
+        local top = math.floor(layout.y + it._y + yOff)
+
+        if xo < -4 * s and not it._gone then
+            local rw = math.min(-xo - 6 * s, w)
+            if rw > 6 * s then
+                Render.FilledRect(Vec2(gr - rw, top), Vec2(gr, top + cardH), FadeColor(C.Red, a), math.min(12 * s, rw / 2))
+                local ls = Render.TextSize(fT, sT, clr)
+                if rw > ls.x + 16 * s then
+                    Render.Text(fT, sT, clr, Vec2(math.floor(gr - rw / 2 - ls.x / 2), math.floor(top + (cardH - ls.y) / 2)), FadeColor(Color(255, 255, 255, 255), a))
+                end
+            end
+        end
+
+        if r.count > 1 then
+            Render.FilledRect(Vec2(gl + 16 * s + xo, top + cardH), Vec2(gr - 16 * s + xo, top + cardH + 7 * s), FadeColor(C.Group, a * 0.45), 8 * s, Enum.DrawFlags.RoundCornersBottom)
+            Render.FilledRect(Vec2(gl + 8 * s + xo, top + cardH), Vec2(gr - 8 * s + xo, top + cardH + 3.5 * s), FadeColor(C.Group, a * 0.8), 8 * s, Enum.DrawFlags.RoundCornersBottom)
+        end
+        Render.FilledRect(Vec2(gl + xo, top), Vec2(gr + xo, top + cardH), FadeColor(C.Group, a), 12 * s)
+
+        local icx, icy = gl + xo + 8 * s + isz / 2, top + cardH / 2
         local accent = it.accent or C.Blue
         local img = it.icon and GetCachedImage(it.icon) or nil
         if not img and it.fb and not NotifGlyphs[it.fb] then img = GetCachedImage(nil, it.fb) end
@@ -9877,14 +10505,32 @@ function NotifCenter.Render(layout, alphaMul, yOffset)
             Render.FilledCircle(Vec2(icx, icy), isz / 2, FadeColor(accent, a), 0, 1.0, 24)
             Glyph(it.fb or "bell", icx, icy, math.floor(isz * 0.56), FadeColor(Color(255, 255, 255, 255), a))
         end
+        local tx = math.floor(gl + xo + 8 * s + isz + 9 * s)
+        local right = gr + xo - 10 * s
         local ago = NotifCenter.Ago(it.t)
         local aw = Render.TextSize(fT, sT, ago).x
-        local tx = layout.x + pad + isz + math.floor(10 * s)
-        local maxW = layout.x + layout.w - pad - tx - aw - math.floor(8 * s)
-        local th = Render.TextSize(fT, sT, "Ag").y
-        Render.Text(fT, sT, TruncateToWidth(fT, sT, it.tag, maxW), Vec2(tx, ry), FadeColor(Impl.OnLight(accent), a))
-        Render.Text(fT, sT, ago, Vec2(math.floor(layout.x + layout.w - pad - aw), ry), FadeColor(C.TextMuted, a))
-        Render.Text(fB, sB, TruncateToWidth(fB, sB, it.title, layout.x + layout.w - pad - tx), Vec2(tx, math.floor(ry + th)), FadeColor(C.TextPrimary, a))
+        local ly = math.floor(top + cardH / 2 - th - 1 * s)
+        Render.Text(fT, sT, TruncateToWidth(fT, sT, it.tag, right - tx - aw - 8 * s), Vec2(tx, ly), FadeColor(Impl.OnLight(accent), a))
+        Render.Text(fT, sT, ago, Vec2(math.floor(right - aw), ly), FadeColor(C.TextMuted, a))
+        local titleMax = right - tx
+        if r.count > 1 then
+            local badge = "+" .. tostring(r.count - 1)
+            local bw = Render.TextSize(fT, sT, badge).x + 10 * s
+            local bh = th + 2 * s
+            local by = math.floor(top + cardH / 2 + 1 * s)
+            Render.FilledRect(Vec2(right - bw, by), Vec2(right, by + bh), FadeColor(C.FillSecondary, a), bh / 2)
+            Render.Text(fT, sT, badge, Vec2(math.floor(right - bw + 5 * s), math.floor(by + 1 * s)), FadeColor(C.TextPrimary, a))
+            titleMax = titleMax - bw - 6 * s
+        end
+        Render.Text(fB, sB, TruncateToWidth(fB, sB, it.title, titleMax), Vec2(tx, math.floor(top + cardH / 2)), FadeColor(C.TextPrimary, a))
+
+        if a > 0.9 and not it._gone then
+            NotifCenter.RowHits[#NotifCenter.RowHits + 1] = { x1 = gl, y1 = top, x2 = gr, y2 = top + cardH, row = r }
+        end
+        if it._gone and xo < -w then
+            NotifCenter.Remove(r)
+        end
+        y = y + NotifCenter.RowH * s + (r.count > 1 and NotifCenter.StackH * s or 0)
     end
 end
 
@@ -10248,6 +10894,1157 @@ function Impl.RenderDragGuides(layout)
     Render.Line(Vec2(gx, layout.y + layout.h + gap), Vec2(gx, scr.y), col, 1.0)
 end
 
+Hello.Order = { "en", "ru", "uk", "es", "fr", "de", "it", "pt", "tr", "pl", "cs", "sv", "ro", "bg", "kk", "el" }
+Hello.Raw = {
+    en = { { -109, -96, 30, 2, -158, 103, -237, 218, -372, 30, 296, -464, 338, -570, 340, -642, 29, 341, -696, 315, -737, 266, -737, 30, 212, -737, 178, -696, 157, -602, 30, 134, -499, 117, -380, 74, 0, 30 }, { 78, -37, 30, 100, -231, 184, -372, 291, -372, 28, 355, -372, 396, -321, 384, -248, 30, 378, -205, 370, -161, 361, -110, 30, 351, -46, 380, 4, 469, 4, 30, 598, 4, 739, -68, 811, -179, 30, 836, -217, 846, -251, 847, -284, 30, 848, -344, 814, -389, 754, -389, 30, 678, -389, 620, -303, 620, -193, 30, 620, -75, 684, 8, 820, 8, 30, 1005, 8, 1209, -214, 1303, -461, 30, 1330, -531, 1340, -596, 1340, -642, 30, 1340, -695, 1323, -737, 1275, -737, 30, 1228, -737, 1197, -700, 1169, -643, 30, 1136, -576, 1112, -479, 1102, -370, 30, 1077, -97, 1133, 4, 1266, 4, 30, 1428, 4, 1607, -221, 1699, -462, 30, 1725, -531, 1735, -596, 1735, -642, 30, 1735, -695, 1718, -737, 1670, -737, 30, 1623, -737, 1592, -700, 1564, -643, 30, 1531, -576, 1507, -479, 1497, -370, 30, 1472, -97, 1528, 4, 1647, 4, 30, 1766, 4, 1830, -99, 1869, -209, 30, 1907, -318, 1954, -385, 2052, -385, 30, 2133, -385, 2197, -325, 2197, -212, 30, 2197, -87, 2116, 7, 2013, 8, 30, 1923, 9, 1864, -64, 1870, -174, 30, 1877, -296, 1951, -385, 2048, -385, 30, 2104, -385, 2151, -360, 2188, -333, 30, 2288, -260, 2365, -305, 2395, -377, 30 } },
+    ru = { { -12, -241, 30, 2, -307, 43, -382, 117, -382, 30, 191, -382, 212, -316, 193, -228, 30, 180, -165, 170, -100, 149, -1, 30 }, { 169, -104, 30, 202, -278, 281, -388, 377, -388, 30, 442, -388, 476, -340, 470, -272, 30, 465, -221, 448, -162, 444, -112, 30, 439, -44, 461, 4, 531, 4, 30, 647, 4, 741, -127, 771, -290, 30, 777, -319, 783, -350, 788, -380, 30 }, { 788, -380, 30, 755, -170, 729, 41, 707, 251, 30 }, { 745, -80, 30, 771, -277, 859, -388, 959, -388, 30, 1038, -387, 1082, -323, 1074, -216, 30, 1065, -100, 978, 8, 873, 8, 28, 805, 7, 764, -28, 745, -75, 29 }, { 849, 6, 28, 1070, 39, 1311, -86, 1349, -287, 30, 1355, -319, 1362, -349, 1369, -379, 30 }, { 1369, -379, 30, 1352, -306, 1341, -247, 1334, -203, 30, 1329, -171, 1326, -149, 1325, -122, 29, 1323, -51, 1363, 0, 1440, 0, 29, 1552, 0, 1608, -100, 1641, -263, 29, 1649, -302, 1658, -339, 1665, -379, 30 }, { 1665, -379, 30, 1640, -241, 1620, -158, 1620, -112, 30, 1620, -43, 1647, 4, 1726, 4, 30, 1862, 4, 2038, -255, 2144, -475, 30, 2177, -542, 2189, -603, 2191, -649, 30, 2194, -708, 2170, -750, 2123, -750, 30, 2078, -750, 2048, -717, 2015, -649, 30, 1976, -566, 1953, -468, 1941, -370, 30, 1910, -97, 1975, 4, 2084, 4, 30, 2174, 4, 2231, -77, 2238, -184, 30, 2242, -274, 2204, -344, 2136, -377, 30 }, { 2196, -330, 30, 2290, -213, 2373, -120, 2496, -134, 30, 2602, -146, 2666, -212, 2669, -278, 30, 2672, -342, 2637, -389, 2567, -389, 30, 2484, -389, 2423, -302, 2423, -199, 30, 2423, -69, 2494, 8, 2614, 8, 30, 2775, 8, 2893, -115, 2925, -289, 30, 2931, -319, 2937, -350, 2942, -380, 30 }, { 2942, -380, 30, 2923, -253, 2906, -128, 2887, -1, 30 }, { 2903, -111, 30, 2928, -285, 3003, -388, 3092, -388, 30, 3164, -388, 3193, -331, 3189, -254, 30, 3185, -202, 3167, -100, 3151, -1, 30 }, { 3168, -107, 30, 3196, -281, 3264, -388, 3362, -388, 30, 3429, -388, 3462, -332, 3455, -264, 30, 3450, -216, 3434, -159, 3431, -112, 30, 3426, -43, 3460, 4, 3516, 4, 30, 3587, 4, 3630, -46, 3650, -101, 30 } },
+    uk = { { -12, -241, 30, 2, -307, 43, -382, 117, -382, 30, 191, -382, 212, -316, 193, -228, 30, 180, -165, 170, -100, 149, -1, 30 }, { 169, -104, 30, 202, -278, 281, -388, 377, -388, 30, 442, -388, 476, -340, 470, -272, 30, 465, -221, 448, -162, 444, -112, 30, 439, -44, 461, 4, 531, 4, 30, 647, 4, 741, -127, 771, -290, 30, 776, -319, 783, -350, 788, -380, 30 }, { 788, -380, 30, 755, -170, 728, 41, 706, 251, 30 }, { 745, -80, 30, 770, -277, 859, -388, 959, -388, 30, 1037, -388, 1081, -323, 1073, -216, 30, 1065, -100, 978, 8, 872, 8, 28, 804, 8, 764, -28, 745, -75, 29 }, { 848, 6, 28, 1069, 37, 1311, -86, 1348, -287, 30, 1354, -319, 1362, -349, 1369, -379, 30 }, { 1369, -379, 30, 1352, -306, 1340, -247, 1334, -203, 30, 1329, -171, 1326, -149, 1324, -122, 29, 1323, -51, 1363, 0, 1440, 0, 29, 1552, 0, 1607, -100, 1641, -263, 29, 1649, -302, 1658, -339, 1665, -379, 30 }, { 1665, -379, 30, 1640, -241, 1620, -158, 1620, -112, 30, 1620, -43, 1647, 4, 1726, 4, 30, 1864, 4, 2036, -263, 2145, -491, 30, 2174, -552, 2185, -609, 2188, -653, 30, 2191, -709, 2168, -750, 2123, -750, 30, 2078, -750, 2048, -717, 2015, -649, 30, 1976, -566, 1953, -468, 1941, -370, 30, 1910, -97, 1975, 4, 2084, 4, 30, 2174, 4, 2231, -77, 2238, -184, 30, 2242, -274, 2204, -344, 2136, -377, 30 }, { 2195, -330, 30, 2301, -198, 2452, -299, 2512, -380, 30 }, { 2512, -380, 30, 2500, -312, 2490, -256, 2483, -206, 30, 2479, -173, 2478, -145, 2478, -117, 30, 2478, -45, 2507, 4, 2579, 4, 30, 2686, 4, 2794, -127, 2825, -290, 30, 2830, -319, 2837, -350, 2842, -380, 30 }, { 2842, -380, 30, 2822, -253, 2806, -128, 2787, -1, 30 }, { 2803, -111, 30, 2828, -285, 2903, -388, 2991, -388, 30, 3063, -388, 3092, -331, 3088, -254, 30, 3085, -202, 3066, -100, 3051, -1, 30 }, { 3068, -107, 30, 3096, -281, 3163, -388, 3261, -388, 30, 3328, -388, 3362, -332, 3354, -264, 30, 3349, -216, 3333, -159, 3330, -112, 30, 3325, -43, 3360, 4, 3416, 4, 30, 3486, 4, 3530, -46, 3549, -101, 30 }, { 2551, -589, 47, 2551, -589, 2551, -589, 2551, -589, 47 } },
+    es = { { -87, -84, 30, 23, -150, 119, -232, 226, -376, 30, 301, -478, 338, -569, 340, -642, 29, 341, -696, 315, -737, 266, -737, 30, 212, -737, 178, -696, 157, -602, 30, 134, -499, 117, -380, 74, 0, 30 }, { 78, -37, 30, 99, -224, 184, -372, 291, -372, 28, 355, -372, 396, -321, 384, -248, 30, 378, -205, 366, -155, 359, -106, 30, 351, -44, 374, 4, 446, 4, 30, 548, 4, 612, -95, 640, -212, 30 }, { 823, -387, 30, 723, -379, 648, -294, 634, -178, 30, 621, -72, 680, 8, 774, 8, 30, 888, 8, 962, -90, 967, -212, 30, 971, -329, 915, -388, 839, -388, 30, 779, -388, 747, -343, 749, -288, 30, 751, -213, 807, -128, 926, -118, 30, 1090, -103, 1314, -224, 1405, -463, 30, 1431, -531, 1441, -596, 1441, -642, 30, 1441, -695, 1424, -737, 1376, -737, 30, 1329, -737, 1298, -700, 1270, -643, 30, 1237, -576, 1213, -479, 1203, -370, 30, 1178, -97, 1234, 4, 1354, 4, 30, 1475, 4, 1556, -101, 1590, -223, 29 }, { 1906, -312, 29, 1886, -358, 1844, -388, 1778, -388, 29, 1668, -388, 1585, -278, 1580, -160, 29, 1575, -52, 1625, 9, 1696, 8, 29, 1797, 7, 1871, -92, 1904, -301, 30, 1908, -327, 1912, -354, 1916, -380, 30 }, { 1916, -380, 30, 1912, -354, 1908, -328, 1904, -301, 30, 1886, -187, 1877, -142, 1878, -112, 30, 1880, -43, 1905, 4, 1967, 4, 30, 2045, 4, 2089, -49, 2110, -107, 30 } },
+    fr = { { -92, -75, 30, 71, -132, 183, -247, 299, -489, 30, 328, -552, 339, -609, 342, -653, 30, 345, -709, 322, -750, 277, -750, 30, 232, -750, 202, -717, 169, -649, 30, 130, -566, 107, -468, 95, -370, 30, 64, -97, 129, 4, 238, 4, 30, 328, 4, 385, -77, 392, -184, 30, 396, -274, 358, -344, 290, -377, 30 }, { 350, -330, 30, 450, -205, 614, -295, 690, -351, 30, 723, -376, 752, -385, 788, -385, 30, 867, -385, 929, -325, 929, -212, 30, 929, -87, 850, 7, 750, 8, 30, 662, 9, 604, -64, 610, -174, 30, 617, -296, 689, -385, 784, -385, 30, 838, -385, 876, -366, 920, -333, 30, 1044, -241, 1168, -285, 1198, -380, 30 }, { 1198, -380, 30, 1179, -253, 1163, -128, 1143, -1, 30 }, { 1157, -91, 30, 1184, -279, 1268, -388, 1368, -388, 30, 1438, -388, 1474, -340, 1468, -272, 30, 1463, -221, 1446, -162, 1442, -112, 30, 1437, -43, 1469, 4, 1539, 4, 30, 1643, 4, 1747, -128, 1777, -290, 30, 1783, -319, 1790, -351, 1794, -381, 30 }, { 1794, -381, 30, 1775, -223, 1757, -64, 1738, 94, 30, 1719, 251, 1673, 314, 1603, 314, 30, 1556, 314, 1522, 284, 1522, 236, 30, 1522, 172, 1571, 126, 1679, 92, 30, 1866, 34, 2003, -76, 2048, -203, 30, 2088, -318, 2135, -385, 2233, -385, 30, 2314, -385, 2378, -325, 2378, -212, 30, 2378, -87, 2297, 7, 2194, 8, 30, 2104, 9, 2045, -64, 2051, -174, 30, 2058, -296, 2132, -385, 2229, -385, 30, 2285, -385, 2324, -366, 2369, -333, 30, 2506, -233, 2620, -280, 2660, -379, 30 }, { 2660, -379, 30, 2643, -306, 2632, -247, 2625, -203, 30, 2620, -171, 2617, -149, 2616, -122, 29, 2614, -51, 2654, 0, 2731, 0, 29, 2843, 0, 2899, -100, 2932, -263, 29, 2940, -302, 2949, -339, 2956, -379, 30 }, { 2956, -379, 30, 2931, -241, 2911, -158, 2911, -112, 30, 2911, -43, 2938, 4, 3012, 4, 30, 3130, 4, 3232, -164, 3283, -393, 30 }, { 3275, -359, 28, 3399, -353, 3454, -328, 3454, -269, 30, 3454, -228, 3434, -165, 3428, -119, 30, 3417, -39, 3447, 5, 3510, 5, 30, 3587, 5, 3641, -46, 3661, -98, 30 }, { 1815, -589, 47, 1815, -589, 1815, -589, 1815, -589, 47 } },
+    de = { { -87, -84, 30, 23, -150, 119, -232, 226, -376, 30, 301, -478, 338, -569, 340, -642, 29, 341, -696, 315, -737, 266, -737, 30, 212, -737, 178, -696, 157, -602, 30, 134, -499, 117, -380, 74, 0, 30 }, { 78, -37, 30, 99, -224, 184, -372, 291, -372, 28, 355, -372, 396, -321, 384, -248, 30, 378, -205, 366, -155, 359, -106, 30, 351, -44, 374, 4, 447, 4, 30, 549, 4, 610, -107, 643, -223, 29 }, { 959, -312, 29, 939, -358, 897, -388, 831, -388, 29, 721, -388, 638, -278, 633, -160, 29, 628, -52, 678, 9, 749, 8, 29, 850, 7, 924, -92, 957, -301, 30, 961, -327, 965, -354, 969, -380, 30 }, { 969, -380, 30, 965, -354, 961, -328, 957, -301, 30, 939, -187, 930, -142, 931, -112, 30, 933, -43, 958, 4, 1037, 4, 30, 1173, 4, 1361, -225, 1451, -463, 30, 1477, -531, 1487, -596, 1487, -642, 30, 1487, -695, 1470, -737, 1422, -737, 30, 1375, -737, 1344, -700, 1316, -643, 30, 1283, -576, 1259, -479, 1249, -370, 30, 1224, -97, 1280, 4, 1413, 4, 30, 1575, 4, 1754, -221, 1846, -462, 30, 1872, -531, 1882, -596, 1882, -642, 30, 1882, -695, 1865, -737, 1817, -737, 30, 1770, -737, 1739, -700, 1711, -643, 30, 1678, -576, 1654, -479, 1644, -370, 30, 1619, -97, 1675, 4, 1794, 4, 30, 1913, 4, 1977, -99, 2016, -209, 30, 2054, -318, 2101, -385, 2199, -385, 30, 2280, -385, 2344, -325, 2344, -212, 30, 2344, -87, 2263, 7, 2160, 8, 30, 2070, 9, 2011, -64, 2017, -174, 30, 2024, -296, 2098, -385, 2195, -385, 30, 2251, -385, 2298, -360, 2335, -333, 30, 2435, -260, 2512, -305, 2542, -377, 30 } },
+    it = { { 375, -325, 30, 355, -363, 313, -391, 250, -391, 30, 130, -391, 71, -287, 71, -185, 30, 71, -74, 144, 8, 267, 8, 30, 427, 8, 570, -113, 603, -289, 30, 608, -319, 616, -350, 621, -380, 30 }, { 621, -380, 30, 609, -312, 599, -256, 592, -206, 30, 588, -173, 587, -145, 587, -117, 30, 587, -45, 616, 4, 685, 4, 30, 782, 4, 877, -104, 911, -223, 29 }, { 1226, -312, 29, 1207, -358, 1165, -388, 1099, -388, 29, 989, -388, 906, -278, 901, -160, 29, 896, -52, 946, 9, 1017, 8, 29, 1118, 7, 1192, -92, 1225, -301, 30, 1229, -327, 1233, -354, 1237, -380, 30 }, { 1237, -380, 30, 1233, -354, 1229, -328, 1225, -301, 30, 1207, -187, 1198, -142, 1199, -112, 30, 1201, -43, 1226, 4, 1292, 4, 30, 1382, 4, 1456, -104, 1494, -210, 30, 1532, -318, 1579, -385, 1677, -385, 30, 1758, -385, 1822, -325, 1822, -212, 30, 1822, -87, 1741, 7, 1638, 8, 30, 1548, 9, 1489, -64, 1495, -174, 30, 1502, -296, 1576, -385, 1673, -385, 30, 1729, -385, 1776, -360, 1813, -333, 30, 1913, -260, 1990, -305, 2020, -377, 30 }, { 660, -589, 47, 660, -589, 660, -589, 660, -589, 47 } },
+    pt = { { 266, -387, 30, 166, -379, 91, -294, 77, -178, 30, 64, -72, 123, 8, 217, 8, 30, 331, 8, 405, -90, 410, -212, 30, 414, -329, 358, -388, 282, -388, 30, 222, -388, 190, -343, 192, -288, 30, 194, -213, 250, -128, 369, -118, 30, 533, -103, 757, -224, 848, -463, 30, 874, -531, 884, -596, 884, -642, 30, 884, -695, 867, -737, 819, -737, 30, 772, -737, 741, -700, 713, -643, 30, 680, -576, 656, -479, 646, -370, 30, 621, -97, 677, 4, 797, 4, 30, 918, 4, 999, -101, 1033, -223, 29 }, { 1349, -312, 29, 1329, -358, 1287, -388, 1221, -388, 29, 1111, -388, 1028, -278, 1023, -160, 29, 1018, -52, 1068, 9, 1139, 8, 29, 1240, 7, 1314, -92, 1347, -301, 30, 1351, -327, 1355, -354, 1359, -380, 30 }, { 1359, -380, 30, 1355, -354, 1351, -328, 1347, -301, 30, 1329, -187, 1320, -142, 1321, -112, 30, 1323, -43, 1348, 4, 1410, 4, 30, 1488, 4, 1532, -49, 1553, -107, 30 }, { 1378, -690, 30, 1332, -638, 1285, -590, 1235, -544, 30 } },
+    tr = { { -20, -241, 30, -10, -311, 33, -382, 104, -382, 30, 175, -382, 195, -316, 177, -228, 30, 164, -165, 155, -100, 135, -1, 30 }, { 154, -104, 30, 186, -277, 258, -388, 347, -388, 30, 419, -388, 448, -331, 444, -254, 30, 440, -202, 422, -100, 406, -1, 30 }, { 423, -107, 30, 451, -281, 519, -388, 616, -388, 30, 682, -388, 715, -332, 708, -264, 30, 703, -216, 691, -159, 688, -112, 30, 684, -44, 707, 4, 790, 4, 30, 902, 4, 1063, -68, 1135, -179, 30, 1159, -217, 1169, -251, 1170, -284, 30, 1171, -344, 1137, -389, 1077, -389, 30, 1001, -389, 943, -303, 943, -193, 30, 943, -75, 1007, 8, 1138, 8, 30, 1306, 8, 1424, -153, 1477, -393, 30 }, { 1469, -359, 28, 1593, -353, 1648, -328, 1648, -269, 30, 1648, -228, 1628, -165, 1622, -119, 30, 1611, -39, 1634, 5, 1716, 5, 30, 1841, 5, 1966, -229, 2074, -376, 30, 2150, -478, 2186, -569, 2188, -642, 29, 2189, -696, 2163, -737, 2114, -737, 30, 2060, -737, 2026, -696, 2005, -602, 30, 1982, -499, 1965, -380, 1922, 0, 30 }, { 1927, -37, 30, 1948, -224, 2032, -372, 2139, -372, 28, 2203, -372, 2244, -321, 2232, -248, 30, 2226, -205, 2214, -155, 2208, -106, 30, 2199, -44, 2223, 4, 2295, 4, 30, 2397, 4, 2458, -107, 2492, -223, 29 }, { 2807, -312, 29, 2787, -358, 2746, -388, 2679, -388, 29, 2569, -388, 2487, -278, 2481, -160, 29, 2477, -52, 2526, 9, 2597, 8, 29, 2698, 7, 2772, -92, 2805, -301, 30, 2809, -327, 2814, -354, 2818, -380, 30 }, { 2818, -380, 30, 2813, -354, 2809, -328, 2805, -301, 30, 2787, -187, 2779, -142, 2780, -112, 30, 2782, -43, 2807, 4, 2886, 4, 30, 3024, 4, 3194, -264, 3303, -491, 30, 3332, -552, 3342, -609, 3345, -653, 30, 3348, -709, 3325, -750, 3280, -750, 30, 3235, -750, 3205, -717, 3172, -649, 30, 3133, -566, 3110, -468, 3098, -370, 30, 3067, -97, 3132, 4, 3241, 4, 30, 3331, 4, 3388, -77, 3395, -184, 30, 3399, -274, 3361, -344, 3293, -377, 30 }, { 3353, -330, 30, 3462, -195, 3614, -244, 3681, -322, 29 }, { 3944, -312, 29, 3924, -358, 3883, -388, 3816, -388, 29, 3706, -388, 3624, -278, 3618, -160, 29, 3614, -52, 3663, 9, 3734, 8, 29, 3835, 7, 3909, -92, 3942, -301, 30, 3946, -327, 3951, -354, 3955, -380, 30 }, { 3955, -380, 30, 3950, -354, 3946, -328, 3942, -301, 30, 3924, -187, 3916, -142, 3917, -112, 30, 3919, -43, 3944, 4, 4006, 4, 30, 4084, 4, 4127, -49, 4148, -107, 30 } },
+    pl = { { 375, -325, 30, 355, -363, 313, -391, 250, -391, 30, 130, -391, 71, -287, 71, -185, 30, 71, -74, 144, 8, 270, 8, 30, 439, 8, 533, -134, 628, -376, 30 }, { 629, -376, 30, 701, -343, 852, -338, 972, -375, 30 }, { 972, -375, 30, 914, -126, 825, 12, 705, 12, 30, 638, 12, 610, -16, 612, -52, 30, 615, -94, 670, -129, 765, -106, 30, 887, -75, 921, 2, 1057, 2, 30, 1180, 2, 1290, -73, 1359, -180, 30, 1383, -217, 1393, -251, 1394, -284, 30, 1395, -344, 1361, -389, 1301, -389, 30, 1225, -389, 1167, -303, 1167, -193, 30, 1167, -75, 1231, 8, 1363, 8, 30, 1534, 8, 1654, -156, 1728, -409, 30 }, { 1718, -377, 26, 1837, -308, 1896, -232, 1896, -139, 30, 1896, -62, 1833, 2, 1737, 2, 28, 1663, 2, 1610, -43, 1589, -84, 28 }, { 1702, -2, 28, 1912, 42, 2097, -66, 2127, -230, 30 }, { 2422, -325, 30, 2404, -363, 2363, -391, 2302, -391, 30, 2182, -391, 2123, -284, 2123, -179, 30, 2123, -76, 2194, 8, 2297, 8, 30, 2387, 8, 2444, -51, 2464, -105, 30 }, { 1900, -690, 30, 1854, -638, 1807, -590, 1757, -544, 30 }, { 2432, -690, 30, 2386, -638, 2339, -590, 2289, -544, 30 } },
+    cs = { { 402, -312, 29, 382, -358, 340, -388, 274, -388, 29, 164, -388, 81, -278, 76, -160, 29, 71, -52, 121, 9, 192, 8, 29, 293, 7, 367, -92, 400, -301, 30, 404, -327, 408, -354, 412, -380, 30 }, { 412, -380, 30, 408, -354, 404, -328, 400, -301, 30, 382, -187, 373, -142, 374, -112, 30, 376, -43, 401, 4, 475, 4, 30, 594, 4, 716, -230, 824, -376, 30, 899, -478, 936, -569, 938, -642, 29, 939, -696, 913, -737, 864, -737, 30, 810, -737, 776, -696, 755, -602, 30, 732, -499, 715, -380, 672, 0, 30 }, { 676, -37, 30, 697, -224, 782, -372, 889, -372, 28, 953, -372, 994, -321, 982, -248, 30, 976, -205, 964, -155, 957, -106, 30, 949, -44, 972, 4, 1044, 4, 30, 1143, 4, 1189, -104, 1226, -211, 30, 1264, -318, 1311, -385, 1409, -385, 30, 1490, -385, 1554, -325, 1554, -212, 30, 1554, -87, 1473, 7, 1370, 8, 30, 1280, 9, 1221, -64, 1227, -174, 30, 1234, -296, 1308, -385, 1405, -385, 30, 1461, -385, 1500, -366, 1545, -333, 30, 1684, -231, 1800, -281, 1841, -381, 30 }, { 1841, -381, 30, 1822, -223, 1804, -64, 1785, 94, 30, 1766, 251, 1720, 314, 1650, 314, 30, 1603, 314, 1569, 284, 1569, 236, 30, 1569, 172, 1618, 126, 1730, 91, 30, 1935, 28, 2021, -45, 2074, -182, 30 }, { 1862, -589, 47, 1862, -589, 1862, -589, 1862, -589, 47 } },
+    sv = { { -109, -96, 30, 2, -158, 103, -237, 218, -372, 30, 296, -464, 338, -570, 340, -642, 29, 341, -696, 315, -737, 266, -737, 30, 212, -737, 178, -696, 157, -602, 30, 134, -499, 117, -380, 74, 0, 30 }, { 78, -37, 30, 100, -231, 184, -372, 291, -372, 28, 355, -372, 396, -321, 384, -248, 30, 378, -205, 370, -161, 361, -110, 30, 351, -46, 380, 4, 469, 4, 30, 598, 4, 739, -68, 811, -179, 30, 836, -217, 846, -251, 847, -284, 30, 848, -344, 814, -389, 754, -389, 30, 678, -389, 620, -303, 620, -193, 30, 620, -75, 684, 8, 811, 8, 30, 965, 8, 1093, -115, 1125, -289, 30, 1131, -319, 1138, -351, 1142, -381, 30 }, { 1142, -381, 30, 1123, -223, 1105, -64, 1086, 94, 30, 1067, 251, 1021, 314, 951, 314, 30, 904, 314, 870, 284, 870, 236, 30, 870, 172, 919, 126, 1031, 91, 30, 1236, 28, 1322, -45, 1375, -182, 30 }, { 1163, -589, 47, 1163, -589, 1163, -589, 1163, -589, 47 } },
+    ro = { { -143, -14, 30, 11, -37, 86, -109, 173, -409, 30 }, { 163, -377, 26, 282, -308, 341, -232, 341, -139, 30, 341, -62, 278, 2, 182, 2, 28, 108, 2, 55, -43, 34, -84, 28 }, { 147, -2, 28, 357, 41, 540, -68, 584, -223, 29 }, { 900, -312, 29, 880, -358, 838, -388, 772, -388, 29, 662, -388, 579, -278, 574, -160, 29, 569, -52, 619, 9, 690, 8, 29, 791, 7, 865, -92, 898, -301, 30, 902, -327, 906, -354, 910, -380, 30 }, { 910, -380, 30, 906, -354, 902, -328, 898, -301, 30, 880, -187, 871, -142, 872, -112, 30, 874, -43, 899, 4, 978, 4, 30, 1114, 4, 1302, -225, 1392, -463, 30, 1418, -531, 1428, -596, 1428, -642, 30, 1428, -695, 1411, -737, 1363, -737, 30, 1316, -737, 1285, -700, 1257, -643, 30, 1224, -576, 1200, -479, 1190, -370, 30, 1165, -97, 1221, 4, 1344, 4, 30, 1475, 4, 1569, -124, 1600, -290, 30, 1606, -319, 1613, -349, 1620, -379, 30 }, { 1620, -379, 30, 1603, -306, 1592, -247, 1585, -203, 30, 1580, -171, 1577, -149, 1576, -122, 29, 1574, -51, 1614, 0, 1691, 0, 29, 1803, 0, 1859, -100, 1892, -263, 29, 1900, -302, 1909, -339, 1916, -379, 30 }, { 1916, -379, 30, 1891, -241, 1871, -158, 1871, -112, 30, 1871, -43, 1898, 4, 1968, 4, 30, 2076, 4, 2201, -106, 2233, -280, 30 }, { 2293, -540, 30, 2248, -366, 2221, -238, 2217, -155, 30, 2212, -62, 2251, 4, 2323, 4, 30, 2403, 4, 2453, -56, 2467, -121, 30 }, { 2137, -381, 29, 2228, -381, 2319, -381, 2410, -381, 29 } },
+    bg = { { 60, -258, 30, 78, -335, 138, -382, 218, -382, 30, 289, -382, 346, -335, 346, -254, 30, 346, -183, 303, -130, 198, -84, 28 }, { 198, -84, 28, 266, -53, 308, 20, 302, 113, 29, 294, 228, 240, 298, 173, 298, 30, 125, 298, 93, 263, 94, 211, 30, 95, 146, 143, 92, 268, 55, 30, 435, 7, 532, -83, 558, -217, 30 }, { 858, -320, 29, 842, -356, 803, -389, 735, -389, 30, 635, -389, 551, -291, 553, -157, 30, 553, -81, 602, -28, 661, -28, 30, 766, -28, 835, -133, 855, -299, 30 }, { 865, -380, 30, 846, -226, 828, -71, 809, 83, 30, 790, 237, 744, 298, 674, 298, 30, 626, 298, 595, 263, 597, 211, 30, 600, 146, 649, 92, 779, 55, 30, 962, 2, 1107, -108, 1141, -289, 30, 1147, -319, 1153, -350, 1158, -380, 30 }, { 1158, -380, 30, 1125, -170, 1099, 41, 1077, 251, 30 }, { 1115, -80, 30, 1141, -277, 1229, -388, 1329, -388, 30, 1408, -387, 1452, -323, 1444, -216, 30, 1435, -100, 1348, 8, 1243, 8, 28, 1175, 7, 1134, -28, 1115, -75, 29 }, { 1219, 6, 28, 1426, 37, 1651, -65, 1696, -223, 29 }, { 2012, -312, 29, 1992, -358, 1950, -388, 1884, -388, 29, 1774, -388, 1691, -278, 1686, -160, 29, 1681, -52, 1731, 9, 1802, 8, 29, 1903, 7, 1977, -92, 2010, -301, 30, 2014, -327, 2018, -354, 2022, -380, 30 }, { 2022, -380, 30, 2018, -354, 2014, -328, 2010, -301, 30, 1992, -187, 1983, -142, 1984, -112, 30, 1986, -43, 2011, 4, 2090, 4, 30, 2226, 4, 2400, -255, 2506, -475, 30, 2539, -542, 2551, -603, 2553, -649, 30, 2556, -708, 2532, -750, 2485, -750, 30, 2440, -750, 2410, -717, 2377, -649, 30, 2338, -566, 2315, -468, 2303, -370, 30, 2272, -97, 2337, 4, 2446, 4, 30, 2536, 4, 2593, -77, 2600, -184, 30, 2604, -274, 2566, -344, 2498, -377, 30 }, { 2558, -330, 30, 2652, -213, 2735, -120, 2858, -134, 30, 2964, -146, 3028, -212, 3031, -278, 30, 3034, -342, 2999, -389, 2929, -389, 30, 2846, -389, 2785, -302, 2785, -199, 30, 2785, -69, 2856, 8, 2976, 8, 30, 3137, 8, 3255, -115, 3287, -289, 30, 3293, -319, 3300, -349, 3307, -379, 30 }, { 3307, -379, 30, 3290, -306, 3279, -247, 3272, -203, 30, 3267, -171, 3264, -149, 3263, -122, 29, 3261, -51, 3301, 0, 3378, 0, 29, 3490, 0, 3546, -100, 3579, -263, 29, 3587, -302, 3596, -339, 3603, -379, 30 }, { 3603, -379, 30, 3578, -241, 3558, -158, 3558, -112, 30, 3558, -43, 3585, 4, 3647, 4, 30, 3725, 4, 3771, -49, 3792, -107, 30 }, { 3378, -592, 28, 3378, -549, 3408, -511, 3466, -511, 28, 3526, -511, 3574, -554, 3587, -628, 28 } },
+    kk = { { 363, -320, 30, 342, -360, 302, -391, 238, -391, 30, 138, -391, 71, -289, 71, -185, 30, 71, -77, 137, 8, 252, 8, 30, 387, 8, 439, -73, 508, -199, 30, 579, -330, 639, -380, 729, -380, 30, 829, -380, 887, -281, 875, -159, 30, 864, -48, 798, 10, 721, 10, 30, 661, 10, 627, -31, 628, -81, 30, 629, -152, 691, -199, 807, -205, 30, 891, -209, 963, -205, 1028, -192, 30 }, { 1028, -192, 30, 994, -70, 1037, 5, 1106, 5, 30, 1190, 5, 1247, -70, 1359, -380, 30 }, { 1359, -380, 30, 1354, -303, 1354, -218, 1359, -139, 30, 1365, -47, 1402, 5, 1481, 5, 30, 1592, 5, 1758, -67, 1830, -179, 30, 1855, -217, 1865, -251, 1866, -284, 30, 1867, -344, 1833, -389, 1773, -389, 30, 1697, -389, 1639, -303, 1639, -193, 30, 1639, -75, 1703, 8, 1823, 8, 30, 1954, 8, 2023, -51, 2068, -145, 30 }, { 2068, -145, 30, 2062, -67, 2099, 5, 2170, 5, 30, 2246, 5, 2311, -66, 2415, -393, 30 }, { 2415, -393, 30, 2390, -116, 2415, 0, 2506, 0, 28, 2588, 0, 2651, -98, 2724, -392, 26 }, { 2724, -392, 26, 2712, -113, 2728, 4, 2817, 4, 30, 2891, 4, 2937, -68, 2954, -156, 30 } },
+    el = { { 32, -271, 30, 54, -330, 104, -374, 165, -374, 30, 236, -374, 264, -324, 274, -202, 30, 280, -126, 287, -51, 293, 25, 30, 306, 178, 339, 240, 413, 240, 30, 487, 240, 543, 181, 560, 112, 30 }, { 494, -379, 30, 366, -177, 224, 27, 65, 233, 30 }, { 1033, -379, 30, 959, -149, 869, 8, 742, 8, 29, 669, 8, 626, -51, 630, -157, 29, 635, -290, 703, -386, 789, -386, 28, 862, -386, 898, -338, 915, -224, 28, 918, -205, 920, -186, 923, -167, 28, 941, -49, 964, 4, 1046, 4, 29, 1157, 4, 1298, -218, 1340, -380, 30 }, { 1340, -380, 30, 1304, -240, 1288, -166, 1288, -107, 30, 1288, -45, 1319, 4, 1395, 4, 30, 1485, 4, 1589, -76, 1630, -198, 26 }, { 1630, -198, 26, 1626, -90, 1682, -1, 1777, -1, 30, 1900, -1, 1955, -96, 1959, -201, 30, 1963, -315, 1898, -381, 1812, -381, 30, 1708, -381, 1642, -300, 1622, -154, 30, 1589, 83, 1674, 224, 1812, 224, 30, 1847, 224, 1878, 215, 1902, 200, 30 }, { 1475, -690, 30, 1440, -638, 1404, -590, 1364, -544, 30 }, { 2408, -340, 30, 2383, -365, 2341, -386, 2277, -386, 30, 2195, -386, 2140, -345, 2141, -286, 30, 2142, -220, 2204, -188, 2277, -188, 26, 2316, -188, 2332, -194, 2331, -207, 26, 2328, -225, 2282, -233, 2228, -224, 27, 2148, -211, 2104, -168, 2103, -108, 30, 2102, -48, 2157, 3, 2261, 3, 30, 2363, 3, 2425, -48, 2453, -105, 30 }, { 2532, -388, 30, 2606, -355, 2716, -343, 2818, -358, 28, 2870, -366, 2893, -376, 2892, -385, 26, 2891, -393, 2859, -397, 2805, -384, 27, 2684, -356, 2608, -242, 2608, -141, 30, 2608, -53, 2666, 4, 2747, 4, 30, 2804, 4, 2851, -17, 2886, -53, 30 }, { 3338, -340, 30, 3313, -365, 3271, -386, 3207, -386, 30, 3125, -386, 3070, -345, 3071, -286, 30, 3072, -220, 3134, -188, 3207, -188, 26, 3246, -188, 3262, -194, 3261, -207, 26, 3258, -225, 3212, -233, 3158, -224, 27, 3078, -211, 3034, -168, 3033, -108, 30, 3032, -48, 3087, 3, 3191, 3, 30, 3293, 3, 3355, -48, 3383, -105, 30 } }
+}
+
+function Gesture.New()
+    return { active = false, wasDown = false, x0 = 0, y0 = 0, x = 0, y = 0, vx = 0, vy = 0, t = 0, moved = false, event = nil }
+end
+
+function Gesture.Step(g, down, x, y, now, canStart)
+    g.event = nil
+    if down and not g.active then
+        if not g.wasDown and (not canStart or canStart(x, y)) then
+            g.active, g.moved = true, false
+            g.x0, g.y0, g.x, g.y, g.vx, g.vy, g.t = x, y, x, y, 0, 0, now
+            g.event = "begin"
+        end
+    elseif down and g.active then
+        local dt = math.max(0.001, now - g.t)
+        local k = math.min(1, dt / 0.05)
+        g.vx = g.vx + ((x - g.x) / dt - g.vx) * k
+        g.vy = g.vy + ((y - g.y) / dt - g.vy) * k
+        g.x, g.y, g.t = x, y, now
+        if math.abs(x - g.x0) + math.abs(y - g.y0) > 4 then g.moved = true end
+        g.event = "move"
+    elseif not down and g.active then
+        g.active = false
+        if now - g.t > 0.08 then g.vx, g.vy = 0, 0 end
+        g.event = "end"
+    end
+    g.wasDown = down
+    return g.event
+end
+
+function Gesture.Rubber(off, dim)
+    local a = math.abs(off)
+    local r = (1 - 1 / (a * 0.55 / dim + 1)) * dim
+    return off < 0 and -r or r
+end
+
+function Impl.Bezier(x1, y1, x2, y2, t)
+    if t <= 0 then return 0 end
+    if t >= 1 then return 1 end
+    local u = t
+    for _ = 1, 8 do
+        local iu = 1 - u
+        local x = 3 * iu * iu * u * x1 + 3 * iu * u * u * x2 + u * u * u - t
+        if math.abs(x) < 1e-5 then break end
+        local dx = 3 * iu * iu * x1 + 6 * iu * u * (x2 - x1) + 3 * u * u * (1 - x2)
+        if math.abs(dx) < 1e-6 then break end
+        u = math.min(1, math.max(0, u - x / dx))
+    end
+    local iu = 1 - u
+    return 3 * iu * iu * u * y1 + 3 * iu * u * u * y2 + u * u * u
+end
+
+function Impl.Wrap(font, size, text, maxW)
+    local lines, cur = {}, ""
+    for word in string.gmatch(text, "%S+") do
+        local try = cur == "" and word or (cur .. " " .. word)
+        if cur ~= "" and Render.TextSize(font, size, try).x > maxW then
+            lines[#lines + 1] = cur
+            cur = word
+        else
+            cur = try
+        end
+    end
+    if cur ~= "" then lines[#lines + 1] = cur end
+    return lines
+end
+
+function Impl.TextBlock(font, size, text, cx, y, maxW, col, lh)
+    local lines = Impl.Wrap(font, size, text, maxW)
+    for i, ln in ipairs(lines) do
+        local ts = Render.TextSize(font, size, ln)
+        Render.Text(font, size, ln, Vec2(math.floor(cx - ts.x / 2), math.floor(y + (i - 1) * lh)), col)
+    end
+    return #lines * lh
+end
+
+Hello.Cache = {}
+Hello.Gest = Gesture.New()
+Hello.Idx = 1
+Hello.T0 = 0
+Hello.Off, Hello.OffV = 0, 0
+Hello.Back, Hello.BackV = 0, 0
+Hello.Hint = 0
+
+function Hello.Build(id)
+    local c = Hello.Cache[id]
+    if c then return c end
+    local raw = Hello.Raw[id]
+    if not raw then return nil end
+    local X, Y, W, D, B = {}, {}, {}, {}, {}
+    local n, len = 0, 0
+    local x1, x2 = math.huge, -math.huge
+    local dots = {}
+    for _, st in ipairs(raw) do
+        local px, py, pw = st[1], st[2], st[3]
+        local startLen, startN = len, n
+        n = n + 1
+        X[n], Y[n], W[n], D[n], B[n] = px, py, pw, len, true
+        x1, x2 = math.min(x1, px), math.max(x2, px)
+        local i = 4
+        while i + 6 <= #st do
+            local ax, ay, bx, by, ex, ey, ew = st[i], st[i + 1], st[i + 2], st[i + 3], st[i + 4], st[i + 5], st[i + 6]
+            local poly = math.sqrt((ax - px) ^ 2 + (ay - py) ^ 2) + math.sqrt((bx - ax) ^ 2 + (by - ay) ^ 2) + math.sqrt((ex - bx) ^ 2 + (ey - by) ^ 2)
+            local steps = math.max(2, math.ceil(poly / 18))
+            local lx, ly = px, py
+            for k = 1, steps do
+                local t = k / steps
+                local u = 1 - t
+                local qx = u * u * u * px + 3 * u * u * t * ax + 3 * u * t * t * bx + t * t * t * ex
+                local qy = u * u * u * py + 3 * u * u * t * ay + 3 * u * t * t * by + t * t * t * ey
+                len = len + math.sqrt((qx - lx) ^ 2 + (qy - ly) ^ 2)
+                n = n + 1
+                X[n], Y[n], W[n], D[n], B[n] = qx, qy, pw + (ew - pw) * t, len, false
+                x1, x2 = math.min(x1, qx), math.max(x2, qx)
+                lx, ly = qx, qy
+            end
+            px, py, pw = ex, ey, ew
+            i = i + 7
+        end
+        if len - startLen < 1 then
+            for k = n, startN + 1, -1 do
+                X[k], Y[k], W[k], D[k], B[k] = nil, nil, nil, nil, nil
+            end
+            n = startN
+            dots[#dots + 1] = { x = st[1], y = st[2], w = st[3] }
+        end
+    end
+    for _, d in ipairs(dots) do
+        d.at = len
+        for i = 1, n do
+            if X[i] >= d.x + 12 then
+                d.at = D[i]
+                break
+            end
+        end
+    end
+    local J = {}
+    for i = 1, n do
+        local first = B[i]
+        local last = i == n or B[i + 1]
+        if first or last then
+            J[i] = true
+        else
+            local ax, ay = X[i] - X[i - 1], Y[i] - Y[i - 1]
+            local bx, by = X[i + 1] - X[i], Y[i + 1] - Y[i]
+            local la, lb = math.sqrt(ax * ax + ay * ay), math.sqrt(bx * bx + by * by)
+            J[i] = la < 1e-6 or lb < 1e-6 or (ax * bx + ay * by) / (la * lb) < 0.985
+        end
+    end
+    c = { X = X, Y = Y, W = W, D = D, B = B, J = J, n = n, len = len, mid = (x1 + x2) / 2, dots = dots }
+    Hello.Cache[id] = c
+    return c
+end
+
+function Hello.Trim(t)
+    local s, e, k = 0, 0, 1
+    if t > 0.208 then e = Impl.Bezier(0.302, 0.14, 0.665, 1, math.min(1, (t - 0.208) / 2.292)) end
+    if t > 4.158 then s = Impl.Bezier(0.477, 0, 0.729, 1, math.min(1, (t - 4.158) / 1.592)) end
+    if t > 0.208 and t < 0.608 then
+        k = 1 + Impl.Bezier(0.681, 0, 0.788, 1, (t - 0.208) / 0.4) / 9
+    elseif t >= 0.608 and t < 2.5 then
+        k = 1 + (1 - Impl.Bezier(0.059, 0, 0.118, 1, (t - 0.608) / 1.892)) / 9
+    end
+    return s, e, k
+end
+
+function Hello.Draw(c, cx, cy, sc, s0, e0, a, thick)
+    if not c or e0 <= s0 or a <= 0.01 then return end
+    local L0, L1 = s0 * c.len, e0 * c.len
+    local X, Y, W, D, B, J = c.X, c.Y, c.W, c.D, c.B, c.J
+    local ox = cx - c.mid * sc
+    local oy = cy + 335 * sc
+    local core = Color(255, 255, 255, math.floor(245 * a))
+    local segs = math.max(16, math.min(32, math.floor(W[1] * sc * thick * 3)))
+    local lastQ, lastI = nil, -1
+    for i = 2, c.n do
+        if not B[i] then
+            local da, db = D[i - 1], D[i]
+            if db > L0 and da < L1 and db > da then
+                local ta = da < L0 and (L0 - da) / (db - da) or 0
+                local tb = db > L1 and (L1 - da) / (db - da) or 1
+                local ax, ay = X[i - 1], Y[i - 1]
+                local r = (W[i - 1] + (W[i] - W[i - 1]) * tb) * sc * thick
+                local p
+                if ta == 0 and lastI == i - 1 then
+                    p = lastQ
+                else
+                    p = Vec2(ox + (ax + (X[i] - ax) * ta) * sc, oy + (ay + (Y[i] - ay) * ta) * sc)
+                end
+                local q = Vec2(ox + (ax + (X[i] - ax) * tb) * sc, oy + (ay + (Y[i] - ay) * tb) * sc)
+                local ddx, ddy = q.x - p.x, q.y - p.y
+                local dl = math.sqrt(ddx * ddx + ddy * ddy)
+                if dl > 0.01 then
+                    local e = math.min(r * 0.45, 2.5) / dl
+                    Render.Line(Vec2(p.x - ddx * e, p.y - ddy * e), Vec2(q.x + ddx * e, q.y + ddy * e), core, r * 2)
+                end
+                if ta > 0 or J[i - 1] then
+                    Render.FilledCircle(p, r, core, 0, 1.0, segs)
+                end
+                if tb < 1 or J[i] then
+                    Render.FilledCircle(q, r, core, 0, 1.0, segs)
+                end
+                lastQ, lastI = q, i
+            end
+        end
+    end
+    for _, d in ipairs(c.dots) do
+        if L1 >= d.at and L0 < d.at then
+            local k = EaseOutBack(math.min(1, (L1 - d.at) / 90))
+            if k > 0.01 then
+                Render.FilledCircle(Vec2(ox + d.x * sc, oy + d.y * sc), d.w * sc * thick * k, core, 0, 1.0, math.max(16, segs))
+            end
+        end
+    end
+end
+
+function Hello.Backdrop(scr, back)
+    if Hello.RT == nil then
+        local ok, h = pcall(Render.FindOrCreateRT, "di_hello_back")
+        Hello.RT = (ok and h) or false
+        local ok2, h2 = pcall(Render.FindOrCreateRT, "di_hello_grain", 256, 256)
+        Hello.Grain = (ok2 and h2) or false
+        Hello.RTDirty = true
+        Hello.GrainDirty = true
+    end
+    if Hello.RT then
+        if Hello.RTDirty then
+            pcall(Render.MarkDirtyRT, Hello.RT)
+            Hello.RTDirty = false
+        end
+        local ok = pcall(Render.RenderRT, function()
+            Render.Blur(Vec2(0, 0), scr, 2.6, 1.0, 0, Enum.DrawFlags.None)
+            Render.Blur(Vec2(0, 0), scr, 2.6, 1.0, 0, Enum.DrawFlags.None)
+            Render.FilledRect(Vec2(0, 0), scr, Color(18, 18, 22, 118), 0)
+            return false
+        end, Hello.RT, Vec2(0, 0), Color(255, 255, 255, math.floor(255 * back)))
+        if not ok then Hello.RT = false end
+    end
+    if not Hello.RT then
+        Render.Blur(Vec2(0, 0), scr, 1.0, back, 0, Enum.DrawFlags.None)
+        Render.FilledRect(Vec2(0, 0), scr, Color(18, 18, 22, math.floor(118 * back)), 0)
+    end
+    if Hello.Grain then
+        if Hello.GrainDirty then
+            pcall(Render.MarkDirtyRT, Hello.Grain)
+            Hello.GrainDirty = false
+        end
+        local tint = Color(255, 255, 255, math.floor(255 * back))
+        for gy = 0, math.ceil(scr.y / 256) - 1 do
+            for gx = 0, math.ceil(scr.x / 256) - 1 do
+                local ok = pcall(Render.RenderRT, Hello.BakeGrain, Hello.Grain, Vec2(gx * 256, gy * 256), tint)
+                if not ok then
+                    Hello.Grain = false
+                    return
+                end
+            end
+        end
+    end
+end
+
+function Hello.BakeGrain()
+    local seed = 1337
+    local function rnd()
+        seed = (seed * 1103515245 + 12345) % 2147483648
+        return seed / 2147483648
+    end
+    for _ = 1, 2600 do
+        local px, py = math.floor(rnd() * 256), math.floor(rnd() * 256)
+        local light = rnd() > 0.5
+        local al = math.floor(10 + rnd() * 16)
+        Render.FilledRect(Vec2(px, py), Vec2(px + 1, py + 1), light and Color(255, 255, 255, al) or Color(0, 0, 0, al + 6), 0)
+    end
+    return false
+end
+
+function Hello.Stamp()
+    return math.floor(os.time() - os.clock())
+end
+
+function Hello.Blocking()
+    return Hello.Phase ~= nil and Hello.Phase ~= "out" and os.clock() - (Hello.Seen or -10) < 0.5
+end
+
+function Hello.Start(forceSetup)
+    Hello.Phase = "hello"
+    Hello.Idx = 1
+    Hello.T0 = os.clock()
+    Hello.Off, Hello.OffV = 0, 0
+    Hello.Hint = 0
+    Hello.Gest = Gesture.New()
+    Hello.Gest.wasDown = true
+    Hello.Seen = os.clock()
+    Hello.RTDirty = true
+    Hello.WantSetup = forceSetup or not Hello.SetupDone
+    Hello.StampValue = Hello.Stamp()
+    SaveAllConfig()
+end
+
+function Hello.Init()
+    local inGame = Engine.IsInGame and Engine.IsInGame()
+    if inGame or UI.Main.OnlyInGame:Get() or Journey.HiddenPhase() then return end
+    local same = Hello.SavedStamp and math.abs(Hello.SavedStamp - Hello.Stamp()) <= 8
+    if UI.Main.Hello:Get() and not Setup.Resume and not same then
+        Hello.Start(false)
+    elseif not Hello.SetupDone then
+        Hello.WantSetup = true
+        Setup.Open()
+    end
+end
+
+function Hello.Finish()
+    Hello.Phase = "out"
+end
+
+function Hello.Commit(now)
+    Hello.Phase = "fly"
+    Hello.FlyAt = now
+    Hello.FlyFrom = Hello.Off
+    Hello.Squished = false
+    HapticPlaySound("toast_dismiss", 0.5)
+end
+
+function Hello.Tick(layout, now, dt)
+    local inGame = Engine.IsInGame and Engine.IsInGame()
+    local accept = Engine.CanAcceptMatch and Engine.CanAcceptMatch()
+    if (inGame or accept) and Hello.Phase ~= "out" then
+        Hello.Phase = "out"
+        Setup.Active = false
+    end
+    local mx, my = Input.GetCursorPos()
+    local down = Input.IsKeyDown(Enum.ButtonCode.KEY_MOUSE1)
+    local H = Render.ScreenSize().y
+    if Hello.Phase == "hello" then
+        local ev = Gesture.Step(Hello.Gest, down, mx, my, now)
+        local g = Hello.Gest
+        if g.active then
+            local dy = g.y - g.y0
+            Hello.Off = dy < 0 and dy or Gesture.Rubber(dy, H * 0.08)
+            Hello.OffV = 0
+        elseif ev == "end" then
+            local p = -Hello.Off / (H * 0.28)
+            if (p > 0.35 or g.vy < -700) and g.y - g.y0 < -6 then
+                Hello.Commit(now)
+            end
+        else
+            Hello.Off, Hello.OffV = MotionEngine.Step(Hello.Off, Hello.OffV, 0, dt, "BOUNCY")
+        end
+    elseif Hello.Phase == "fly" then
+        local f = (now - Hello.FlyAt) / 0.55
+        if f > 0.62 and not Hello.Squished then
+            Hello.Squished = true
+            if StateMachine.Spring and StateMachine.Spring.Squish then
+                StateMachine.Spring.Squish.value = -0.32
+                StateMachine.Spring.Squish.vel = -2.2
+            end
+            if Haptic and Haptic.Silent then Haptic.Silent(Haptic.Types.TAP_MEDIUM) end
+        end
+        if f >= 1 then
+            if Hello.WantSetup then
+                Setup.Open()
+            else
+                Hello.Phase = "out"
+            end
+        end
+    elseif Hello.Phase == "setup" then
+        Setup.Tick(layout, now, dt, mx, my, down)
+    end
+    local target = 0
+    if Hello.Phase == "hello" then
+        target = 1 - math.min(0.6, math.max(0, -Hello.Off / (H * 0.5)))
+    elseif Hello.Phase == "fly" then
+        target = Hello.WantSetup and 0.85 or 0
+    elseif Hello.Phase == "setup" then
+        target = Setup.Active and 0.85 or 0
+    end
+    Hello.Back, Hello.BackV = MotionEngine.Step(Hello.Back, Hello.BackV, target, dt, "SMOOTH")
+    if Hello.Phase == "out" and Hello.Back < 0.01 and (not Setup.Anim or Setup.Anim <= 0) then
+        Hello.Phase = nil
+        Hello.Back, Hello.BackV = 0, 0
+    end
+end
+
+function Hello.RenderBack(layout, dt)
+    if not Hello.Phase then return end
+    local now = os.clock()
+    Hello.Seen = now
+    Hello.Tick(layout, now, dt)
+    if not Hello.Phase then return end
+    local scr = Render.ScreenSize()
+    local back = math.max(0, math.min(1, Hello.Back))
+    if back > 0.01 then
+        Hello.Backdrop(scr, back)
+    end
+    if Hello.Phase ~= "hello" and Hello.Phase ~= "fly" then return end
+
+    local sc = scr.x * 0.33 / 2504
+    local cx, cy = scr.x / 2, scr.y * 0.46
+    local t = now - Hello.T0
+    local cycle = 6.0
+    local idx = math.floor(t / cycle)
+    local wt = t - idx * cycle
+    local order = Hello.Order
+    local id = order[(idx % #order) + 1]
+    local s0, e0, k = Hello.Trim(wt)
+    local a, scale, wx, wy = 1, 1, cx, cy + Hello.Off
+    if Hello.Phase == "hello" then
+        local p = math.max(0, math.min(1, -Hello.Off / (scr.y * 0.28)))
+        scale = 1 - 0.16 * p
+        a = 1 - 0.25 * p
+        Hello.Frozen = { id = id, s = s0, e = e0, k = k }
+    else
+        local fr = Hello.Frozen or { id = id, s = s0, e = e0, k = k }
+        id, s0, e0, k = fr.id, fr.s, fr.e, fr.k
+        local f = math.min(1, (now - Hello.FlyAt) / 0.55)
+        local ef = EaseOutCubic(f)
+        local tx, ty = layout.x + layout.w / 2, layout.y + layout.h / 2
+        local sy = cy + Hello.FlyFrom
+        wx = cx + (tx - cx) * ef
+        wy = sy + (ty - sy) * ef
+        scale = (1 - 0.16 * math.min(1, -Hello.FlyFrom / (scr.y * 0.28))) * (1 - 0.93 * ef)
+        a = 1 - f * f
+    end
+    Hello.Draw(Hello.Build(id), wx, wy, sc * scale, s0, e0, a, k)
+
+    local hintT = math.min(1, math.max(0, (t - 1.4) / 0.6))
+    local hp = math.max(0, math.min(1, -Hello.Off / (scr.y * 0.12)))
+    local ha = hintT * (1 - hp) * (Hello.Phase == "hello" and 1 or 0)
+    Hello.Hint = Hello.Hint + (ha - Hello.Hint) * math.min(1, dt * 10)
+    if Hello.Hint > 0.01 then
+        local s = layout.scale
+        local pulse = 0.62 + 0.38 * (0.5 + 0.5 * math.sin(now * 2.4))
+        local bob = math.max(0, math.sin(now * 2.4)) * 3 * s
+        local barW, barH = math.floor(140 * s), math.max(3, math.floor(5 * s))
+        local by = scr.y - 34 * s - bob + Hello.Off * 0.35
+        Render.FilledRect(Vec2(math.floor(cx - barW / 2), math.floor(by)), Vec2(math.floor(cx + barW / 2), math.floor(by + barH)), Color(255, 255, 255, math.floor(235 * Hello.Hint)), barH / 2)
+        local f, sz = TF("Subhead", s)
+        local txt = L("di_hello_swipe")
+        local ts = Render.TextSize(f, sz, txt)
+        Render.Text(f, sz, txt, Vec2(math.floor(cx - ts.x / 2), math.floor(by - 14 * s - ts.y)), Color(255, 255, 255, math.floor(200 * Hello.Hint * pulse)))
+    end
+end
+
+Setup.Steps = { "bridge", "fonts", "position", "look", "alerts", "likes", "focus", "done" }
+Setup.Hits = {}
+Setup.Anim = 0
+Setup.PT, Setup.PTV = 1, 0
+Setup.Active = false
+Setup.Glyph = { bridge = "bolt", position = "display", look = "appearance", alerts = "bell", likes = "heart_fill", focus = "moon" }
+Setup.Tint = { bridge = "Orange", fonts = "Blue", position = "Blue", look = "Indigo", alerts = "Red", likes = "Pink", focus = "Indigo", done = "Green" }
+
+function Setup.Visible(id)
+    if id == "fonts" then
+        return Sheet.BridgeOnline() and BridgeStatus.FontsOk == false or Sheet.Fonts.State ~= "idle"
+    end
+    return true
+end
+
+function Setup.IndexOf(id)
+    for i, v in ipairs(Setup.Steps) do
+        if v == id then return i end
+    end
+    return 1
+end
+
+function Setup.Open()
+    Hello.Phase = "setup"
+    Setup.Active = true
+    Setup.Anim = Setup.Anim or 0
+    local start = 1
+    if Setup.Resume then
+        start = math.max(1, math.min(#Setup.Steps, Setup.Resume))
+        Setup.Resume = nil
+        SaveAllConfig()
+    end
+    Setup.Step = start
+    Setup.Prev = nil
+    Setup.PT, Setup.PTV = 1, 0
+    Setup.BridgeOkAt = nil
+    Setup.Capture = false
+    Setup.Slider = nil
+    Hello.Seen = os.clock()
+end
+
+function Setup.Go(dir)
+    local i = Setup.Step
+    repeat
+        i = i + dir
+    until i < 1 or i > #Setup.Steps or Setup.Visible(Setup.Steps[i])
+    if i < 1 or i > #Setup.Steps then return end
+    Setup.Prev = Setup.Step
+    Setup.Dir = dir
+    Setup.Step = i
+    Setup.PT, Setup.PTV = 0, 0
+    Setup.Capture = false
+    Setup.BridgeOkAt = nil
+end
+
+function Setup.Finish(demo)
+    Sheet.BridgeHintSeen = true
+    Sheet.SeenVer = SCRIPT_VERSION
+    Setup.Active = false
+    Setup.Capture = false
+    Hello.SetupDone = true
+    Hello.WantSetup = false
+    SaveAllConfig()
+    Hello.Phase = "out"
+    if demo then Demo.Start() end
+end
+
+function Setup.Action(h, now)
+    local a = h.action
+    if a == "next" then
+        Setup.Go(1)
+    elseif a == "later" then
+        Setup.Finish(false)
+    elseif a == "done" then
+        Setup.Finish(false)
+    elseif a == "demo" then
+        Setup.Finish(true)
+    elseif a == "fonts_install" then
+        Sheet.Action("fonts_install", now)
+    elseif a == "fonts_reload" then
+        Setup.Resume = Setup.IndexOf("position")
+        SaveAllConfig()
+        Sheet.ReloadAt = now + 0.2
+    elseif a == "preset" then
+        UI.Main.Preset:Set(h.val)
+        SaveAllConfig()
+    elseif a == "slider" then
+        Setup.Slider = h
+    elseif a == "look" then
+        if h.val == 3 then
+            UI.Main.PureGlass:Set(true)
+        else
+            UI.Main.PureGlass:Set(false)
+            UI.Main.IslandBgColor:Set(h.val == 2 and Color(242, 242, 247, 245) or Color(0, 0, 0, 245))
+        end
+        SaveAllConfig()
+    elseif a == "alerts" then
+        Setup.ApplyAlerts(h.val)
+        Setup.AlertPick = h.val
+        SaveAllConfig()
+    elseif a == "like" then
+        UI.Media.SpotifyLike:Set(not UI.Media.SpotifyLike:Get())
+        SaveAllConfig()
+    elseif a == "like_guide" then
+        pcall(HTTP.Request, "GET", "http://127.0.0.1:45455/open?url=" .. Sheet.UrlEncode("https://github.com/qhols/DynamicIsland-Dota/blob/main/docs/spotify-likes.md"), {}, function() end, "di_open_docs")
+    elseif a == "capture" then
+        Setup.Capture = not Setup.Capture
+    end
+    if Haptic and Haptic.Trigger and a ~= "slider" then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
+end
+
+Setup.AlertSets = {
+    {
+        on = { "Kills", "Buybacks", "LowHP", "CourierDelivery", "PauseAlert", "ActiveRunes", "WisdomRunes", "Lotus", "Tormentor", "Mute" }
+    },
+    {
+        off = { "Stacks" }
+    },
+    {
+        off = {}
+    }
+}
+
+function Setup.AlertWidgets()
+    local C, R, S = UI.Combat, UI.Runes, UI.System
+    return {
+        Kills = C and C.Kills, Invis = C and C.Invis, Teleports = C and C.Teleports, KeyEnemyItems = C and C.KeyEnemyItems,
+        Towers = C and C.Towers, Couriers = C and C.Couriers, Buybacks = C and C.Buybacks, LowHP = C and C.LowHP,
+        LevelUp = C and C.LevelUp, CourierDelivery = C and C.CourierDelivery, PauseAlert = C and C.PauseAlert,
+        ActiveRunes = R and R.ActiveRunes, WaterRunes = R and R.WaterRunes, BountyRunes = R and R.BountyRunes,
+        WisdomRunes = R and R.WisdomRunes, RunePickups = R and R.RunePickups, RuneWorldSpawn = R and R.RuneWorldSpawn,
+        Stacks = R and R.Stacks, Lotus = R and R.Lotus, Neutrals = R and R.Neutrals, Tormentor = R and R.Tormentor,
+        Output = S and S.Output, Mute = S and S.Mute, Battery = S and S.Battery
+    }
+end
+
+function Setup.ApplyAlerts(idx)
+    local set = Setup.AlertSets[idx]
+    if not set then return end
+    local list = {}
+    if set.on then
+        for _, k in ipairs(set.on) do list[k] = true end
+    end
+    for k, w in pairs(Setup.AlertWidgets()) do
+        local v
+        if set.on then
+            v = list[k] == true
+        else
+            v = true
+            for _, o in ipairs(set.off) do
+                if o == k then v = false end
+            end
+        end
+        if w and w.Set then pcall(w.Set, w, v) end
+    end
+end
+
+function Setup.KeyName(code)
+    if not code or code <= 0 then return L("di_su_focus_none") end
+    if not Setup.Names then
+        Setup.Names = {}
+        pcall(function()
+            for k, v in pairs(Enum.ButtonCode) do
+                if type(v) == "number" and type(k) == "string" and k:sub(1, 4) == "KEY_" and not Setup.Names[v] then
+                    Setup.Names[v] = k:sub(5):gsub("_", " ")
+                end
+            end
+        end)
+    end
+    return Setup.Names[code] or ("#" .. tostring(code))
+end
+
+function Setup.OnKey(data)
+    if not Setup.Capture then return true end
+    local key = data.key
+    if key == Enum.ButtonCode.KEY_MOUSE1 or key == Enum.ButtonCode.KEY_MOUSE2 or key == Enum.ButtonCode.KEY_MWHEELUP or key == Enum.ButtonCode.KEY_MWHEELDOWN then
+        return true
+    end
+    if data.event ~= Enum.EKeyEvent.EKeyEvent_KEY_DOWN then return false end
+    if key == Enum.ButtonCode.KEY_ESCAPE then
+        Setup.Capture = false
+    elseif key == Enum.ButtonCode.KEY_BACKSPACE or key == Enum.ButtonCode.KEY_DELETE then
+        pcall(UI.Focus.Key.Set, UI.Focus.Key, Enum.ButtonCode.KEY_NONE)
+        Setup.Capture = false
+        SaveAllConfig()
+    else
+        pcall(UI.Focus.Key.Set, UI.Focus.Key, key)
+        Setup.Capture = false
+        SaveAllConfig()
+        if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_MEDIUM) end
+    end
+    return false
+end
+
+function Setup.Geometry(layout)
+    local s = layout.scale
+    local scr = Render.ScreenSize()
+    local w, h = math.floor(344 * s), math.floor(452 * s)
+    local x = math.floor(layout.x + layout.w / 2 - w / 2)
+    x = math.max(10, math.min(scr.x - w - 10, x))
+    local y = math.floor(layout.y + layout.h + 12 * s)
+    if y + h > scr.y - 10 then y = math.max(10, scr.y - h - 10) end
+    return x, y, w, h, s
+end
+
+function Setup.Tick(layout, now, dt, mx, my, down)
+    local pressed = down and not Setup.WasDown
+    Setup.WasDown = down
+    if Setup.Slider then
+        local h = Setup.Slider
+        if not down then
+            Setup.Slider = nil
+            SaveAllConfig()
+        else
+            local f = math.max(0, math.min(1, (mx - h.val[1]) / (h.val[2] - h.val[1])))
+            local v = math.floor((60 + f * 120) / 5 + 0.5) * 5
+            if v ~= UI.Main.Scale:Get() then
+                UI.Main.Scale:Set(v)
+                if Haptic and Haptic.Silent then Haptic.Silent(Haptic.Types.RATCHET_NOTCH) end
+            end
+        end
+    elseif pressed and Setup.Anim > 0.9 and Setup.PT > 0.9 then
+        for _, h in ipairs(Setup.Hits) do
+            if mx >= h.x1 and mx <= h.x2 and my >= h.y1 and my <= h.y2 then
+                Setup.Action(h, now)
+                break
+            end
+        end
+    end
+    local id = Setup.Steps[Setup.Step]
+    if id == "bridge" and Sheet.BridgeOnline() then
+        Setup.BridgeOkAt = Setup.BridgeOkAt or now
+        if Setup.BridgeWasOff and now - Setup.BridgeOkAt > 1.3 then
+            Setup.BridgeWasOff = false
+            Setup.Go(1)
+        end
+    elseif id == "bridge" then
+        Setup.BridgeWasOff = BridgeStatus.FirstPoll > 0 and now - BridgeStatus.FirstPoll > 3
+    elseif id == "fonts" and not Setup.Visible("fonts") then
+        Setup.Go(1)
+    end
+end
+
+function Setup.Hit(x1, y1, x2, y2, action, val)
+    if not Setup.HitsOn then return end
+    Setup.Hits[#Setup.Hits + 1] = { x1 = x1, y1 = y1, x2 = x2, y2 = y2, action = action, val = val }
+end
+
+function Setup.Primary(x, y, w, h, label, action, a, s, busy, tint)
+    local C = Config.Colors
+    local _, pk = Pointer.Button("su_primary", x, y, x + w, y + h)
+    local kx, ky = w * 0.0175 * pk, h * 0.0175 * pk
+    a = a * (1 - 0.22 * pk)
+    Render.FilledRect(Vec2(x + kx, y + ky), Vec2(x + w - kx, y + h - ky), FadeColor(tint or C.Blue, a), (h - ky * 2) / 2)
+    local f, sz = TF("Headline", s)
+    if busy then
+        Journey.Spinner(x + w / 2, y + h / 2, h * 0.22, Color(255, 255, 255, 255), a)
+    else
+        local ts = Render.TextSize(f, sz, label)
+        Render.Text(f, sz, label, Vec2(math.floor(x + (w - ts.x) / 2), math.floor(y + (h - ts.y) / 2)), FadeColor(Color(255, 255, 255, 255), a))
+    end
+    if action then Setup.Hit(x, y, x + w, y + h, action) end
+end
+
+function Setup.Link(cx, y, label, action, a, s)
+    local f, sz = TF("Body", s)
+    local ts = Render.TextSize(f, sz, label)
+    local _, pk = Pointer.Button("su_link", cx - ts.x / 2 - 10 * s, y - 14 * s, cx + ts.x / 2 + 10 * s, y + 14 * s)
+    a = a * (1 - 0.45 * pk)
+    Render.Text(f, sz, label, Vec2(math.floor(cx - ts.x / 2), math.floor(y - ts.y / 2)), FadeColor(Config.Colors.Blue, a))
+    if action then Setup.Hit(cx - ts.x / 2 - 10 * s, y - 14 * s, cx + ts.x / 2 + 10 * s, y + 14 * s, action) end
+end
+
+function Setup.Group(x, y, w, h, a, s)
+    Render.FilledRect(Vec2(x, y), Vec2(x + w, y + h), FadeColor(Config.Colors.Group, a), 12 * s)
+end
+
+function Setup.Page(id, x, y, w, h, a, s, live, now)
+    Setup.HitsOn = live
+    local C = Config.Colors
+    local pad = 20 * s
+    local cx = x + w / 2
+    local tint = C[Setup.Tint[id] or "Blue"] or C.Blue
+    local iy = y + 50 * s
+    if id == "done" then
+        Setup.DoneAt = Setup.DoneAt or now
+        Success.Draw("setup_done" .. tostring(Setup.DoneAt), Vec2(cx, iy), 26 * s, now - Setup.DoneAt, a, s)
+    elseif id == "fonts" then
+        local f = Config.Fonts.Semibold
+        local ts = Render.TextSize(f, math.floor(40 * s), "Aa")
+        Render.Text(f, math.floor(40 * s), "Aa", Vec2(math.floor(cx - ts.x / 2), math.floor(iy - ts.y / 2)), FadeColor(tint, a))
+    else
+        Glyph(Setup.Glyph[id] or "check", cx, iy, math.floor(46 * s), FadeColor(tint, a))
+    end
+    if id ~= "done" then Setup.DoneAt = nil end
+
+    local tf = Config.Fonts.Semibold
+    local tsz = math.floor(21 * s)
+    local ty = y + 92 * s
+    local th = Impl.TextBlock(tf, tsz, L("di_su_" .. id .. "_t"), cx, ty, w - pad * 2, FadeColor(C.TextPrimary, a), math.floor(25 * s))
+    local bf, bsz = TF("Subhead", s)
+    local by = ty + th + 8 * s
+    local bh = Impl.TextBlock(bf, bsz, L("di_su_" .. id .. "_d"), cx, by, w - pad * 2, FadeColor(C.TextSecondary, a), math.floor(17 * s))
+    local top = by + bh + 16 * s
+    local gx, gw = x + pad, w - pad * 2
+    local rowH = 44 * s
+    local lf, lsz = TF("Body", s)
+    local function Label(text, yy, col, lx)
+        local ls = Render.TextSize(lf, lsz, text)
+        Render.Text(lf, lsz, text, Vec2(math.floor(lx or (gx + 14 * s)), math.floor(yy - ls.y / 2)), FadeColor(col or C.TextPrimary, a))
+        return ls.x
+    end
+
+    local primary, pAction, busy, ptint = L("di_su_continue"), "next", false, nil
+    local link, lAction = L("di_su_later"), "later"
+
+    if id == "bridge" then
+        local online = Sheet.BridgeOnline()
+        local checking = not online and (BridgeStatus.FirstPoll == 0 or now - BridgeStatus.FirstPoll < 3)
+        Setup.Group(gx, top, gw, rowH, a, s)
+        local my = top + rowH / 2
+        if online then
+            Setup.BridgeSeen = Setup.BridgeSeen or now
+            Success.Draw("setup_bridge", Vec2(gx + 24 * s, my), 10 * s, now - Setup.BridgeSeen, a, s)
+            Label(L("di_su_bridge_on"), my, C.TextPrimary, gx + 44 * s)
+        elseif checking then
+            Journey.Spinner(gx + 24 * s, my, 8 * s, C.TextSecondary, a)
+            Label(L("di_su_bridge_check"), my, C.TextSecondary, gx + 44 * s)
+        else
+            Render.FilledCircle(Vec2(gx + 24 * s, my), 10 * s, FadeColor(C.Orange, a), 0, 1.0, 24)
+            local ef, esz = TF("FootnoteEm", s)
+            local es = Render.TextSize(ef, esz, "!")
+            Render.Text(ef, esz, "!", Vec2(math.floor(gx + 24 * s - es.x / 2), math.floor(my - es.y / 2)), FadeColor(Color(255, 255, 255, 255), a))
+            Label(L("di_su_bridge_off"), my, C.TextPrimary, gx + 44 * s)
+            local cy2 = top + rowH + 12 * s
+            local hf, hsz = TF("Footnote", s)
+            local hh = Impl.TextBlock(hf, hsz, L("di_su_bridge_how"), x + w / 2, cy2, gw, FadeColor(C.TextSecondary, a), math.floor(15 * s))
+            local boxY = cy2 + hh + 6 * s
+            Setup.Group(gx, boxY, gw, 30 * s, a, s)
+            local code = "\"...\\media_bridge.exe\" %command%"
+            local cs = Render.TextSize(hf, hsz, code)
+            Render.Text(hf, hsz, code, Vec2(math.floor(x + w / 2 - cs.x / 2), math.floor(boxY + 15 * s - cs.y / 2)), FadeColor(C.TextPrimary, a))
+            primary = L("di_su_bridge_skip")
+            ptint = C.FillSecondary
+        end
+    elseif id == "fonts" then
+        local st = Sheet.Fonts.State
+        if st == "installing" then
+            busy, pAction = true, nil
+        elseif st == "done" then
+            primary, pAction = L("di_su_continue"), "fonts_reload"
+        elseif st == "error" then
+            primary, pAction = L("di_upd_retry"), "fonts_install"
+        else
+            primary, pAction = L("di_fonts_install"), "fonts_install"
+        end
+        link, lAction = L("di_su_skip"), "next"
+        if st == "done" then
+            Setup.FontsAt = Setup.FontsAt or now
+            Success.Draw("setup_fonts", Vec2(cx, top + 26 * s), 18 * s, now - Setup.FontsAt, a, s)
+        end
+    elseif id == "position" then
+        local items = { { label = "di_su_pos_top", val = 0 }, { label = "di_su_pos_left", val = 2 }, { label = "di_su_pos_right", val = 3 } }
+        local cur = UI.Main.Preset:Get()
+        local sel = 0
+        for i, it in ipairs(items) do
+            if it.val == cur then sel = i end
+        end
+        Setup.PosSeg = Setup.PosSeg or { v = math.max(0, sel - 1), vel = 0 }
+        local keep = HUDCustomizer.InspectorBounds
+        HUDCustomizer.InspectorBounds = {}
+        Impl.RenderSegmented(gx, top, gw, 30 * s, items, sel > 0 and sel or 1, Setup.PosSeg, Setup.DT or 0.016, s, sel > 0 and a or a * 0.6, "preset")
+        if live then
+            for _, b in ipairs(HUDCustomizer.InspectorBounds) do
+                Setup.Hit(b.x1, b.y1, b.x2, b.y2, "preset", b.val)
+            end
+        end
+        HUDCustomizer.InspectorBounds = keep
+        local sy = top + 46 * s
+        Setup.Group(gx, sy, gw, 56 * s, a, s)
+        local v = UI.Main.Scale:Get()
+        Label(L("di_su_size"), sy + 16 * s)
+        local vf, vsz = TF("Body", s)
+        local vt = tostring(v) .. "%"
+        local vs = Render.TextSize(vf, vsz, vt)
+        Render.Text(vf, vsz, vt, Vec2(math.floor(gx + gw - 14 * s - vs.x), math.floor(sy + 16 * s - vs.y / 2)), FadeColor(C.TextSecondary, a))
+        local tx1, tx2 = gx + 14 * s, gx + gw - 14 * s
+        local tyy = sy + 38 * s
+        local f = (v - 60) / 120
+        Render.FilledRect(Vec2(tx1, tyy - 2 * s), Vec2(tx2, tyy + 2 * s), FadeColor(C.Fill, a), 2 * s)
+        Render.FilledRect(Vec2(tx1, tyy - 2 * s), Vec2(tx1 + (tx2 - tx1) * f, tyy + 2 * s), FadeColor(C.Blue, a), 2 * s)
+        local kx = tx1 + (tx2 - tx1) * f
+        SoftShadow(Vec2(kx - 11 * s, tyy - 11 * s), Vec2(kx + 11 * s, tyy + 11 * s), 11 * s, Color(0, 0, 0, math.floor(90 * a)), 6, Vec2(0, 2))
+        Render.FilledCircle(Vec2(kx, tyy), 11 * s, FadeColor(Color(255, 255, 255, 255), a), 0, 1.0, 28)
+        Setup.Hit(tx1 - 8 * s, tyy - 14 * s, tx2 + 8 * s, tyy + 14 * s, "slider", { tx1, tx2 })
+        local hf, hsz = TF("Footnote", s)
+        Impl.TextBlock(hf, hsz, L("di_su_pos_hint"), cx, sy + 66 * s, gw, FadeColor(C.TextSecondary, a), math.floor(15 * s))
+    elseif id == "look" then
+        local cur = IsPureGlass() and 3 or ((UI.Main.IslandBgColor:Get().r or 0) > 150 and 2 or 1)
+        local gap = 10 * s
+        local tw = (gw - gap * 2) / 3
+        local names = { "di_su_look_dark", "di_su_look_light", "di_su_look_glass" }
+        for i = 1, 3 do
+            local tx = gx + (i - 1) * (tw + gap)
+            local th2 = 74 * s
+            local ga = a
+            Setup.Group(tx, top, tw, th2, ga, s)
+            local pw, ph = tw * 0.72, 22 * s
+            local px1, py1 = tx + (tw - pw) / 2, top + (th2 - ph) / 2
+            local pill = i == 1 and Color(0, 0, 0, 255) or (i == 2 and Color(242, 242, 247, 255) or Color(255, 255, 255, 40))
+            Render.FilledRect(Vec2(px1, py1), Vec2(px1 + pw, py1 + ph), FadeColor(pill, a), ph / 2)
+            Render.Rect(Vec2(px1, py1), Vec2(px1 + pw, py1 + ph), FadeColor(i == 3 and Color(255, 255, 255, 90) or Color(255, 255, 255, 28), a), ph / 2, Enum.DrawFlags.None, 1.0)
+            local cf, csz = TF("FootnoteEm", s)
+            local ctxt = os.date("%H:%M")
+            local cts = Render.TextSize(cf, csz, ctxt)
+            Render.Text(cf, csz, ctxt, Vec2(math.floor(px1 + (pw - cts.x) / 2), math.floor(py1 + (ph - cts.y) / 2)), FadeColor(i == 2 and Color(0, 0, 0, 255) or Color(255, 255, 255, 255), a))
+            local nf, nsz = TF("Footnote", s)
+            local nt = L(names[i])
+            local ns = Render.TextSize(nf, nsz, nt)
+            Render.Text(nf, nsz, nt, Vec2(math.floor(tx + (tw - ns.x) / 2), math.floor(top + th2 + 8 * s)), FadeColor(C.TextPrimary, a))
+            local rc = Vec2(tx + tw / 2, top + th2 + 36 * s)
+            if cur == i then
+                Render.FilledCircle(rc, 10 * s, FadeColor(C.Blue, a), 0, 1.0, 24)
+                Glyph("check", rc.x, rc.y, math.floor(13 * s), FadeColor(Color(255, 255, 255, 255), a))
+            else
+                Render.Circle(rc, 10 * s, FadeColor(C.TextMuted, a), 1.5 * s, 0, 1.0, false, 32)
+            end
+            Setup.Hit(tx, top, tx + tw, top + th2 + 48 * s, "look", i)
+        end
+    elseif id == "alerts" then
+        local names = { "di_su_al_min", "di_su_al_mid", "di_su_al_all" }
+        local rh = 50 * s
+        Setup.Group(gx, top, gw, rh * 3, a, s)
+        local tf2, tsz2 = TF("Body", s)
+        local sf2, ssz2 = TF("Footnote", s)
+        for i = 1, 3 do
+            local ry = top + (i - 1) * rh
+            if i > 1 then
+                Render.Line(Vec2(gx + 14 * s, math.floor(ry) + 0.5), Vec2(gx + gw, math.floor(ry) + 0.5), FadeColor(C.Separator, a), 1.0)
+            end
+            local t1 = L(names[i] .. "_t")
+            local t1s = Render.TextSize(tf2, tsz2, t1)
+            Render.Text(tf2, tsz2, t1, Vec2(math.floor(gx + 14 * s), math.floor(ry + 9 * s)), FadeColor(C.TextPrimary, a))
+            Render.Text(sf2, ssz2, L(names[i] .. "_d"), Vec2(math.floor(gx + 14 * s), math.floor(ry + 11 * s + t1s.y)), FadeColor(C.TextSecondary, a))
+            if Setup.AlertPick == i then
+                Glyph("check", gx + gw - 22 * s, ry + rh / 2, math.floor(16 * s), FadeColor(C.Blue, a))
+            end
+            Setup.Hit(gx, ry, gx + gw, ry + rh, "alerts", i)
+        end
+    elseif id == "likes" then
+        Setup.Group(gx, top, gw, rowH * 2, a, s)
+        Label(L("di_media_spotify_like"), top + rowH / 2)
+        Setup.LikeKnob = Setup.LikeKnob or { v = UI.Media.SpotifyLike:Get() and 1 or 0, vel = 0 }
+        Impl.RenderSwitch(gx + gw - 12 * s - 42 * s, top + (rowH - 25 * s) / 2, 42 * s, 25 * s, UI.Media.SpotifyLike:Get(), Setup.LikeKnob, Setup.DT or 0.016, a)
+        Setup.Hit(gx, top, gx + gw, top + rowH, "like")
+        Render.Line(Vec2(gx + 14 * s, math.floor(top + rowH) + 0.5), Vec2(gx + gw, math.floor(top + rowH) + 0.5), FadeColor(C.Separator, a), 1.0)
+        Label(L("di_su_likes_guide"), top + rowH * 1.5, C.Blue)
+        Glyph("chevron", gx + gw - 18 * s, top + rowH * 1.5, math.floor(12 * s), FadeColor(C.TextMuted, a))
+        Setup.Hit(gx, top + rowH, gx + gw, top + rowH * 2, "like_guide")
+    elseif id == "focus" then
+        Setup.Group(gx, top, gw, rowH, a, s)
+        Label(L("di_su_focus_key"), top + rowH / 2)
+        local val = Setup.Capture and L("di_su_focus_press") or Setup.KeyName(UI.Focus.Key:Get())
+        local vf, vsz = TF("Body", s)
+        local vs = Render.TextSize(vf, vsz, val)
+        Render.Text(vf, vsz, val, Vec2(math.floor(gx + gw - 14 * s - vs.x), math.floor(top + rowH / 2 - vs.y / 2)), FadeColor(Setup.Capture and C.Blue or C.TextSecondary, a))
+        Setup.Hit(gx, top, gx + gw, top + rowH, "capture")
+        local hf, hsz = TF("Footnote", s)
+        Impl.TextBlock(hf, hsz, L("di_su_focus_hint"), cx, top + rowH + 10 * s, gw, FadeColor(C.TextSecondary, a), math.floor(15 * s))
+    elseif id == "done" then
+        primary, pAction = L("di_su_finish"), "done"
+        link, lAction = L("di_main_demo"), "demo"
+    end
+
+    local total, cur = 0, 0
+    for i, sid in ipairs(Setup.Steps) do
+        if Setup.Visible(sid) or i == Setup.Step then
+            total = total + 1
+            if sid == id then cur = total end
+        end
+    end
+    local dy = y + h - 108 * s
+    local dgap = 14 * s
+    local dx = cx - (total - 1) * dgap / 2
+    for i = 1, total do
+        Render.FilledCircle(Vec2(dx + (i - 1) * dgap, dy), 3.5 * s, FadeColor(i == cur and C.TextPrimary or C.TextMuted, a), 0, 1.0, 16)
+    end
+    local bh2 = 48 * s
+    Setup.Primary(gx, y + h - 88 * s, gw, bh2, primary, pAction, a, s, busy, ptint)
+    Setup.Link(cx, y + h - 22 * s, link, lAction, a, s)
+    Setup.HitsOn = false
+end
+
+function Setup.Render(layout, dt)
+    if Hello.Phase ~= "setup" and Hello.Phase ~= "out" then return end
+    if not Setup.Step then return end
+    Setup.Anim = math.min(1, math.max(0, Setup.Anim + dt / 0.46 * ((Hello.Phase == "setup" and Setup.Active) and 1 or -1.5)))
+    if Setup.Anim <= 0 then return end
+    local x, y, w, h, s = Setup.Geometry(layout)
+    local emerge = EaseOutCubic(Setup.Anim / 0.55)
+    local widen = EaseOutBack((Setup.Anim - 0.25) / 0.75)
+    local contentA = math.min(1, math.max(0, (Setup.Anim - 0.55) / 0.45))
+    local pw = layout.w + (w - layout.w) * math.max(0, widen)
+    local ph = h * emerge
+    local px = math.floor(layout.x + layout.w / 2 - pw / 2)
+    px = math.max(math.min(px, x), math.min(x + w - pw, px))
+    local py = math.floor(layout.y + layout.h + 12 * s * emerge)
+    local rad = math.min(30 * s, ph / 2)
+    local p1, p2 = Vec2(px, py), Vec2(px + pw, py + ph)
+    SoftShadow(p1, p2, rad, Color(0, 0, 0, math.floor(200 * emerge)), 30, Vec2(0, 8))
+    DrawerSurface(p1, p2, rad, emerge)
+    Setup.Hits = {}
+    Setup.DT = dt
+    if contentA <= 0.01 then return end
+    Setup.PT, Setup.PTV = MotionEngine.Step(Setup.PT, Setup.PTV, 1, dt, "SMOOTH")
+    local pt = math.min(1, math.max(0, Setup.PT))
+    local now = os.clock()
+    Render.PushClip(Vec2(px + 3 * s, py), Vec2(px + pw - 3 * s, py + ph))
+    local dir = Setup.Dir or 1
+    local shift = w * 0.28
+    if Setup.Prev and pt < 0.995 then
+        local oa = contentA * math.max(0, 1 - pt * 1.6)
+        if oa > 0.01 then
+            Setup.Page(Setup.Steps[Setup.Prev], x - dir * shift * pt, y, w, h, oa, s, false, now)
+        end
+    end
+    local na = contentA * math.min(1, math.max(0, (pt - 0.25) / 0.75))
+    if Setup.Prev == nil or pt >= 0.995 then na = contentA end
+    Setup.Page(Setup.Steps[Setup.Step], x + dir * shift * (1 - pt), y, w, h, na, s, pt > 0.9 and contentA > 0.9, now)
+    Render.PopClip()
+end
+
+Pointer.S = {}
+Pointer.x, Pointer.y, Pointer.px, Pointer.py = -10000, -10000, -10000, -10000
+Pointer.down, Pointer.pressed, Pointer.off = false, false, false
+Pointer.dt, Pointer.Frame = 0.016, 0
+
+function Pointer.Update(dt)
+    local mx, my = Input.GetCursorPos()
+    local down = Input.IsKeyDown(Enum.ButtonCode.KEY_MOUSE1)
+    Pointer.pressed = down and not Pointer.down
+    if Pointer.pressed then Pointer.px, Pointer.py = mx, my end
+    Pointer.x, Pointer.y, Pointer.down = mx, my, down
+    Pointer.dt = dt
+    Pointer.Frame = Pointer.Frame + 1
+    Pointer.off = Hello.Blocking() or DragState.IsDragging
+end
+
+function Pointer.Button(key, x1, y1, x2, y2)
+    local st = Pointer.S[key]
+    if not st then
+        st = { h = 0, hv = 0, p = 0, pv = 0, f = -1 }
+        Pointer.S[key] = st
+    end
+    if st.f ~= Pointer.Frame then
+        st.f = Pointer.Frame
+        local over = not Pointer.off and Pointer.x >= x1 and Pointer.x <= x2 and Pointer.y >= y1 and Pointer.y <= y2
+        local press = over and Pointer.down and Pointer.px >= x1 and Pointer.px <= x2 and Pointer.py >= y1 and Pointer.py <= y2
+        st.h, st.hv = MotionEngine.Step(st.h, st.hv, over and 1 or 0, Pointer.dt, "SMOOTH")
+        st.p, st.pv = MotionEngine.Step(st.p, st.pv, press and 1 or 0, Pointer.dt, "SNAPPY")
+    end
+    return math.max(0, math.min(1, st.h)), math.max(0, math.min(1, st.p))
+end
+
+function Impl.PointerBlob(key, cx, cy, r, hit, aMul)
+    local hk, pk = Pointer.Button(key, hit.x1, hit.y1, hit.x2, hit.y2)
+    if hk > 0.01 then
+        Render.FilledCircle(Vec2(cx, cy), r * (0.8 + 0.2 * hk), FadeColor(Config.Colors.FillTertiary, aMul * hk * (1 + 0.6 * pk)), 0, 1.0, 32)
+    end
+    return 1 + 0.06 * hk - 0.12 * pk, 1 - 0.35 * pk
+end
+
+function Impl.TickArt(dt)
+    local want = MediaData.IsPlaying and 1 or 0.84
+    MediaData.ArtK = MediaData.ArtK or want
+    MediaData.ArtKV = MediaData.ArtKV or 0
+    MediaData.ArtK, MediaData.ArtKV = MotionEngine.Step(MediaData.ArtK, MediaData.ArtKV, want, dt, want > MediaData.ArtK and "BOUNCY" or "SMOOTH")
+end
+
+function Impl.DismissNotif(nowClk)
+    local inCombat = FightTracker.Active
+    local mediaActive = IsMediaActive()
+    NotificationQueue.LastDismissed = NotificationQueue.Active
+    NotificationQueue.Active = nil
+    HapticPlaySound("toast_dismiss", 0.45)
+    if StateMachine.Spring and StateMachine.Spring.Squish then
+        StateMachine.Spring.Squish.value = -0.32
+        StateMachine.Spring.Squish.vel = -2.2
+    end
+    if #NotificationQueue.List > 0 then
+        NotificationQueue.Active = Impl.PopHighestPriorityNotif()
+        NotificationQueue.StartTime = nowClk
+    end
+    if NotificationQueue.Active and not IsNotifDeferred(NotificationQueue.Active) then
+        TriggerStateTransition(StateMachine.States.NOTIFICATION)
+    else
+        local target = inCombat and StateMachine.States.COMPACT_FIGHT or (mediaActive and StateMachine.States.COMPACT_MEDIA or StateMachine.States.COMPACT_IDLE)
+        TriggerStateTransition(target)
+    end
+end
+
+function Impl.DismissSatellite(kind, nowClk)
+    if kind == "notif" then
+        NotificationQueue.LastDismissed = NotificationQueue.Active
+        NotificationQueue.Active = nil
+        if #NotificationQueue.List > 0 then
+            NotificationQueue.Active = Impl.PopHighestPriorityNotif()
+            NotificationQueue.StartTime = nowClk
+        end
+    else
+        GameTracker.Roshan.Dismissed = true
+    end
+    HapticPlaySound("toast_dismiss", 0.45)
+end
+
+Swipe.G = Gesture.New()
+Swipe.IslandX, Swipe.IslandV = 0, 0
+Swipe.SatX, Swipe.SatV = 0, 0
+
+function Swipe.Start(x, y)
+    local S = StateMachine.States
+    local ctrl = Input.IsKeyDown(Enum.ButtonCode.KEY_LCONTROL) or Input.IsKeyDown(Enum.ButtonCode.KEY_RCONTROL)
+    if ctrl or Hello.Blocking() or DragState.IsDragging or Demo.Active or HUDCustomizer.IsOpen then return false end
+    local l = Swipe.Layout
+    if StateMachine.TargetState == S.NOTIFICATION and NotificationQueue.Active and l and x >= l.x and x <= l.x + l.w and y >= l.y and y <= l.y + l.h then
+        Swipe.Target = "island"
+        return true
+    end
+    local sb = SatelliteBounds
+    local kind = Satellite.Right.kind
+    if sb and (kind == "notif" or kind == "aegis") and x >= sb.x1 and x <= sb.x2 and y >= sb.y1 and y <= sb.y2 then
+        Swipe.Target = "sat"
+        Swipe.SatKind = kind
+        return true
+    end
+    if StateMachine.TargetState == S.NOTIF_CENTER then
+        for _, r in ipairs(NotifCenter.RowHits) do
+            if x >= r.x1 and x <= r.x2 and y >= r.y1 and y <= r.y2 then
+                Swipe.Target = "nc"
+                Swipe.Row = r.row
+                return true
+            end
+        end
+    end
+    return false
+end
+
+function Swipe.Tick(layout, now, dt)
+    Swipe.Layout = layout
+    local g = Swipe.G
+    local ev = Gesture.Step(g, Pointer.down, Pointer.x, Pointer.y, now, Swipe.Start)
+    local s = layout.scale
+    local t = Swipe.Target
+    if g.active then
+        local dx, dy = g.x - g.x0, g.y - g.y0
+        if t == "island" then
+            Swipe.IslandX, Swipe.IslandV = dx * 0.85, 0
+        elseif t == "sat" then
+            Swipe.SatX, Swipe.SatV = dx * 0.85, 0
+        elseif t == "nc" and Swipe.Row then
+            local it = Swipe.Row.item
+            it._x, it._xv = dx < 0 and dx or Gesture.Rubber(dx, 14 * s), 0
+        end
+    elseif ev == "end" then
+        local dx, dy = g.x - g.x0, g.y - g.y0
+        if t == "island" then
+            if g.moved and math.abs(dx) > 6 and (math.abs(dx) > 28 * s or math.abs(g.vx) > 600) then Impl.DismissNotif(now) end
+        elseif t == "sat" then
+            if g.moved and math.abs(dx) > 6 and (math.abs(dx) > 24 * s or math.abs(g.vx) > 600) then Impl.DismissSatellite(Swipe.SatKind, now) end
+        elseif t == "nc" and Swipe.Row then
+            local it = Swipe.Row.item
+            if g.moved and dx < -6 and (dx < -layout.w * 0.33 or g.vx < -700) then
+                it._gone = true
+                HapticPlaySound("toast_dismiss", 0.45)
+            elseif not g.moved then
+                NotifCenter.Toggle(Swipe.Row)
+            end
+        end
+        Swipe.Target = nil
+        Swipe.Row = nil
+    end
+    if not (g.active and t == "island") then
+        Swipe.IslandX, Swipe.IslandV = MotionEngine.Step(Swipe.IslandX, Swipe.IslandV, 0, dt, "BOUNCY")
+    end
+    if not (g.active and t == "sat") then
+        Swipe.SatX, Swipe.SatV = MotionEngine.Step(Swipe.SatX, Swipe.SatV, 0, dt, "BOUNCY")
+    end
+end
+
+
 local LastMenuOpenState = false
 
 function DynamicIsland.OnFrame()
@@ -10274,6 +12071,8 @@ function DynamicIsland.OnFrame()
     StateMachine.LastDrawTime = curClock
     Impl.AdvancePosition(dt)
     dt = dt / AnimScale()
+    Pointer.Update(dt)
+    Impl.TickArt(dt)
 
     if VolumeState.Visible then
         local nowC = os.clock()
@@ -10350,6 +12149,7 @@ function DynamicIsland.OnFrame()
         C.TrackProgressBg = C.Fill
         C.ChipInactive = C.FillTertiary
         C.SegTrack = C.FillTertiary
+        C.Group = D(118, 118, 128, 61, 255, 255, 255, 255)
         C.Grabber = C.TextMuted
         C.Placeholder = D(58, 58, 60, 255, 229, 229, 234, 255)
     end
@@ -10457,6 +12257,8 @@ function DynamicIsland.OnFrame()
     local layout = GetIslandLayout()
     if layout.w <= 0 or layout.h <= 0 then return end
 
+    Fuse.Guard("swipe", Swipe.Tick, layout, os.clock(), dt)
+    Fuse.Guard("hello", Hello.RenderBack, layout, dt)
     Impl.RenderDragGuides(layout)
 
     local p1 = Vec2(layout.x, layout.y)
@@ -10493,6 +12295,7 @@ function DynamicIsland.OnFrame()
     Fuse.Guard("focus_bubble", Focus.RenderBubble, layout)
     Fuse.Guard("hints", Impl.RenderMenuClosedHint, layout)
     Fuse.Guard("drawer", Impl.RenderHUDDrawer, layout, dt)
+    Fuse.Guard("setup", Setup.Render, layout, dt)
 end
 
 function DynamicIsland.OnUpdateEx()
@@ -10567,6 +12370,7 @@ function DynamicIsland.OnUpdateEx()
     end
     Fuse.Guard("input", Impl.HandleInteractions)
     Fuse.Guard("media", Impl.PollMediaBridge)
+    Fuse.Guard("level", Impl.PollLevel)
     Fuse.Guard("bridge", Impl.PollBridgeStatus)
     Fuse.Guard("system", Impl.PollSystem)
     Fuse.Guard("updater", Sheet.PollUpdate)
@@ -10606,6 +12410,7 @@ function DynamicIsland.OnScriptsLoaded()
     StateMachine.Spring.Squish.value = 0
 
     Impl.PollMediaBridge()
+    Hello.Init()
 end
 
 do
