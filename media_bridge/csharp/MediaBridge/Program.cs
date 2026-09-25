@@ -12,6 +12,7 @@ namespace MediaBridge;
 public record CommandResponse(string status, int volume, bool is_liked);
 public record FocusResponse(string status, bool focused);
 public record SoundResponse(string status);
+public record LevelResponse(double[] l, string src, int n, double p);
 public record StatusResponse(string status, string version, string latest_version, int sounds_loaded, string sound_output, string sound_error, string media_sessions, string spotify_debug, bool fonts_ok);
 
 [JsonSerializable(typeof(MediaInfo))]
@@ -22,6 +23,7 @@ public record StatusResponse(string status, string version, string latest_versio
 [JsonSerializable(typeof(SystemInfo))]
 [JsonSerializable(typeof(UpdateStatus))]
 [JsonSerializable(typeof(FontStatus))]
+[JsonSerializable(typeof(LevelResponse))]
 internal partial class AppJsonContext : JsonSerializerContext { }
 
 internal static class AppJson
@@ -240,12 +242,16 @@ internal static class Program
             }
             else if (path == "/open")
             {
-                Updater.OpenReleasePage();
+                Updater.OpenReleasePage(request.QueryString["url"]);
                 await WriteJsonAsync(response, new SoundResponse("ok"), AppJson.Context.SoundResponse);
             }
             else if (path == "/system")
             {
                 await WriteJsonAsync(response, SystemWatcher.Current, AppJson.Context.SystemInfo);
+            }
+            else if (path == "/level")
+            {
+                await WriteJsonAsync(response, new LevelResponse(LevelMeter.Snapshot(), LevelMeter.Source, LevelMeter.Sessions, Math.Round(LevelMeter.Peak, 3)), AppJson.Context.LevelResponse);
             }
             else if (path == "/focus")
             {

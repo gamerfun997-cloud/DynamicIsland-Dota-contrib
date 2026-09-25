@@ -54,9 +54,12 @@ public static class Updater
         }
     }
 
-    public static void OpenReleasePage()
+    public static void OpenReleasePage(string? url = null)
     {
-        try { Process.Start(new ProcessStartInfo(ReleasePage) { UseShellExecute = true }); } catch { }
+        var target = ReleasePage;
+        if (url != null && url.StartsWith("https://github.com/qhols/DynamicIsland-Dota/", StringComparison.Ordinal) && Uri.TryCreate(url, UriKind.Absolute, out _))
+            target = url;
+        try { Process.Start(new ProcessStartInfo(target) { UseShellExecute = true }); } catch { }
     }
 
     public static void Start(string? scriptDir, string? scriptPath)
