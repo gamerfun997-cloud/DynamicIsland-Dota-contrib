@@ -7020,7 +7020,7 @@ function Impl.HandleInteractions()
         end
         StateMachine.UnhoverStartTime = 0
 
-        if openOnHover then
+        if openOnHover and not StateMachine.NoExpand then
             if StateMachine.TargetState == StateMachine.States.COMPACT_FIGHT then
                 if (nowClk - StateMachine.HoverStartTime) >= hoverDelaySec then
                     TriggerStateTransition(StateMachine.States.LARGE_FIGHT)
@@ -7051,6 +7051,7 @@ function Impl.HandleInteractions()
             StateMachine.UnhoverStartTime = nowClk
         end
         StateMachine.HoverStartTime = 0
+        StateMachine.NoExpand = nil
 
         if Sdk.Expanded and StateMachine.UnhoverStartTime > 0 and (nowClk - StateMachine.UnhoverStartTime) >= 0.22 then
             Sdk.Expanded = false
@@ -13818,6 +13819,7 @@ function Swipe.Tick(layout, now, dt)
         local dx, dy = g.x - g.x0, g.y - g.y0
         if t == "island" then
             local far = g.moved and math.abs(dx) > 6 and (math.abs(dx) > 28 * s or math.abs(g.vx) > 600)
+            if far then StateMachine.NoExpand = true end
             if Swipe.IslandKind == "activity" then
                 if far then
                     Sdk.Dismiss(Sdk.Current())
