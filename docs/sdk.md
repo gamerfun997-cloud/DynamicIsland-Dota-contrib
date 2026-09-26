@@ -130,4 +130,19 @@ Plays one of the island's own sounds through the user's sound settings. Allowed 
 - Your callbacks run in `pcall`. After 3 errors the island stops calling that script's callbacks and writes why to the console.
 - The island copies what it needs from your tables and trims long text, so changing a table after the call does nothing.
 
+- Up to 24 different app names per session and 6 permission prompts waiting at once.
+- At most 6 script notifications wait in the island's queue at a time, across all scripts.
+- A callback that runs for too long is stopped, when the Umbrella build has debug hooks.
+- 25 sounds per second across all scripts.
+
 Every call returns `nil, reason` when it doesn't go through, so you can log it.
+
+## What the island protects itself from
+
+All Umbrella scripts share one Lua state, so the island assumes another script can be broken or hostile:
+
+- bad arguments are rejected with `nil, "bad arguments"`, including tables with trapped metamethods, NaN and infinite numbers, and huge strings
+- errors inside your callbacks never reach the island, and error objects that can't even be printed are handled too
+- if `DynamicIsland` or `DynamicIslandQueue` get overwritten, the island puts them back and writes it to the console
+- the island keeps its own copies of `string`, `table`, `math`, `os` and `io`, so a script that replaces `math.floor` or `table.insert` doesn't take it down
+- image paths must be relative game paths, `..` and absolute paths are ignored

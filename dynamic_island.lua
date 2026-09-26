@@ -1,3 +1,14 @@
+local math, string, table, os, io, utf8 = (function(...)
+    local out = {}
+    for i, lib in ipairs({ ... }) do
+        local c = {}
+        for k, v in pairs(lib) do c[k] = v end
+        out[i] = c
+    end
+    return table.unpack(out, 1, 6)
+end)(math, string, table, os, io, utf8 or {})
+local pairs, ipairs, type, tostring, tonumber, pcall, error, setmetatable = pairs, ipairs, type, tostring, tonumber, pcall, error, setmetatable
+
 --[[
      ~ qLocalization
      ~ automatic localization wrapper for Lua menu interfaces
@@ -26,7 +37,7 @@ local qLocalization = (function()
 	do
 		helpers = {
 			resolve = a(function(root, path)
-				for key in path:gmatch("[^.]+") do
+				for key in string.gmatch(path, "[^.]+") do
 					if type(root) ~= "table" then
 						return
 					end
@@ -73,7 +84,7 @@ local qLocalization = (function()
 		local languages = {}
 
 		for i, name in ipairs(state.lang and state.lang:List() or {}) do
-			local code = name:match("%a+")
+			local code = string.match(name, "%a+")
 
 			if code and translations[code] then
 				languages[i - 1] = code
@@ -357,6 +368,10 @@ local Render = setmetatable({}, { __index = setmetatable({
 
 local function PublishIsland(api)
     DynamicIsland = api
+end
+
+local function ReadIsland()
+    return DynamicIsland
 end
 
 local DynamicIsland = {}
@@ -2416,7 +2431,7 @@ local function SaveAllConfig()
                                 f:write(string.format("w_%s.%s=%s\n", secName, name, v and "b1" or "b0"))
                             elseif ok and type(v) == "number" then
                                 f:write(string.format("w_%s.%s=%s\n", secName, name, tostring(v)))
-                            elseif ok and type(v) == "string" and not v:find("[\r\n]") then
+                            elseif ok and type(v) == "string" and not string.find(v, "[\r\n]") then
                                 f:write(string.format("w_%s.%s=s:%s\n", secName, name, v))
                             end
                         end
@@ -2495,8 +2510,8 @@ function Impl.LoadAllConfig()
                     local w = type(UI[wSec]) == "table" and UI[wSec][wName] or nil
                     if w then
                         local val
-                        if wVal:sub(1, 2) == "s:" then
-                            val = wVal:sub(3)
+                        if string.sub(wVal, 1, 2) == "s:" then
+                            val = string.sub(wVal, 3)
                         elseif wVal == "b1" or wVal == "b0" then
                             val = wVal == "b1"
                         else
@@ -3845,8 +3860,8 @@ function Impl.GetScriptRelPath()
     if Engine and Engine.GetCheatDirectory then
         local ok, cd = pcall(Engine.GetCheatDirectory)
         if ok and cd and cd ~= "" then
-            local root = cd:gsub("/", "\\")
-            local clean = root:gsub("^%a:\\", ""):gsub("\\", "/")
+            local root = string.gsub(cd, "/", "\\")
+            local clean = string.gsub((string.gsub(root, "^%a:\\", "")), "\\", "/")
             return "../../../../../../../../" .. clean .. "scripts/"
         end
     end
@@ -3976,9 +3991,9 @@ function Impl.PollMediaBridge()
         local dir = ""
         if Engine and Engine.GetCheatDirectory then
             local ok, cd = pcall(Engine.GetCheatDirectory)
-            if ok and cd and cd ~= "" then dir = cd:gsub("/", "\\"):gsub("\\$", "") .. "\\scripts" end
+            if ok and cd and cd ~= "" then dir = string.gsub((string.gsub(cd, "/", "\\")), "\\$", "") .. "\\scripts" end
         end
-        Impl.MediaQuery = dir ~= "" and ("?dir=" .. dir:gsub("[^%w%-%._~]", function(c) return string.format("%%%02X", string.byte(c)) end)) or ""
+        Impl.MediaQuery = dir ~= "" and ("?dir=" .. string.gsub(dir, "[^%w%-%._~]", function(c) return string.format("%%%02X", string.byte(c)) end)) or ""
     end
     local likes = (UI.Media.SpotifyLike and UI.Media.SpotifyLike:Get()) and "1" or "0"
     local url = string.format("http://127.0.0.1:%d/media", port) .. Impl.MediaQuery .. (Impl.MediaQuery == "" and "?" or "&") .. "likes=" .. likes
@@ -5383,7 +5398,7 @@ local function GetChipContent(chipId)
         local nameStr = (custom and custom ~= "") and custom or CleanHeroName(HeroData.HeroName)
         if nameStr == "" then nameStr = L("di_ui_hero") end
         if cfg.format == 2 then
-            nameStr = string.sub(nameStr, 1, 3):upper()
+            nameStr = string.upper(string.sub(nameStr, 1, 3))
         end
         return { isClock = false, svgKey = svgKey, text = nameStr, font = font, color = col }
     elseif chipId == "fps" then
@@ -7148,7 +7163,7 @@ local function TruncateToWidth(font, size, text, maxW)
         end
         result = "…"
         for n = #chars - 1, 1, -1 do
-            local candidate = (table.concat(chars, "", 1, n):gsub("%s+$", "")) .. "…"
+            local candidate = (string.gsub(table.concat(chars, "", 1, n), "%s+$", "")) .. "…"
             if Render.TextSize(font, size, candidate).x <= maxW then
                 result = candidate
                 break
@@ -7171,7 +7186,7 @@ function Marquee.Layout(font, size, text)
     end
     g = {}
     local prefix = ""
-    for ch in text:gmatch("[%z\1-\127\194-\244][\128-\191]*") do
+    for ch in string.gmatch(text, "[%z\1-\127\194-\244][\128-\191]*") do
         local x0 = #prefix > 0 and Render.TextSize(font, size, prefix).x or 0
         prefix = prefix .. ch
         g[#g + 1] = { ch = ch, x0 = x0, x1 = Render.TextSize(font, size, prefix).x }
@@ -7502,7 +7517,7 @@ function Odometer.Layout(font, size, text)
         end
     end
     for _, ch in ipairs(Odometer.Chars(text)) do
-        if tab and ch:match("^%d$") then
+        if tab and string.match(ch, "^%d$") then
             flush()
             local off = (dw - Odometer.Natural(font, size, ch)) / 2
             cells[#cells + 1] = { ch = ch, x = x, off = off }
@@ -7526,7 +7541,7 @@ function Odometer.Group(n)
     local sep = L("di_num_sep")
     local out, len = "", #s
     for i = 1, len do
-        out = out .. s:sub(i, i)
+        out = out .. string.sub(s, i, i)
         local left = len - i
         if left > 0 and left % 3 == 0 then out = out .. sep end
     end
@@ -7534,7 +7549,7 @@ function Odometer.Group(n)
 end
 
 function Odometer.Tabular(text)
-    return text:find("%d") ~= nil and text:find("/") == nil
+    return string.find(text, "%d") ~= nil and string.find(text, "/") == nil
 end
 
 function Odometer.Width(font, size, text)
@@ -7565,8 +7580,8 @@ function Odometer.Text(id, font, size, text, pos, col, soft)
     elseif now - (st.seen or now) > 0.15 then
         st.cur, st.prev = text, nil
     elseif st.cur ~= text then
-        local a = tonumber((st.cur:gsub("%D", "")))
-        local b = tonumber((text:gsub("%D", "")))
+        local a = tonumber((string.gsub(st.cur, "%D", "")))
+        local b = tonumber((string.gsub(text, "%D", "")))
         st.dir = (a and b and b < a) and -1 or 1
         st.prev, st.cur, st.t0 = st.cur, text, now
     end
@@ -8514,7 +8529,7 @@ function Impl.RenderColorPickerPopover(cx, cy, cardW, scale, dt)
     local shown = math.min(#saved, slots - 1)
     for i = 1, shown do
         local hx = saved[i]
-        local r, g, b = tonumber(hx:sub(1, 2), 16) or 0, tonumber(hx:sub(3, 4), 16) or 0, tonumber(hx:sub(5, 6), 16) or 0
+        local r, g, b = tonumber(string.sub(hx, 1, 2), 16) or 0, tonumber(string.sub(hx, 3, 4), 16) or 0, tonumber(string.sub(hx, 5, 6), 16) or 0
         local ccx = sx + (i - 1) * (d + gap) + d / 2
         local _, pk = Pointer.Button("cp_saved" .. i, ccx - d / 2, scy - d / 2, ccx + d / 2, scy + d / 2)
         local rad2 = d / 2 * (1 - 0.1 * pk)
@@ -10102,7 +10117,7 @@ function Sheet.UpdateInfo()
     local latest = Impl.ParseVersion(BridgeStatus.Latest)
     local canSelf = bridge and not Impl.VersionLess(bridge, { 2, 2, 0 })
     if latest and ((mine and Impl.VersionLess(mine, latest)) or (bridge and Impl.VersionLess(bridge, latest))) then
-        return { title = "Dynamic Island " .. BridgeStatus.Latest:gsub("^[vV]", ""), sub = canSelf and L("di_upd_available") or L("di_upd_manual"), canSelf = canSelf }
+        return { title = "Dynamic Island " .. string.gsub(BridgeStatus.Latest, "^[vV]", ""), sub = canSelf and L("di_upd_available") or L("di_upd_manual"), canSelf = canSelf }
     end
     if bridge and mine and Impl.VersionLess(bridge, mine) then
         return { title = L("di_upd_bridge_title"), sub = canSelf and L("di_upd_bridge_sub") or L("di_upd_manual"), canSelf = canSelf }
@@ -10191,14 +10206,14 @@ function Sheet.Size()
 end
 
 function Sheet.UrlEncode(s)
-    return (s:gsub("[^%w%-%._~]", function(c) return string.format("%%%02X", string.byte(c)) end))
+    return (string.gsub(s, "[^%w%-%._~]", function(c) return string.format("%%%02X", string.byte(c)) end))
 end
 
 function Sheet.StartUpdate(now)
     local dir = "C:\\Umbrella\\scripts"
     if Engine and Engine.GetCheatDirectory then
         local ok, cd = pcall(Engine.GetCheatDirectory)
-        if ok and cd and cd ~= "" then dir = cd:gsub("/", "\\"):gsub("\\$", "") .. "\\scripts" end
+        if ok and cd and cd ~= "" then dir = string.gsub((string.gsub(cd, "/", "\\")), "\\$", "") .. "\\scripts" end
     end
     local _, probe = pcall(function() error("di_self") end)
     local self = string.match(tostring(probe), "^(.-%.lua):%d+: di_self")
@@ -10618,6 +10633,7 @@ Sdk.AskAt = {}
 Sdk.AskHidden = {}
 Sdk.Pending = {}
 Sdk.Strikes = {}
+Sdk.StrikeAt = {}
 Sdk.Muted = {}
 Sdk.Errors = {}
 Sdk.Bulk = {}
@@ -10635,6 +10651,12 @@ Sdk.MenuDirty = true
 Sdk.MenuAt = 0
 Sdk.SoundWin = { t = 0, n = 0 }
 Sdk.Seq = 0
+Sdk.Seen = {}
+Sdk.SeenCount = 0
+Sdk.LogBudget = 40
+Sdk.Images = {}
+Sdk.ImageCount = 0
+Sdk.Hook = debug and debug.sethook and debug.gethook and { set = debug.sethook, get = debug.gethook } or nil
 Sdk.Features = { notify = true, activity = true, queue = true, levels = true, sounds = true, body = true, actions = true, trailing = true, onEnd = true, staleAfter = true, endAfter = true, playSound = true, focus = true }
 Sdk.SoundFiles = { notification_toast = true, timer_chime = true, courier_delivered = true, courier_death_or_fail = true, button_press = true, button_dismiss = true, wheel_notch = true, wheel_boundary_bump = true, island_expand = true, island_collapse = true, island_hover = true, toast_dismiss = true }
 Sdk.Levels = { passive = 1, active = 3, ["time-sensitive"] = 5 }
@@ -10642,8 +10664,38 @@ Sdk.Sounds = { default = "notification_toast", chime = "timer_chime", success = 
 Sdk.Tints = { "red", "orange", "yellow", "green", "mint", "teal", "cyan", "blue", "indigo", "purple", "pink", "brown", "gray" }
 Sdk.Palette = { "Blue", "Orange", "Green", "Purple", "Pink", "Teal", "Indigo", "Red" }
 
+function Sdk.S(v)
+    local ok, s = pcall(tostring, v)
+    if ok and type(s) == "string" then return string.sub(s, 1, 300) end
+    return "?"
+end
+
 function Sdk.Log(app, msg)
-    Log.Write("[Dynamic Island] " .. (app and (app .. ": ") or "") .. msg)
+    if Sdk.LogBudget <= 0 then return end
+    Sdk.LogBudget = Sdk.LogBudget - 1
+    pcall(Log.Write, "[Dynamic Island] " .. (app and (app .. ": ") or "") .. msg)
+end
+
+function Sdk.Num(v, lo, hi)
+    local n = tonumber(v)
+    if not n or n ~= n then return nil end
+    return math.max(lo, math.min(hi, n))
+end
+
+function Sdk.Byte(v)
+    if type(v) ~= "number" or v ~= v then return 0 end
+    return math.floor(math.max(0, math.min(255, v)))
+end
+
+function Sdk.Known(app)
+    if Sdk.Seen[app] or Sdk.Apps[app] ~= nil then return true end
+    if Sdk.SeenCount >= 24 then
+        Sdk.Warn(nil, "too many different app names, ignoring new ones until reload")
+        return false
+    end
+    Sdk.Seen[app] = true
+    Sdk.SeenCount = Sdk.SeenCount + 1
+    return true
 end
 
 function Sdk.Warn(app, msg)
@@ -10655,7 +10707,10 @@ end
 
 function Sdk.Str(v, max)
     if v == nil then return nil end
-    v = string.gsub(tostring(v), "%c", " ")
+    v = tostring(v)
+    if type(v) ~= "string" then return nil end
+    if #v > max * 4 + 16 then v = string.sub(v, 1, max * 4 + 16) end
+    v = string.gsub(v, "%c", " ")
     local ok, n = pcall(utf8.len, v)
     if ok and n then
         if n > max then v = string.sub(v, 1, utf8.offset(v, max + 1) - 1) end
@@ -10699,7 +10754,7 @@ function Sdk.Tint(t, app)
     elseif t ~= nil then
         local ok, r, g, b = pcall(function() return t.r, t.g, t.b end)
         if ok and type(r) == "number" and type(g) == "number" and type(b) == "number" then
-            return Color(math.floor(r), math.floor(g), math.floor(b), 255)
+            return Color(Sdk.Byte(r), Sdk.Byte(g), Sdk.Byte(b), 255)
         end
     end
     return app and Sdk.AppTint(app) or nil
@@ -10708,7 +10763,14 @@ end
 function Sdk.Icon(icon)
     if type(icon) == "string" and icon ~= "" then
         if VectorIcons[icon] then return icon, nil end
-        if string.find(icon, "[/\\]") or string.find(icon, "%.%a+$") then return "bell", icon end
+        if #icon <= 160 and string.match(icon, "^[%w_%-][%w_%-/%.]*%.[%a_]+$") and not string.find(icon, "%.%.") then
+            if not Sdk.Images[icon] then
+                if Sdk.ImageCount >= 32 then return "bell", nil end
+                Sdk.Images[icon] = true
+                Sdk.ImageCount = Sdk.ImageCount + 1
+            end
+            return "bell", icon
+        end
     end
     return "bell", nil
 end
@@ -10716,16 +10778,30 @@ end
 function Sdk.Guard(fn, ...)
     local ok, a, b = pcall(fn, ...)
     if ok then return a, b end
-    Sdk.Log(nil, "SDK error: " .. tostring(a))
-    return nil, "internal error"
+    Sdk.Log(nil, "rejected a call with bad arguments: " .. Sdk.S(a))
+    return nil, "bad arguments"
+end
+
+function Sdk.Run(fn, ...)
+    local H = Sdk.Hook
+    if not H then return pcall(fn, ...) end
+    local okGet, prev = pcall(H.get)
+    if not okGet or prev then return pcall(fn, ...) end
+    H.set(function()
+        H.set()
+        error("callback took too long", 2)
+    end, "", 1000000)
+    local ok, err = pcall(fn, ...)
+    H.set()
+    return ok, err
 end
 
 function Sdk.Call(app, fn, ...)
     if type(fn) ~= "function" or (Sdk.Errors[app] or 0) >= 3 then return end
-    local ok, err = pcall(fn, ...)
+    local ok, err = Sdk.Run(fn, ...)
     if ok then return end
     Sdk.Errors[app] = (Sdk.Errors[app] or 0) + 1
-    Sdk.Log(app, "callback error: " .. tostring(err))
+    Sdk.Log(app, "callback error: " .. Sdk.S(err))
     if Sdk.Errors[app] >= 3 then
         Sdk.Log(app, "callbacks turned off after repeated errors")
     end
@@ -10746,8 +10822,7 @@ function Sdk.Build(app, title, o)
         Mono = true,
         AccentColor = Sdk.Tint(o.tint, app)
     }
-    local d = tonumber(o.duration)
-    if d then n.Duration = math.max(1.5, math.min(8, d)) end
+    n.Duration = Sdk.Num(o.duration, 1.5, 8)
     if o.sound == false or lvl == "passive" then
         n.Silent = true
     else
@@ -10768,6 +10843,12 @@ function Sdk.Build(app, title, o)
         if #list > 0 then n.Actions = list end
     end
     return n
+end
+
+function Sdk.Strike(app, now)
+    local s = math.max(0, (Sdk.Strikes[app] or 0) - (now - (Sdk.StrikeAt[app] or now)))
+    Sdk.StrikeAt[app] = now
+    return s
 end
 
 function Sdk.Take(app, now)
@@ -10815,13 +10896,16 @@ function Sdk.Post(o, bulk)
     end
     if Sdk.Muted[app] then return nil, "muted" end
     if Sdk.Apps[app] == false then return nil, "not allowed" end
+    if not Sdk.Known(app) then return nil, "too many apps" end
+    if Sdk.Apps[app] == nil and not Sdk.Ask(app) then return nil, "busy" end
+    if o.level ~= "passive" and Sdk.QueueFull(app) then return nil, "busy" end
     local now = os.clock()
     if bulk then
         Sdk.Bulk[app] = (Sdk.Bulk[app] or 0) + 1
         if Sdk.Bulk[app] > 5 then return nil, "rate limited" end
     elseif not Sdk.Take(app, now) then
-        Sdk.Strikes[app] = (Sdk.Strikes[app] or 0) + 1
-        if Sdk.Strikes[app] >= 10 then
+        Sdk.Strikes[app] = Sdk.Strike(app, now) + 1
+        if Sdk.Strikes[app] >= 15 then
             Sdk.Muted[app] = true
             Sdk.EndApp(app, "muted")
             Sdk.Unask(app)
@@ -10831,12 +10915,11 @@ function Sdk.Post(o, bulk)
         end
         return nil, "rate limited"
     end
-    Sdk.Strikes[app] = math.max(0, (Sdk.Strikes[app] or 0) - 1)
+    Sdk.Strikes[app] = Sdk.Strike(app, now)
     Sdk.Seq = Sdk.Seq + 1
     local n = Sdk.Build(app, title, o)
     n.SdkId = Sdk.Seq
     if Sdk.Apps[app] == nil then
-        Sdk.Ask(app)
         local p = Sdk.Pending[app] or {}
         if #p < 3 then p[#p + 1] = n end
         Sdk.Pending[app] = p
@@ -10866,11 +10949,23 @@ function Sdk.Unask(app)
 end
 
 function Sdk.Ask(app)
-    if Sdk.Muted[app] then return end
+    if Sdk.Muted[app] then return false end
     for _, a in ipairs(Sdk.Asks) do
-        if a == app then return end
+        if a == app then return true end
     end
+    if #Sdk.Asks >= 6 then return false end
     Sdk.Asks[#Sdk.Asks + 1] = app
+    return true
+end
+
+function Sdk.QueueFull(app)
+    local cur = NotificationQueue.Active
+    if cur and cur.SdkApp == app then return false end
+    local n = 0
+    for _, it in ipairs(NotificationQueue.List) do
+        if it.SdkApp then n = n + 1 end
+    end
+    return n >= 6
 end
 
 function Sdk.Answer(allow)
@@ -11017,8 +11112,7 @@ function Sdk.PlaySound(name, vol)
     end
     w.n = w.n + 1
     if w.n > 25 then return false end
-    local v = tonumber(vol) or 0.5
-    HapticPlaySound(name, math.max(0.05, math.min(1, v)))
+    HapticPlaySound(name, Sdk.Num(vol, 0.05, 1) or 0.5)
     return true
 end
 
@@ -11029,13 +11123,10 @@ function Sdk.ActApply(a, o)
         a.trailing = Sdk.Text(o.trailing, 12)
         if o.timer == nil then a.ends, a.timerLen = nil, nil end
     end
-    if o.progress ~= nil then
-        local p = tonumber(o.progress)
-        a.progress = p and math.max(0, math.min(1, p)) or nil
-    end
+    if o.progress ~= nil then a.progress = Sdk.Num(o.progress, 0, 1) end
     if o.timer ~= nil then
-        local t = tonumber(o.timer)
-        a.ends = t and (os.clock() + math.max(0, t)) or nil
+        local t = Sdk.Num(o.timer, 0, 86400)
+        a.ends = t and (os.clock() + t) or nil
         a.timerLen = t and math.max(1, t) or nil
     end
     if o.icon ~= nil then a.glyph, a.image = Sdk.Icon(o.icon) end
@@ -11043,8 +11134,7 @@ function Sdk.ActApply(a, o)
     if o.onTap ~= nil then a.onTap = type(o.onTap) == "function" and o.onTap or nil end
     if o.onEnd ~= nil then a.onEnd = type(o.onEnd) == "function" and o.onEnd or nil end
     if o.staleAfter ~= nil then
-        local st = tonumber(o.staleAfter)
-        a.staleAfter = st and math.max(5, st) or nil
+        a.staleAfter = Sdk.Num(o.staleAfter, 5, 86400)
     end
     a.touched = os.clock()
 end
@@ -11062,9 +11152,9 @@ function Sdk.Handle(a)
         if a.ended then return end
         if type(o) == "table" then
             Sdk.Guard(Sdk.ActApply, a, o)
-            local after = tonumber(o.after)
+            local after = Sdk.Num(o.after, 0, 10)
             if after and after > 0 then
-                a.endAt = os.clock() + math.min(after, 10)
+                a.endAt = os.clock() + after
                 return
             end
         end
@@ -11085,6 +11175,7 @@ function Sdk.ActStart(o)
     end
     if Sdk.Muted[app] then return nil, "muted" end
     if Sdk.Apps[app] == false then return nil, "not allowed" end
+    if not Sdk.Known(app) then return nil, "too many apps" end
     for i = #Sdk.Acts, 1, -1 do
         if Sdk.Acts[i].app == app then Sdk.ActEnd(Sdk.Acts[i]) end
     end
@@ -11110,9 +11201,11 @@ function Sdk.ActEnd(a, reason)
 end
 
 function Sdk.EndApp(app, reason)
-    for i = #Sdk.Acts, 1, -1 do
-        if Sdk.Acts[i] and Sdk.Acts[i].app == app then Sdk.ActEnd(Sdk.Acts[i], reason) end
+    local list = {}
+    for _, a in ipairs(Sdk.Acts) do
+        if a.app == app then list[#list + 1] = a end
     end
+    for _, a in ipairs(list) do Sdk.ActEnd(a, reason) end
 end
 
 function Sdk.Dismiss(a)
@@ -11154,7 +11247,7 @@ function Sdk.TapNotif(now)
     local n = NotificationQueue.Active
     if not n then return end
     if Sdk.ExpandedAt and Sdk.PressAt and Sdk.ExpandedAt >= Sdk.PressAt then return end
-    local fn = n.OnTap
+    local fn, app = n.OnTap, n.SdkApp
     if Sdk.Expanded and Sdk.ExpandK > 0.9 then
         for _, h in ipairs(Sdk.Hits) do
             if Pointer.x >= h.x1 and Pointer.x <= h.x2 and Pointer.y >= h.y1 and Pointer.y <= h.y2 then
@@ -11169,8 +11262,8 @@ function Sdk.TapNotif(now)
     end
     if not fn then return end
     Haptic.Trigger(Haptic.Types.TAP_MEDIUM)
-    Sdk.Call(n.SdkApp, fn)
     Impl.DismissNotif(now)
+    Sdk.Call(app, fn)
 end
 
 function Sdk.TapActivity(a)
@@ -11298,6 +11391,22 @@ function Sdk.RenderExpanded(layout, am, yOffset, n)
     end
 end
 
+function Sdk.Drain()
+    local q = DynamicIslandQueue
+    if q == nil then return end
+    if type(q) ~= "table" then error("queue is not a table") end
+    local n = #q
+    if type(n) ~= "number" or n <= 0 then
+        if n ~= 0 then error("bad queue length") end
+        return
+    end
+    DynamicIslandQueue = {}
+    for i = 1, math.min(n, 20) do
+        local it = q[i]
+        if type(it) == "table" then Sdk.Guard(Sdk.Post, it, true) end
+    end
+end
+
 function Sdk.Tick(now)
     Sdk.TickExpand(now)
     if not Sdk.Ready then return end
@@ -11306,16 +11415,18 @@ function Sdk.Tick(now)
         Sdk.Early = {}
         for _, o in ipairs(early) do Sdk.Guard(Sdk.Post, o, true) end
     end
-    local q = DynamicIslandQueue
-    if type(q) == "table" and #q > 0 then
+    if not pcall(Sdk.Drain) then
         DynamicIslandQueue = {}
-        for i = 1, math.min(#q, 20) do
-            if type(q[i]) == "table" then Sdk.Guard(Sdk.Post, q[i], true) end
-        end
+        Sdk.Warn(nil, "DynamicIslandQueue was broken by another script, reset it")
     end
-    for i = #Sdk.Acts, 1, -1 do
-        local a = Sdk.Acts[i]
-        if a then
+    if ReadIsland() ~= Sdk.Facade then
+        PublishIsland(Sdk.Facade)
+        Sdk.Warn(nil, "another script replaced DynamicIsland, restored it")
+    end
+    local acts = {}
+    for i, a in ipairs(Sdk.Acts) do acts[i] = a end
+    for _, a in ipairs(acts) do
+        if not a.ended then
             if Sdk.Apps[a.app] == nil then Sdk.Ask(a.app) end
             if a.endAt and now >= a.endAt then
                 Sdk.ActEnd(a)
@@ -12208,7 +12319,7 @@ function Impl.ButtonVK(code)
         end
         local letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         for i = 1, 26 do
-            local ch = letters:sub(i, i)
+            local ch = string.sub(letters, i, i)
             if B["KEY_" .. ch] then t[B["KEY_" .. ch]] = 0x40 + i end
         end
         for d = 0, 9 do
@@ -12585,8 +12696,8 @@ function Setup.KeyName(code)
         Setup.Names = {}
         pcall(function()
             for k, v in pairs(Enum.ButtonCode) do
-                if type(v) == "number" and type(k) == "string" and k:sub(1, 4) == "KEY_" and not Setup.Names[v] then
-                    Setup.Names[v] = k:sub(5):gsub("_", " ")
+                if type(v) == "number" and type(k) == "string" and string.sub(k, 1, 4) == "KEY_" and not Setup.Names[v] then
+                    Setup.Names[v] = string.gsub(string.sub(k, 5), "_", " ")
                 end
             end
         end)
@@ -13125,8 +13236,8 @@ function Swipe.Tick(layout, now, dt)
             elseif not g.moved then
                 if it.onTap and Swipe.Row.count == 1 then
                     Haptic.Trigger(Haptic.Types.TAP_MEDIUM)
-                    Sdk.Call(it.app, it.onTap)
                     it._gone = true
+                    Sdk.Call(it.app, it.onTap)
                 else
                     NotifCenter.Toggle(Swipe.Row)
                 end
@@ -13526,7 +13637,7 @@ do
         return Finish(name, ok, ...)
     end
     for name, fn in pairs(DynamicIsland) do
-        if type(fn) == "function" and name:sub(1, 2) == "On" then
+        if type(fn) == "function" and string.sub(name, 1, 2) == "On" then
             DynamicIsland[name] = function(...)
                 if UI and UI.Main.Debug and UI.Main.Debug:Get() then
                     return Timed(name, Perf.Now(), pcall(fn, ...))
