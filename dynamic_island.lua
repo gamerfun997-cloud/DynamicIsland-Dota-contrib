@@ -877,8 +877,13 @@ local localization = qLocalization.new({
         di_island_paused = "Paused",
         di_haptics_enabled = "Enable Haptic Engine",
         di_haptics_visual = "Visual Haptics (Squish & Bounce)",
-        di_haptics_audio = "Acoustic Taptic Clicks",
-        di_haptics_volume = "Taptic Click Volume",
+        di_haptics_audio = "Interface Sounds",
+        di_haptics_volume = "Interface Volume",
+        di_alert_sounds = "Alert Sounds",
+        di_alert_sounds_tip = "Sounds of alerts, the courier, pause and match found. Interface clicks are in Extra, Haptics",
+        di_alert_volume = "Alert Volume",
+        di_alert_sound = "Sound",
+        di_alert_sound_tip = "Play a sound when this alert shows up",
         di_haptics_intensity = "Kinetic Intensity",
         di_haptics_combat_filter = "Combat Anti-Spam Filter",
         di_haptics_audio_ducking = "Audio Auto-Ducking",
@@ -893,8 +898,7 @@ local localization = qLocalization.new({
         di_priority_aegis = "Aegis Picked Up",
         di_priority_roshan_attack = "Roshan Under Attack",
         di_priority_fight_summary = "Fight Summary",
-        di_priority_rune = "Rune Spawn Reminder",
-        di_priority_power_rune_cycle = "Power Rune Cycle"
+        di_priority_power_rune_cycle = "Priority"
     },
     ru = {
         di_ui_spotify_no_port = "Спотифай запущен без порта, лайки не работают. Перезапусти его",
@@ -1396,8 +1400,13 @@ local localization = qLocalization.new({
         di_island_paused = "Пауза",
         di_haptics_enabled = "Включить тактильный движок",
         di_haptics_visual = "Визуальная тактильность (Сквиш)",
-        di_haptics_audio = "Акустические микро-клики",
-        di_haptics_volume = "Громкость щелчков",
+        di_haptics_audio = "Звуки интерфейса",
+        di_haptics_volume = "Громкость интерфейса",
+        di_alert_sounds = "Звуки оповещений",
+        di_alert_sounds_tip = "Звуки оповещений, курьера, паузы и найденного матча. Щелчки интерфейса в Extra, Отклик",
+        di_alert_volume = "Громкость оповещений",
+        di_alert_sound = "Звук",
+        di_alert_sound_tip = "Проигрывать звук, когда появляется это оповещение",
         di_haptics_intensity = "Сила кинетического импульса",
         di_haptics_combat_filter = "Умный фильтр в драках",
         di_haptics_audio_ducking = "Затихание остальных звуков",
@@ -1412,8 +1421,7 @@ local localization = qLocalization.new({
         di_priority_aegis = "Подбор Эгиды",
         di_priority_roshan_attack = "Атака на Рошана",
         di_priority_fight_summary = "Итог боя",
-        di_priority_rune = "Напоминание о руне",
-        di_priority_power_rune_cycle = "Цикл Power рун"
+        di_priority_power_rune_cycle = "Приоритет"
     },
 })
 local Menu = localization.WrapLibrary(Menu)
@@ -2346,6 +2354,8 @@ local function SaveAllConfig()
             if apps then f:write("sdk_apps=" .. apps .. "\n") end
             local focusApps = Sdk.FocusLine()
             if focusApps then f:write("sdk_focus=" .. focusApps .. "\n") end
+            local mutedApps = Sdk.SoundLine()
+            if mutedApps then f:write("sdk_nosound=" .. mutedApps .. "\n") end
 
             for id, cfg in pairs(HUDCustomizer.WidgetConfigs) do
                 f:write(string.format("cfg_%s=%s,%d,%d,%s,%s\n", id, cfg.bold and "1" or "0", cfg.colorMode or 1, cfg.format or 1, cfg.showIcon and "1" or "0", cfg.customHex or ""))
@@ -2490,6 +2500,8 @@ function Impl.LoadAllConfig()
             Sdk.LoadLine(string.sub(line, 10))
         elseif string.sub(line, 1, 10) == "sdk_focus=" then
             Sdk.LoadFocus(string.sub(line, 11))
+        elseif string.sub(line, 1, 12) == "sdk_nosound=" then
+            Sdk.LoadSound(string.sub(line, 13))
         elseif string.match(line, "^setup_resume=%d+$") then
             Setup.Resume = tonumber(string.match(line, "^setup_resume=(%d+)$"))
         elseif activeMatch then
@@ -2738,14 +2750,21 @@ local Haptic = {
     }
 }
 
+Impl.AlertSound = { notification_toast = true, timer_chime = true, courier_delivered = true, courier_death_or_fail = true, low_hp_heartbeat = true, game_paused = true, game_unpaused = true, match_found = true }
+
 local function HapticPlaySound(appleSoundName, arg2, arg3)
     if Haptic.Quiet then return end
-    if not ToggleOn(UI and UI.Haptics and UI.Haptics.Enabled) then return end
-    if not (UI and UI.Haptics and UI.Haptics.AudioFeedback and UI.Haptics.AudioFeedback:Get()) then
-        return
+    local alert = Impl.AlertSound[appleSoundName] == true
+    local H = UI and UI.Haptics
+    if alert then
+        if not ToggleOn(H and H.AlertSounds) then return end
+    else
+        if not ToggleOn(H and H.Enabled) then return end
+        if not (H and H.AudioFeedback and H.AudioFeedback:Get()) then return end
     end
     local baseVol = (type(arg2) == "number" and arg2) or (type(arg3) == "number" and arg3) or 0.5
-    local userVol = (UI and UI.Haptics and UI.Haptics.Volume) and (UI.Haptics.Volume:Get() / 100.0) or 0.5
+    local volW = H and (alert and H.AlertVolume or H.Volume)
+    local userVol = volW and (volW:Get() / 100.0) or 0.5
     local finalVol = math.max(0.01, math.min(1.0, baseVol * userVol))
 
     if appleSoundName and appleSoundName ~= "" then
@@ -2883,7 +2902,7 @@ function Haptic.Trigger(hType, p1, p2)
             Haptic.State.GlowAlpha = 80 * intensity
             Haptic.State.GlowColor = Color(255, 55, 95, 255)
         end
-        if p1 then
+        if p1 and ToggleOn(UI and UI.Sounds and UI.Sounds.LowHp) then
             HapticPlaySound("low_hp_heartbeat", 0.35)
         end
         Haptic.Pattern.Active = true
@@ -3065,7 +3084,7 @@ function Impl.InitMenu()
     local snap = gDiag:Button("di_diag_snapshot", function() Dbg.Snapshot() end)
     snap:ToolTip("di_diag_snapshot_tip")
 
-    UI = { Main = {}, Media = {}, Combat = {}, Runes = {}, Timings = {}, Haptics = {}, Priority = {}, Durations = {}, Focus = {}, Reminders = {}, System = {} }
+    UI = { Main = {}, Media = {}, Combat = {}, Runes = {}, Timings = {}, Haptics = {}, Priority = {}, Durations = {}, Sounds = {}, Focus = {}, Reminders = {}, System = {} }
     local M, Md, C, R, T, H, P, D = UI.Main, UI.Media, UI.Combat, UI.Runes, UI.Timings, UI.Haptics, UI.Priority, UI.Durations
 
     local function prio(gear, key, def)
@@ -3083,6 +3102,11 @@ function Impl.InitMenu()
         w:Icon("\u{f254}")
         w:ToolTip("di_alert_duration_tip")
         return w
+    end
+    local function snd(gear, key)
+        local w = gear:Switch("di_alert_sound", true, "\u{f028}")
+        w:ToolTip("di_alert_sound_tip")
+        UI.Sounds[key] = w
     end
     local function lead(gear, key, lo, hi, def)
         local w = gear:Slider(key, lo, hi, def, "%d s")
@@ -3111,6 +3135,9 @@ function Impl.InitMenu()
     T.ToastDuration = gAll:Slider("di_timings_toast_duration", 1, 10, 4, "%d s")
     T.ToastDuration:Icon("\u{f254}")
     T.ToastDuration:ToolTip("di_toast_duration_tip")
+    H.AlertSounds = gAll:Switch("di_alert_sounds", true, "\u{f0f3}")
+    H.AlertSounds:ToolTip("di_alert_sounds_tip")
+    H.AlertVolume = H.AlertSounds:Gear("di_gear_audio"):Slider("di_alert_volume", 0, 100, 50, "%d%%")
     M.CustomLabel = gMore:Input("di_main_custom_label", "", "\u{f02b}")
     M.ResetPos = gMore:Button("di_main_reset_pos", function()
         DragState.CustomX = -1
@@ -3170,45 +3197,55 @@ function Impl.InitMenu()
     C.FightLargeH:Icon("\u{f338}")
     P.FightSummary = prio(gRadar, "di_priority_fight_summary", 3)
     D.FightSummary = dur(gRadar)
+    snd(gRadar, "FightSummary")
 
     C.Kills = gCombat:Switch("di_combat_kills", true, "\u{f0e7}")
     local gKill = C.Kills:Gear("di_gear_alert")
     P.Kill = prio(gKill, "di_alert_priority", 3)
     D.Kill = dur(gKill)
+    snd(gKill, "Kill")
     C.RampageTimer = gKill:Switch("di_rampage_timer", true, "\u{f2f2}")
     C.RampageTimer:ToolTip("di_rampage_timer_tip")
     C.Invis = gCombat:Switch("di_combat_invis", true, "\u{f070}")
     local gInvis = C.Invis:Gear("di_gear_alert")
     P.Invis = prio(gInvis, "di_alert_priority", 4)
     D.Invis = dur(gInvis)
+    snd(gInvis, "Invis")
     C.Teleports = gCombat:Switch("di_combat_teleports", true, "\u{f3c5}")
     local gTeleport = C.Teleports:Gear("di_gear_alert")
     P.Teleport = prio(gTeleport, "di_alert_priority", 4)
     D.Teleport = dur(gTeleport)
+    snd(gTeleport, "Teleport")
     C.KeyEnemyItems = gCombat:Switch("di_combat_key_enemy_items", true, "\u{f290}")
     local gEnemyItem = C.KeyEnemyItems:Gear("di_gear_alert")
     P.EnemyItem = prio(gEnemyItem, "di_alert_priority", 3)
     D.EnemyItem = dur(gEnemyItem)
+    snd(gEnemyItem, "EnemyItem")
     C.Towers = gCombat:Switch("di_combat_towers", true, "\u{f447}")
     local gTower = C.Towers:Gear("di_gear_alert")
     P.Tower = prio(gTower, "di_alert_priority", 4)
     D.Tower = dur(gTower)
+    snd(gTower, "Tower")
     C.Couriers = gCombat:Switch("di_combat_couriers", true, "\u{f48b}")
     local gCourier = C.Couriers:Gear("di_gear_alert")
     P.Courier = prio(gCourier, "di_alert_priority", 3)
     D.Courier = dur(gCourier)
+    snd(gCourier, "Courier")
     C.Buybacks = gCombat:Switch("di_combat_buybacks", true, "\u{f2f9}")
     local gBuyback = C.Buybacks:Gear("di_gear_alert")
     P.Buyback = prio(gBuyback, "di_alert_priority", 5)
     D.Buyback = dur(gBuyback)
+    snd(gBuyback, "Buyback")
     C.LowHP = gCombat:Switch("di_combat_low_hp", true, "\u{f004}")
     local gLowHp = C.LowHP:Gear("di_gear_alert")
     P.LowHp = prio(gLowHp, "di_alert_priority", 5)
     D.LowHp = dur(gLowHp)
+    snd(gLowHp, "LowHp")
     C.LevelUp = gCombat:Switch("di_combat_level_up", true, "\u{f201}")
     local gLevel = C.LevelUp:Gear("di_gear_alert")
     P.Level = prio(gLevel, "di_alert_priority", 1)
     D.Level = dur(gLevel)
+    snd(gLevel, "Level")
     C.CourierDelivery = gLive:Switch("di_combat_courier_delivery", true, "\u{f48b}")
     C.PauseAlert = gLive:Switch("di_combat_pause_alert", true, "\u{f04c}")
     UI.System.Output = gSystem:Switch("di_sys_output", true, "\u{f025}")
@@ -3221,49 +3258,68 @@ function Impl.InitMenu()
     R.ActiveRunes = gMap:Switch("di_runes_active_runes", true, "\u{f0e7}")
     local gPower = R.ActiveRunes:Gear("di_gear_alert")
     T.PowerRuneTime = lead(gPower, "di_timings_power_rune_time", 5, 60, 20)
-    P.Rune = prio(gPower, "di_priority_rune", 2)
     P.PowerRuneCycle = prio(gPower, "di_priority_power_rune_cycle", 2)
     D.Rune = dur(gPower)
+    snd(gPower, "Rune")
     R.WaterRunes = gMap:Switch("di_runes_water_runes", true, "\u{f043}")
-    T.WaterRuneTime = lead(R.WaterRunes:Gear("di_gear_alert"), "di_timings_water_rune_time", 5, 60, 20)
+    local gWaterRunes = R.WaterRunes:Gear("di_gear_alert")
+    T.WaterRuneTime = lead(gWaterRunes, "di_timings_water_rune_time", 5, 60, 20)
+    P.WaterRunes = prio(gWaterRunes, "di_alert_priority", 2)
+    D.WaterRunes = dur(gWaterRunes)
+    snd(gWaterRunes, "WaterRunes")
     R.BountyRunes = gMap:Switch("di_runes_bounty_runes", true, "\u{f155}")
-    T.BountyRuneTime = lead(R.BountyRunes:Gear("di_gear_alert"), "di_timings_bounty_rune_time", 5, 45, 10)
+    local gBountyRunes = R.BountyRunes:Gear("di_gear_alert")
+    T.BountyRuneTime = lead(gBountyRunes, "di_timings_bounty_rune_time", 5, 45, 10)
+    P.BountyRunes = prio(gBountyRunes, "di_alert_priority", 2)
+    D.BountyRunes = dur(gBountyRunes)
+    snd(gBountyRunes, "BountyRunes")
     R.WisdomRunes = gMap:Switch("di_runes_wisdom_runes", true, "\u{f19d}")
-    T.WisdomRuneTime = lead(R.WisdomRunes:Gear("di_gear_alert"), "di_timings_wisdom_rune_time", 5, 60, 20)
+    local gWisdomRunes = R.WisdomRunes:Gear("di_gear_alert")
+    T.WisdomRuneTime = lead(gWisdomRunes, "di_timings_wisdom_rune_time", 5, 60, 20)
+    P.WisdomRunes = prio(gWisdomRunes, "di_alert_priority", 2)
+    D.WisdomRunes = dur(gWisdomRunes)
+    snd(gWisdomRunes, "WisdomRunes")
     R.RunePickups = gMap:Switch("di_runes_rune_pickups", true, "\u{f21b}")
     local gRunePickup = R.RunePickups:Gear("di_gear_alert")
     P.RunePickup = prio(gRunePickup, "di_alert_priority", 2)
     D.RunePickup = dur(gRunePickup)
+    snd(gRunePickup, "RunePickup")
     R.RuneWorldSpawn = gMap:Switch("di_runes_rune_world_spawn", true, "\u{f279}")
     local gRuneWorld = R.RuneWorldSpawn:Gear("di_gear_alert")
     P.RuneWorld = prio(gRuneWorld, "di_alert_priority", 2)
     D.RuneWorld = dur(gRuneWorld)
+    snd(gRuneWorld, "RuneWorld")
     R.Stacks = gMap:Switch("di_runes_stacks", false, "\u{f5fd}")
     local gStack = R.Stacks:Gear("di_gear_alert")
     T.StackTime = lead(gStack, "di_timings_stack_time", 3, 20, 8)
     P.Stack = prio(gStack, "di_alert_priority", 2)
     D.Stack = dur(gStack)
+    snd(gStack, "Stack")
     R.Lotus = gMap:Switch("di_runes_lotus", true, "\u{f06c}")
     local gLotus = R.Lotus:Gear("di_gear_alert")
     T.LotusTime = lead(gLotus, "di_timings_lotus_time", 5, 60, 20)
     P.Lotus = prio(gLotus, "di_alert_priority", 2)
     D.Lotus = dur(gLotus)
+    snd(gLotus, "Lotus")
     R.Neutrals = gMap:Switch("di_runes_neutrals", true, "\u{f466}")
     local gNeutral = R.Neutrals:Gear("di_gear_alert")
     P.Neutral = prio(gNeutral, "di_alert_priority", 2)
     D.Neutral = dur(gNeutral)
+    snd(gNeutral, "Neutral")
     R.Tormentor = gMap:Switch("di_runes_tormentor", true, "\u{f005}")
     local gTorm = R.Tormentor:Gear("di_gear_alert")
     T.Tormentor1Time = lead(gTorm, "di_timings_tormentor1_time", 30, 180, 120)
     T.Tormentor2Time = lead(gTorm, "di_timings_tormentor2_time", 5, 60, 20)
     P.Tormentor = prio(gTorm, "di_alert_priority", 3)
     D.Tormentor = dur(gTorm)
+    snd(gTorm, "Tormentor")
     R.Roshan = gMap:Switch("di_runes_roshan", true, "\u{f6e3}")
     local gRosh = R.Roshan:Gear("di_gear_alert")
     P.RoshanKill = prio(gRosh, "di_priority_roshan_kill", 5)
     P.Aegis = prio(gRosh, "di_priority_aegis", 5)
     P.RoshanAttack = prio(gRosh, "di_priority_roshan_attack", 4)
     D.Roshan = dur(gRosh)
+    snd(gRosh, "Roshan")
 
     Md.Enabled = gMedia:Switch("di_media_enabled", true, "\u{f001}")
     local gPlayer = Md.Enabled:Gear("di_gear_media")
@@ -3277,6 +3333,7 @@ function Impl.InitMenu()
     local gSpotifyLike = Md.SpotifyLike:Gear("di_gear_alert")
     P.SpotifyLike = prio(gSpotifyLike, "di_alert_priority", 1)
     D.SpotifyLike = dur(gSpotifyLike)
+    snd(gSpotifyLike, "SpotifyLike")
     Md.VolumeWheel = gMedia:Switch("di_media_volume_wheel", true, "\u{f028}")
     Md.SecondaryBubble = gMedia:Switch("di_media_secondary_bubble", true, "\u{f111}")
     Md.Hints = gMedia:Switch("di_media_hints", true, "\u{f05a}")
@@ -3334,6 +3391,7 @@ function Impl.InitMenu()
     end
     P.Reminder = prio(gRem, "di_priority_reminder", 4)
     D.Reminder = dur(gRem, "di_reminder_duration")
+    snd(gRem, "Reminder")
 
     local function refreshDisabled()
         local hOn = H.Enabled:Get()
@@ -3695,11 +3753,18 @@ Impl.NotifDurationKey = {
     reminder = "Reminder"
 }
 
+Impl.RuneKey = { rune_water = "WaterRunes", rune_wisdom = "WisdomRunes", bounty = "BountyRunes" }
+
+function Impl.AlertKey(n, map)
+    if n.Type == "rune" and Impl.RuneKey[n.FallbackSvg] then return Impl.RuneKey[n.FallbackSvg] end
+    return n.Type and map[n.Type]
+end
+
 function Impl.GetNotifPriority(notif)
     if notif.PriorityOverride then
         return notif.PriorityOverride
     end
-    local key = notif.Type and Impl.NotifPriorityKey[notif.Type]
+    local key = Impl.AlertKey(notif, Impl.NotifPriorityKey)
     local widget = key and UI and UI.Priority and UI.Priority[key]
     if widget then
         return widget:Get()
@@ -3722,9 +3787,17 @@ function Impl.PopHighestPriorityNotif()
     return n
 end
 
+function Impl.SoundOn(n)
+    if n.SdkApp then return Sdk.Sound[n.SdkApp] ~= false end
+    local key = Impl.AlertKey(n, Impl.NotifDurationKey)
+    local w = key and UI and UI.Sounds and UI.Sounds[key]
+    return not w or w:Get() == true
+end
+
 function Impl.NotifChime(n)
     if not n or n.Chimed or n.Silent then return end
     n.Chimed = true
+    if not Impl.SoundOn(n) then return end
     HapticPlaySound(n.Chime or "notification_toast", 0.45)
 end
 
@@ -3734,7 +3807,7 @@ function DynamicIsland.PushNotification(notif)
     if Dbg.On then Dbg.Log("notif", "push " .. tostring(notif.Type) .. " \"" .. tostring(notif.Tag) .. " / " .. tostring(notif.Title) .. "\"") end
     NotifCenter.Add(notif)
     local shared = (UI and UI.Timings and UI.Timings.ToastDuration) and UI.Timings.ToastDuration:Get() or 4
-    local durKey = notif.Type and Impl.NotifDurationKey[notif.Type]
+    local durKey = Impl.AlertKey(notif, Impl.NotifDurationKey)
     if durKey then
         local dw = UI and UI.Durations and UI.Durations[durKey]
         local own = dw and dw:Get() or 0
@@ -10677,6 +10750,7 @@ Sdk.Expanded = false
 Sdk.ExpandK, Sdk.ExpandV = 0, 0
 Sdk.LastT = 0
 Sdk.Focus = {}
+Sdk.Sound = {}
 Sdk.Slots = {}
 Sdk.MenuDirty = true
 Sdk.MenuAt = 0
@@ -11045,6 +11119,7 @@ end
 function Sdk.Reset()
     Sdk.MenuDirty = true
     Sdk.Focus = {}
+    Sdk.Sound = {}
     Sdk.Apps = {}
     Sdk.Muted = {}
     Sdk.Strikes = {}
@@ -11080,6 +11155,22 @@ function Sdk.LoadLine(s)
     Sdk.MenuDirty = true
 end
 
+function Sdk.SoundLine()
+    local parts = {}
+    for app, v in pairs(Sdk.Sound) do
+        if v == false then parts[#parts + 1] = app end
+    end
+    if #parts == 0 then return nil end
+    table.sort(parts)
+    return table.concat(parts, "|")
+end
+
+function Sdk.LoadSound(s)
+    for app in string.gmatch(s .. "|", "([^|]*)|") do
+        if app ~= "" then Sdk.Sound[app] = false end
+    end
+end
+
 function Sdk.LoadFocus(s)
     for app in string.gmatch(s .. "|", "([^|]*)|") do
         if app ~= "" then Sdk.Focus[app] = true end
@@ -11094,6 +11185,16 @@ function Sdk.InitMenu(page)
         slot.sw = g:Switch("sdk_slot_" .. i, false, "\u{f121}")
         slot.gear = slot.sw:Gear("sdk_gear_" .. i)
         slot.focus = slot.gear:Switch("sdk_focus_" .. i, false, "\u{f186}")
+        slot.sound = slot.gear:Switch("sdk_sound_" .. i, true, "\u{f028}")
+        slot.sound:SetCallback(function(w)
+            if Sdk.Syncing or not slot.app then return end
+            if w:Get() == true then
+                Sdk.Sound[slot.app] = nil
+            else
+                Sdk.Sound[slot.app] = false
+            end
+            SaveAllConfig()
+        end)
         slot.sw:SetCallback(function(w)
             if Sdk.Syncing or not slot.app then return end
             local on = w:Get() == true
@@ -11131,6 +11232,8 @@ function Sdk.MenuSync(now)
             pcall(slot.sw.ForceLocalization, slot.sw, label)
             pcall(slot.gear.ForceLocalization, slot.gear, label)
             pcall(slot.focus.ForceLocalization, slot.focus, L("di_sdk_focus"))
+            pcall(slot.sound.ForceLocalization, slot.sound, L("di_alert_sound"))
+            if slot.sound:Get() ~= (Sdk.Sound[app] ~= false) then slot.sound:Set(Sdk.Sound[app] ~= false) end
             if slot.sw:Get() ~= (Sdk.Apps[app] == true) then slot.sw:Set(Sdk.Apps[app] == true) end
             if slot.focus:Get() ~= (Sdk.Focus[app] == true) then slot.focus:Set(Sdk.Focus[app] == true) end
         end
@@ -11892,7 +11995,7 @@ function Dbg.Passport(reason)
     end
     if #line > 0 then Dbg.Log("settings", table.concat(line, "  ")) end
     local apps = {}
-    for app, v in pairs(Sdk.Apps) do apps[#apps + 1] = app .. (v and ":allowed" or ":denied") .. (Sdk.Focus[app] and "+focus" or "") end
+    for app, v in pairs(Sdk.Apps) do apps[#apps + 1] = app .. (v and ":allowed" or ":denied") .. (Sdk.Focus[app] and "+focus" or "") .. (Sdk.Sound[app] == false and "-sound" or "") end
     table.sort(apps)
     Dbg.Log("session", "sdk scripts: " .. (#apps > 0 and table.concat(apps, ", ") or "none") .. ", activities " .. #Sdk.Acts)
     Dbg.Log("session", "now: " .. table.concat(Dbg.Check(true), "  "))

@@ -30,7 +30,7 @@ table.insert(DynamicIslandQueue, { app = "My Script", title = "Loaded", level = 
 
 ## Permission
 
-The first time your script sends something, the island asks the user if it's allowed, the same way an iPhone asks for an app. Until they answer, up to 3 notifications wait. If they say no, your calls return `nil, "not allowed"`. The user can change it later in Alerts > Scripts, and allow your script during Focus there too.
+The first time your script sends something, the island asks the user if it's allowed, the same way an iPhone asks for an app. Until they answer, up to 3 notifications wait. If they say no, your calls return `nil, "not allowed"`. The user can change it later in Alerts > Scripts. The gear next to each script also has Allow in Focus and Sound, so the user can let your script through Focus or keep its banners but mute its sounds.
 
 `DynamicIsland.IsAllowed("My Script")` returns `true` once the user has allowed it.
 
