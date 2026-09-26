@@ -245,6 +245,10 @@ internal static class Program
                 Updater.OpenReleasePage(request.QueryString["url"]);
                 await WriteJsonAsync(response, new SoundResponse("ok"), AppJson.Context.SoundResponse);
             }
+            else if (path == "/reveal")
+            {
+                await WriteJsonAsync(response, new SoundResponse(LogReveal.Reveal(MediaSessionService.ScriptsDirectory)), AppJson.Context.SoundResponse);
+            }
             else if (path == "/system")
             {
                 await WriteJsonAsync(response, SystemWatcher.Current, AppJson.Context.SystemInfo);

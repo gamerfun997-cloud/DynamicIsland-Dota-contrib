@@ -53,6 +53,7 @@ public static class MediaSessionService
 
     private static readonly string TempDir = Path.Combine(Path.GetTempPath(), "dynamic_island_covers");
     private static string ScriptsDir = @"C:\Umbrella\scripts";
+    public static string ScriptsDirectory => ScriptsDir;
     private static string UmbrellaDir => Path.Combine(ScriptsDir, "dynamic_island_covers");
 
     public static void SetScriptsDir(string? dir)

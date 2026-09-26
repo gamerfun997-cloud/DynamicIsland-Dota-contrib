@@ -29,7 +29,10 @@ Just start `media_bridge.exe`. Only one copy runs at a time, starting it again r
 | `/update/start?dir=<scripts folder>` | download the latest release and install the script |
 | `/update/status` | download progress and state |
 | `/update/restart` | swap in the new exe and restart |
-| `/open` | open the latest release page |
+| `/open?url=` | open the latest release page, or a page of this repo |
+| `/level` | live audio level of the playing app, 5 bars |
+| `/key?vk=<code>` | press a key in the dota window (a short list of safe keys) |
+| `/reveal` | show `dynamic_island_debug.log` in explorer |
 | `/fonts`, `/fonts/install` | check and install the sf pro fonts for the current user |
 
 ## Build

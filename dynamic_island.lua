@@ -715,8 +715,13 @@ local localization = qLocalization.new({
         di_fonts_failed = "Couldn't install fonts",
         di_fonts_failed_sub = "Get them from the link in the README",
         di_main_debug = "Debug log",
-        di_main_debug_tip = "Writes errors and frame time to debug.log. Turn it on if something breaks and send the log",
-        di_ui_module_off = "Part of the island turned off after an error, see debug.log",
+        di_main_debug_tip = "Writes a detailed log to scripts/dynamic_island_debug.log: what the island did, errors, frame time and your settings. Turn it on, repeat the problem and send the file",
+        di_main_debug_open = "Show Debug Log",
+        di_tab_diag = "Diagnostics",
+        di_group_diag = "Diagnostics",
+        di_diag_snapshot = "Save Snapshot to Log",
+        di_diag_snapshot_tip = "Writes everything the island knows right now into the debug log. Press it while the problem is on screen",
+        di_ui_module_off = "Part of the island turned off after an error. Turn on Debug log and send dynamic_island_debug.log",
         di_main_demo = "Show all screens",
         di_upd_available = "Update available",
         di_upd_manual = "Download it from GitHub",
@@ -1229,8 +1234,13 @@ local localization = qLocalization.new({
         di_fonts_failed = "Не удалось поставить шрифты",
         di_fonts_failed_sub = "Скачай их по ссылке в README",
         di_main_debug = "Лог отладки",
-        di_main_debug_tip = "Пишет ошибки и время кадра в debug.log. Включи, если что-то сломалось, и скинь лог",
-        di_ui_module_off = "Часть островка отключилась из-за ошибки, смотри debug.log",
+        di_main_debug_tip = "Пишет подробный лог в scripts/dynamic_island_debug.log: что делал островок, ошибки, время кадра и твои настройки. Включи, повтори проблему и скинь файл",
+        di_main_debug_open = "Показать лог",
+        di_tab_diag = "Диагностика",
+        di_group_diag = "Диагностика",
+        di_diag_snapshot = "Сохранить снимок в лог",
+        di_diag_snapshot_tip = "Записывает в лог всё, что островок знает прямо сейчас. Жми, пока проблема на экране",
+        di_ui_module_off = "Часть островка отключилась из-за ошибки. Включи лог отладки и скинь dynamic_island_debug.log",
         di_main_demo = "Показать все экраны",
         di_upd_available = "Доступно обновление",
         di_upd_manual = "Скачай новую версию на GitHub",
@@ -1626,18 +1636,26 @@ local Config = {
 
 local Impl = {}
 
+local Dbg = { On = false, TB = debug and debug.traceback }
+
 local Fuse = { Count = {}, Off = {}, Logged = 0 }
 
 function Fuse.Fail(name, err)
     local c = (Fuse.Count[name] or 0) + 1
     Fuse.Count[name] = c
-    if c <= 3 and Fuse.Logged < 60 then
+    if Dbg.On then
+        Dbg.Error(name, err)
+    elseif c <= 3 and Fuse.Logged < 60 then
         Fuse.Logged = Fuse.Logged + 1
         Log.Write("[Dynamic Island] " .. name .. ": " .. tostring(err))
     end
     if c == 30 then
         Fuse.Off[name] = true
-        Log.Write("[Dynamic Island] " .. name .. " turned off after repeated errors")
+        if Dbg.On then
+            Dbg.Log("error", name .. " turned off after repeated errors", true)
+        else
+            Log.Write("[Dynamic Island] " .. name .. " turned off after repeated errors")
+        end
     end
 end
 
@@ -1649,7 +1667,12 @@ end
 function Fuse.Guard(name, fn, ...)
     if Fuse.Off[name] then return end
     local depth = ClipDepth.n
-    local ok, err = pcall(fn, ...)
+    local ok, err
+    if Dbg.On and Dbg.TB then
+        ok, err = xpcall(fn, Dbg.Trace, ...)
+    else
+        ok, err = pcall(fn, ...)
+    end
     if not ok then
         Fuse.Unwind(depth)
         Fuse.Fail(name, err)
@@ -1663,17 +1686,7 @@ do
 end
 
 function Perf.Add(name, dt)
-    local b = (name == "OnFrame" and Perf.Frame) or (name == "OnUpdateEx" and Perf.Update) or nil
-    if not b then return end
-    b.sum, b.n = b.sum + dt, b.n + 1
-    if dt > b.max then b.max = dt end
-    local now = os.clock()
-    if now - Perf.At < 10 then return end
-    Perf.At = now
-    local f, u = Perf.Frame, Perf.Update
-    Log.Write(string.format("[Dynamic Island] frame %.3f ms avg, %.3f max | update %.3f ms avg, %.3f max", f.n > 0 and f.sum / f.n * 1000 or 0, f.max * 1000, u.n > 0 and u.sum / u.n * 1000 or 0, u.max * 1000))
-    Perf.Frame = { sum = 0, max = 0, n = 0 }
-    Perf.Update = { sum = 0, max = 0, n = 0 }
+    if Dbg.On then Dbg.PerfAdd(name, dt) end
 end
 
 local function TF(role, scale)
@@ -3047,6 +3060,10 @@ function Impl.InitMenu()
     local pHaptics = extra:Create(L("di_tab_haptics"))
     local gHaptics = pHaptics:Create("di_group_haptics", Enum.GroupSide.Left)
     local gDuck = pHaptics:Create("di_group_ducking", Enum.GroupSide.Right)
+    local pDiag = extra:Create(L("di_tab_diag"))
+    local gDiag = pDiag:Create("di_group_diag", Enum.GroupSide.Left)
+    local snap = gDiag:Button("di_diag_snapshot", function() Dbg.Snapshot() end)
+    snap:ToolTip("di_diag_snapshot_tip")
 
     UI = { Main = {}, Media = {}, Combat = {}, Runes = {}, Timings = {}, Haptics = {}, Priority = {}, Durations = {}, Focus = {}, Reminders = {}, System = {} }
     local M, Md, C, R, T, H, P, D = UI.Main, UI.Media, UI.Combat, UI.Runes, UI.Timings, UI.Haptics, UI.Priority, UI.Durations
@@ -3087,6 +3104,10 @@ function Impl.InitMenu()
     M.SdkReset = gMore:Button("di_main_sdk_reset", function() Sdk.Reset() end)
     M.Debug = gMore:Switch("di_main_debug", false, "\u{f188}")
     M.Debug:ToolTip("di_main_debug_tip")
+    M.Debug:SetCallback(function(w)
+        if w:Get() then Dbg.Start("switched on") else Dbg.Stop() end
+    end)
+    M.DebugOpen = gMore:Button("di_main_debug_open", function() Dbg.Reveal() end)
     T.ToastDuration = gAll:Slider("di_timings_toast_duration", 1, 10, 4, "%d s")
     T.ToastDuration:Icon("\u{f254}")
     T.ToastDuration:ToolTip("di_toast_duration_tip")
@@ -3710,6 +3731,7 @@ end
 function DynamicIsland.PushNotification(notif)
     if not notif then return end
     if notif.Type == "neutral" and UI and UI.Runes and UI.Runes.Neutrals and not UI.Runes.Neutrals:Get() then return end
+    if Dbg.On then Dbg.Log("notif", "push " .. tostring(notif.Type) .. " \"" .. tostring(notif.Tag) .. " / " .. tostring(notif.Title) .. "\"") end
     NotifCenter.Add(notif)
     local shared = (UI and UI.Timings and UI.Timings.ToastDuration) and UI.Timings.ToastDuration:Get() or 4
     local durKey = notif.Type and Impl.NotifDurationKey[notif.Type]
@@ -3726,6 +3748,7 @@ function DynamicIsland.PushNotification(notif)
     notif.Priority = Impl.GetNotifPriority(notif)
     if Focus.Blocks(notif) then
         Focus.Suppressed = Focus.Suppressed + 1
+        if Dbg.On then Dbg.Log("notif", "held back by focus") end
         return
     end
     if NotificationQueue.Active and notif.Priority > (NotificationQueue.Active.Priority or DEFAULT_NOTIF_PRIORITY) then
@@ -6137,6 +6160,7 @@ function Impl.HandleInteractions()
     elseif NotificationQueue.Active then
         local elapsed = nowClk - NotificationQueue.StartTime
         if elapsed >= NotificationQueue.Active.Duration then
+            if Dbg.On then Dbg.Log("notif", "timed out after " .. tostring(NotificationQueue.Active.Duration) .. "s") end
             NotificationQueue.LastDismissed = NotificationQueue.Active
             NotificationQueue.Active = nil
             if #NotificationQueue.List > 0 then
@@ -6232,6 +6256,12 @@ function Impl.HandleInteractions()
     MouseInput.LastWheelDown = isWheelDown
 
     if isLeftClicked and not isCtrlOnly then
+        local rb = Dbg.Bounds
+        if rb and Dbg.On and cx >= rb.x1 and cx <= rb.x2 and cy >= rb.y1 and cy <= rb.y2 then
+            Haptic.Trigger(Haptic.Types.TAP_LIGHT)
+            Dbg.Reveal()
+            return
+        end
         local mb = Focus.Bounds
         if mb and cx >= mb.x1 and cx <= mb.x2 and cy >= mb.y1 and cy <= mb.y2 then
             if nowClk - Focus.ClickAt < 0.4 then
@@ -7706,7 +7736,7 @@ function Satellite.Step(id, want, wide)
     return st
 end
 
-function Satellite.Draw(layout, st, side, fullW, content)
+function Satellite.Draw(layout, st, side, fullW, content, shift)
     local p = st.p
     if p < 0.01 then return nil end
     local scale = layout.scale
@@ -7719,6 +7749,7 @@ function Satellite.Draw(layout, st, side, fullW, content)
     local travel = (gap + d / 2) * p - d / 2
     local x1 = (side > 0) and (edge + travel) or (edge - travel - w)
     if side > 0 then x1 = x1 + Swipe.SatX end
+    if shift then x1 = x1 + side * shift end
     x1 = math.floor(x1 + 0.5)
     local y1 = math.floor(cy - d / 2 + 0.5)
     local x2 = x1 + math.floor(w + 0.5)
@@ -10301,6 +10332,7 @@ function Sheet.Action(action, now)
         Sheet.Forced = nil
         SaveAllConfig()
     elseif action == "nc_clear" then
+        if Dbg.On then Dbg.Log("notif", "notification center cleared") end
         NotifCenter.Items = {}
     elseif action == "sdk_allow" then
         Sdk.Answer(true)
@@ -10670,6 +10702,7 @@ function Sdk.S(v)
 end
 
 function Sdk.Log(app, msg)
+    if Dbg.On then Dbg.Log("sdk", (app and (app .. ": ") or "") .. msg) end
     if Sdk.LogBudget <= 0 then return end
     Sdk.LogBudget = Sdk.LogBudget - 1
     pcall(Log.Write, "[Dynamic Island] " .. (app and (app .. ": ") or "") .. msg)
@@ -10922,6 +10955,7 @@ function Sdk.Post(o, bulk)
     Sdk.Seq = Sdk.Seq + 1
     local n = Sdk.Build(app, title, o)
     n.SdkId = Sdk.Seq
+    if Dbg.On then Dbg.Log("sdk", app .. " notify " .. n.SdkLevel .. " \"" .. title .. "\"" .. (Sdk.Apps[app] == nil and " (waiting for permission)" or "")) end
     if Sdk.Apps[app] == nil then
         local p = Sdk.Pending[app] or {}
         if #p < 3 then p[#p + 1] = n end
@@ -10978,6 +11012,7 @@ function Sdk.Answer(allow)
     local p = Sdk.Pending[app]
     Sdk.Unask(app)
     Sdk.Apps[app] = allow
+    if Dbg.On then Dbg.Log("sdk", app .. " permission " .. (allow and "allowed" or "denied")) end
     Sdk.MenuDirty = true
     SaveAllConfig()
     if allow then
@@ -11200,12 +11235,14 @@ function Sdk.ActStart(o)
     a.tint = Sdk.AppTint(app)
     Sdk.ActApply(a, o)
     Sdk.Acts[#Sdk.Acts + 1] = a
+    if Dbg.On then Dbg.Log("sdk", app .. " activity started \"" .. tostring(a.title) .. "\"") end
     return Sdk.Handle(a)
 end
 
 function Sdk.ActEnd(a, reason)
     if not a or a.ended then return end
     a.ended = true
+    if Dbg.On then Dbg.Log("sdk", a.app .. " activity ended (" .. tostring(reason or "by the script") .. ")") end
     for i = #Sdk.Acts, 1, -1 do
         if Sdk.Acts[i] == a then table.remove(Sdk.Acts, i) end
     end
@@ -11634,6 +11671,439 @@ do
         __newindex = ReadOnly,
         __metatable = false
     })
+end
+
+Dbg.File = "dynamic_island_debug.log"
+Dbg.OldFile = "dynamic_island_debug.old.log"
+Dbg.Buf = {}
+Dbg.Bytes = 0
+Dbg.Cap = 3 * 1024 * 1024
+Dbg.Last = {}
+Dbg.SettingsLast = nil
+Dbg.SettingsAt = 0
+Dbg.FlushAt = 0
+Dbg.PerfAt = 0
+Dbg.SpikeAt = 0
+Dbg.SpikeMs = 4
+Dbg.Samples = { OnFrame = {}, OnUpdateEx = {} }
+Dbg.Errors = {}
+
+function Dbg.Dir()
+    local dir = "C:/Umbrella/"
+    if Engine and Engine.GetCheatDirectory then
+        local ok, cd = pcall(Engine.GetCheatDirectory)
+        if ok and type(cd) == "string" and cd ~= "" then dir = cd end
+    end
+    if not string.find(dir, "[/\\]$") then dir = dir .. "/" end
+    return dir .. "scripts/"
+end
+
+function Dbg.StateName()
+    if not Dbg.Names then
+        Dbg.Names = {}
+        for k, v in pairs(StateMachine.States) do Dbg.Names[v] = k end
+    end
+    return Dbg.Names[StateMachine.TargetState] or tostring(StateMachine.TargetState)
+end
+
+function Dbg.GameClock()
+    if not (Engine.IsInGame and Engine.IsInGame()) then return "menu" end
+    local ok, t = pcall(GameRules.GetDOTATime, true, true)
+    if not ok or type(t) ~= "number" or t ~= t then return "game" end
+    local s = math.floor(math.abs(t))
+    return string.format("%s%d:%02d", t < 0 and "-" or "", math.floor(s / 60), s % 60)
+end
+
+function Dbg.Stamp()
+    local c = os.clock()
+    return string.format("%s +%.3f | %s | %s", os.date("%H:%M:%S"), c - (Dbg.T0 or c), Dbg.GameClock(), Dbg.StateName())
+end
+
+function Dbg.Log(cat, msg, urgent)
+    if not Dbg.On then return end
+    if Dbg.Bytes > Dbg.Cap and cat ~= "error" then
+        if not Dbg.CapHit then
+            Dbg.CapHit = true
+            Dbg.Buf[#Dbg.Buf + 1] = Dbg.Stamp() .. " | debug: log is over 3 MB, only errors from now on"
+        end
+        return
+    end
+    local ok, line = pcall(function() return Dbg.Stamp() .. " | " .. cat .. ": " .. tostring(msg) end)
+    if not ok then return end
+    Dbg.Buf[#Dbg.Buf + 1] = line
+    Dbg.Bytes = Dbg.Bytes + #line + 1
+    if urgent then Dbg.Flush() end
+end
+
+function Dbg.Flush()
+    if #Dbg.Buf == 0 or not Dbg.Path then return end
+    local text = table.concat(Dbg.Buf, "\n") .. "\n"
+    Dbg.Buf = {}
+    local f = Impl.OpenFile(Dbg.Path, "a")
+    if not f then return end
+    f:write(text)
+    f:close()
+end
+
+function Dbg.Val(v)
+    local t = type(v)
+    if t == "number" then
+        if v ~= v then return "nan" end
+        if v == math.floor(v) and math.abs(v) < 1e15 then return string.format("%d", v) end
+        return string.format("%.3f", v)
+    end
+    if t == "boolean" then return tostring(v) end
+    if t == "string" then return '"' .. string.gsub(v, "[%c]", " ") .. '"' end
+    if t == "nil" then return "nil" end
+    local ok, r, g, b, a = pcall(function() return v.r, v.g, v.b, v.a end)
+    if ok and type(r) == "number" and type(g) == "number" and type(b) == "number" then
+        return string.format("#%02X%02X%02X%02X", math.floor(r), math.floor(g), math.floor(b), math.floor(tonumber(a) or 255))
+    end
+    if t == "table" then
+        local parts = {}
+        for k, x in pairs(v) do
+            if #parts >= 12 then
+                parts[#parts + 1] = "..."
+                break
+            end
+            local tx = type(x)
+            if tx ~= "function" and tx ~= "table" and tx ~= "userdata" then parts[#parts + 1] = tostring(k) .. "=" .. tostring(x) end
+        end
+        return "{" .. table.concat(parts, ",") .. "}"
+    end
+    return t
+end
+
+function Dbg.Settings()
+    local out, order = {}, {}
+    local function walk(t, path, depth)
+        if depth > 3 then return end
+        local keys = {}
+        for k in pairs(t) do
+            if type(k) == "string" then keys[#keys + 1] = k end
+        end
+        table.sort(keys)
+        for _, k in ipairs(keys) do
+            local v = t[k]
+            local p = path == "" and k or (path .. "." .. k)
+            local okGet, getter = pcall(function() return v.Get end)
+            if okGet and type(getter) == "function" then
+                local ok, val = pcall(getter, v)
+                if ok and val ~= nil and type(val) ~= "function" then
+                    out[p] = Dbg.Val(val)
+                    order[#order + 1] = p
+                end
+            elseif type(v) == "table" then
+                walk(v, p, depth + 1)
+            end
+        end
+    end
+    if UI then walk(UI, "", 0) end
+    return out, order
+end
+
+function Dbg.ReadConfig()
+    for _, path in ipairs(Impl.ConfigSavePaths) do
+        local f = Impl.OpenFile(path, "r")
+        if f then
+            local text = f:read("a") or ""
+            f:close()
+            local lines = {}
+            for line in string.gmatch(text, "[^\r\n]+") do lines[#lines + 1] = line end
+            return table.concat(lines, " ; ")
+        end
+    end
+    return "not found"
+end
+
+Dbg.Watches = {
+    { "state", function() return Dbg.StateName() end },
+    { "in game", function() return Engine.IsInGame and Engine.IsInGame() or false end },
+    { "umbrella menu open", function() return Menu.Opened and Menu.Opened() or false end },
+    { "widget editor", function() return HUDCustomizer.IsOpen end },
+    { "game paused", function() return PauseTracker.IsPaused end },
+    { "fight", function() return FightTracker.Active end },
+    { "focus", function() return Focus.Active end },
+    { "bridge", function() return Sheet.BridgeOnline() and ("online v" .. tostring(BridgeStatus.Version)) or "offline" end },
+    { "bridge media sessions", function() return BridgeStatus.MediaSessions end },
+    { "media", function() return IsMediaActive() and (MediaData.IsPlaying and "playing" or "paused") or "none" end },
+    { "track", function() return MediaData.HasReceivedData and (MediaData.Artist .. " - " .. MediaData.Title .. " [" .. tostring(MediaData.App) .. "]") or "none" end },
+    { "notification", function()
+        local n = NotificationQueue.Active
+        return n and (tostring(n.Type) .. " \"" .. tostring(n.Tag) .. " / " .. tostring(n.Title) .. "\" prio " .. tostring(n.Priority) .. " for " .. tostring(n.Duration) .. "s") or "none"
+    end },
+    { "queued notifications", function() return #NotificationQueue.List end },
+    { "side bubble", function() return Satellite.Right.kind or "none" end },
+    { "sheet", function() return StateMachine.TargetState == StateMachine.States.SHEET and tostring(Sheet.Kind) or "none" end },
+    { "update", function() return Sheet.Upd.State end },
+    { "fonts install", function() return Sheet.Fonts.State end },
+    { "hello", function() return Hello.Phase or "none" end },
+    { "setup step", function() return Setup.Visible() and tostring(Setup.Step) or "closed" end },
+    { "drag", function() return DragState.IsDragging end },
+    { "position", function() return DragState.IsDragging and "dragging" or (tostring(math.floor(DragState.CustomX or -1)) .. "," .. tostring(math.floor(DragState.CustomY or -1))) end },
+    { "expanded notification", function() return Sdk.Expanded end },
+    { "activity", function()
+        local a = Sdk.Current()
+        return a and (a.app .. " \"" .. tostring(a.title) .. "\"") or "none"
+    end },
+    { "permission prompt", function() return Sdk.Prompt or "none" end },
+    { "hero", function() return HeroData.HeroName or "none" end },
+    { "disabled modules", function()
+        local list = {}
+        for k in pairs(Fuse.Off) do list[#list + 1] = k end
+        table.sort(list)
+        return #list > 0 and table.concat(list, ",") or "none"
+    end }
+}
+
+function Dbg.Check(report)
+    local initial = {}
+    for _, w in ipairs(Dbg.Watches) do
+        local ok, v = pcall(w[2])
+        v = ok and Dbg.Val(v) or "error"
+        local old = Dbg.Last[w[1]]
+        if report then
+            initial[#initial + 1] = w[1] .. "=" .. v
+        elseif old ~= v then
+            Dbg.Log("change", w[1] .. ": " .. tostring(old) .. " -> " .. v)
+        end
+        Dbg.Last[w[1]] = v
+    end
+    return initial
+end
+
+function Dbg.Passport(reason)
+    local scr = Render.ScreenSize()
+    Dbg.Log("session", string.format("Dynamic Island %s, logging started (%s)", SCRIPT_VERSION, reason))
+    Dbg.Log("session", string.format("screen %dx%d, scale %s, language sample \"%s\", glass %s", scr.x, scr.y, Dbg.Val(UI and UI.Main.Scale:Get()), L("di_nc_clear"), tostring(IsPureGlass())))
+    Dbg.Log("session", string.format("bridge %s, version %s, latest %s, fonts ok %s, sessions %s", Sheet.BridgeOnline() and "online" or "offline", tostring(BridgeStatus.Version), tostring(BridgeStatus.Latest), tostring(BridgeStatus.FontsOk), tostring(BridgeStatus.MediaSessions)))
+    Dbg.Log("session", "fonts: regular " .. tostring(Config.Fonts.Regular) .. ", semibold " .. tostring(Config.Fonts.Semibold) .. ", display " .. tostring(Config.Fonts.Display))
+    Dbg.Log("session", "debug.traceback " .. (Dbg.TB and "available" or "missing") .. ", chronos " .. (Perf.Now ~= os.clock and "available" or "missing"))
+    Dbg.Log("session", "config: " .. Dbg.ReadConfig())
+    local set, order = Dbg.Settings()
+    Dbg.SettingsLast = set
+    local line = {}
+    for _, p in ipairs(order) do
+        line[#line + 1] = p .. "=" .. set[p]
+        if #line == 10 then
+            Dbg.Log("settings", table.concat(line, "  "))
+            line = {}
+        end
+    end
+    if #line > 0 then Dbg.Log("settings", table.concat(line, "  ")) end
+    local apps = {}
+    for app, v in pairs(Sdk.Apps) do apps[#apps + 1] = app .. (v and ":allowed" or ":denied") .. (Sdk.Focus[app] and "+focus" or "") end
+    table.sort(apps)
+    Dbg.Log("session", "sdk scripts: " .. (#apps > 0 and table.concat(apps, ", ") or "none") .. ", activities " .. #Sdk.Acts)
+    Dbg.Log("session", "now: " .. table.concat(Dbg.Check(true), "  "))
+end
+
+function Dbg.Start(reason)
+    if Dbg.On then return end
+    local dir = Dbg.Dir()
+    Dbg.Path = dir .. Dbg.File
+    Dbg.T0 = Dbg.T0 or os.clock()
+    local stamp = Hello.Stamp()
+    local same, size = false, 0
+    local f = Impl.OpenFile(Dbg.Path, "r")
+    if f then
+        local first = f:read("l") or ""
+        local prev = tonumber(string.match(first, "session (%-?%d+)"))
+        same = prev ~= nil and math.abs(prev - stamp) <= 8
+        if same then
+            size = f:seek("end") or 0
+        else
+            f:seek("set")
+            local all = f:read("a") or ""
+            local o = Impl.OpenFile(dir .. Dbg.OldFile, "w")
+            if o then
+                o:write(all)
+                o:close()
+            end
+        end
+        f:close()
+    end
+    if not same then
+        local w = Impl.OpenFile(Dbg.Path, "w")
+        if w then
+            w:write("Dynamic Island debug log, session " .. tostring(stamp) .. "\n")
+            w:close()
+        end
+    end
+    Dbg.On = true
+    Dbg.Bytes = size
+    Dbg.CapHit = false
+    Dbg.Samples = { OnFrame = {}, OnUpdateEx = {} }
+    Dbg.PerfAt = os.clock()
+    if same then Dbg.Log("session", "---- script reloaded ----") end
+    local ok, err = pcall(Dbg.Passport, reason)
+    if not ok then Dbg.Log("error", "passport failed: " .. tostring(err)) end
+    Dbg.Flush()
+end
+
+function Dbg.Stop()
+    if not Dbg.On then return end
+    Dbg.Log("session", "logging stopped")
+    Dbg.Flush()
+    Dbg.On = false
+end
+
+function Dbg.Trace(e)
+    local msg = Sdk.S(e)
+    if Dbg.TB then
+        local ok, tb = pcall(Dbg.TB, msg, 3)
+        if ok and type(tb) == "string" then return tb end
+    end
+    return msg
+end
+
+function Dbg.Error(name, err)
+    local c = (Dbg.Errors[name] or 0) + 1
+    Dbg.Errors[name] = c
+    if c > 5 then return end
+    local text = string.gsub(Sdk.S(err), "\n", "\n    ")
+    Dbg.Log("error", name .. (c == 5 and " (further errors from this part are not logged)" or "") .. ": " .. text)
+    if c == 1 then
+        Dbg.Log("error", "context: " .. table.concat(Dbg.Check(true), "  "))
+    end
+    Dbg.Flush()
+end
+
+function Dbg.PerfAdd(name, dt)
+    local list = Dbg.Samples[name]
+    if not list then return end
+    if #list < 5000 then list[#list + 1] = dt end
+    local ms = dt * 1000
+    local now = os.clock()
+    if ms > Dbg.SpikeMs and now - Dbg.SpikeAt > 1 then
+        Dbg.SpikeAt = now
+        Dbg.Log("perf", string.format("slow %s: %.2f ms", name, ms))
+    end
+end
+
+function Dbg.PerfSummary()
+    local parts = {}
+    for _, name in ipairs({ "OnFrame", "OnUpdateEx" }) do
+        local list = Dbg.Samples[name]
+        if #list > 0 then
+            local sorted = {}
+            local sum = 0
+            for i, v in ipairs(list) do
+                sorted[i] = v
+                sum = sum + v
+            end
+            table.sort(sorted)
+            local p95 = sorted[math.max(1, math.floor(#sorted * 0.95))]
+            parts[#parts + 1] = string.format("%s avg %.3f ms, p95 %.3f, max %.3f, %d calls", name, sum / #list * 1000, p95 * 1000, sorted[#sorted] * 1000, #list)
+        end
+    end
+    Dbg.Samples = { OnFrame = {}, OnUpdateEx = {} }
+    if #parts > 0 then Dbg.Log("perf", table.concat(parts, " | ")) end
+end
+
+function Dbg.Tick()
+    if not Dbg.On then return end
+    local now = os.clock()
+    Dbg.Check(false)
+    if now - Dbg.SettingsAt > 1 then
+        Dbg.SettingsAt = now
+        local set = Dbg.Settings()
+        local last = Dbg.SettingsLast or {}
+        for p, v in pairs(set) do
+            if last[p] ~= nil and last[p] ~= v then Dbg.Log("setting", p .. ": " .. last[p] .. " -> " .. v) end
+        end
+        Dbg.SettingsLast = set
+    end
+    if now - Dbg.PerfAt > 30 then
+        Dbg.PerfAt = now
+        Dbg.PerfSummary()
+    end
+    if now - Dbg.FlushAt > 1 then
+        Dbg.FlushAt = now
+        Dbg.Flush()
+    end
+end
+
+function Dbg.Dump(name, t, depth)
+    if type(t) ~= "table" then
+        Dbg.Log("snapshot", name .. " = " .. Dbg.Val(t))
+        return
+    end
+    local keys = {}
+    for k in pairs(t) do keys[#keys + 1] = k end
+    table.sort(keys, function(a, b) return tostring(a) < tostring(b) end)
+    local scalars, nested = {}, {}
+    for _, k in ipairs(keys) do
+        local v = t[k]
+        local tv = type(v)
+        if tv == "table" and (depth or 0) > 0 then
+            local okc = pcall(function() return v.r end)
+            if okc and v.r and v.g then
+                scalars[#scalars + 1] = tostring(k) .. "=" .. Dbg.Val(v)
+            else
+                nested[#nested + 1] = k
+            end
+        elseif tv ~= "function" then
+            scalars[#scalars + 1] = tostring(k) .. "=" .. Dbg.Val(v)
+        end
+        if #scalars >= 80 then break end
+    end
+    Dbg.Log("snapshot", name .. ": " .. table.concat(scalars, "  "))
+    for _, k in ipairs(nested) do Dbg.Dump(name .. "." .. tostring(k), t[k], (depth or 0) - 1) end
+end
+
+function Dbg.Snapshot()
+    if not Dbg.On then
+        if UI and UI.Main.Debug then UI.Main.Debug:Set(true) end
+        Dbg.Start("snapshot button")
+    end
+    Dbg.Log("snapshot", "-------- snapshot --------")
+    local l = GetIslandLayout()
+    Dbg.Log("snapshot", string.format("layout x %d y %d w %d h %d r %.1f scale %.2f", l.x, l.y, l.w, l.h, l.r or 0, l.scale))
+    Dbg.Dump("state", { Current = Dbg.Names and Dbg.Names[StateMachine.Current], Target = Dbg.StateName(), Previous = Dbg.Names and Dbg.Names[StateMachine.PreviousState], Transition = StateMachine.Transition.Active, Progress = StateMachine.Transition.Progress, Ghosts = #StateMachine.Ghosts })
+    Dbg.Dump("target size", { W = Config.Dimensions.CompactTargetW, H = Config.Dimensions.CompactTargetH, R = Config.Dimensions.CompactTargetR })
+    Dbg.Dump("notification", NotificationQueue.Active or { Active = "none" })
+    for i, n in ipairs(NotificationQueue.List) do Dbg.Log("snapshot", "queued " .. i .. ": " .. tostring(n.Type) .. " \"" .. tostring(n.Title) .. "\" prio " .. tostring(n.Priority)) end
+    Dbg.Log("snapshot", "notification center items " .. #NotifCenter.Items)
+    Dbg.Dump("media", { Playing = MediaData.IsPlaying, Title = MediaData.Title, Artist = MediaData.Artist, App = MediaData.App, Pos = MediaData.PosSmooth, Duration = MediaData.Duration, HasCover = MediaData.HasCover, Liked = MediaData.IsLiked, Received = MediaData.HasReceivedData, Level = MediaData.Level })
+    Dbg.Dump("bridge", BridgeStatus)
+    Dbg.Dump("focus", { Active = Focus.Active, Until = Focus.Until, Suppressed = Focus.Suppressed, Mode = Focus.Mode })
+    Dbg.Dump("drag", DragState)
+    Dbg.Dump("editor", { Open = HUDCustomizer.IsOpen, Chips = HUDCustomizer.ActiveChips, Inspected = HUDCustomizer.InspectedChip })
+    Dbg.Dump("fight", { Active = FightTracker.Active, Allies = FightTracker.AllyCount, Enemies = FightTracker.EnemyCount, Landmark = FightTracker.Landmark })
+    Dbg.Dump("courier", { Delivering = CourierTracker.Delivering, Delivered = CourierTracker.Delivered, Progress = CourierTracker.Progress, ETA = CourierTracker.ETA })
+    Dbg.Dump("pause", { Paused = PauseTracker.IsPaused })
+    Dbg.Dump("hello", { Phase = tostring(Hello.Phase), SetupDone = Hello.SetupDone == true, SetupStep = tostring(Setup.Step) })
+    Dbg.Dump("sheet", { Kind = Sheet.Kind, Update = Sheet.Upd.State, Fonts = Sheet.Fonts.State, Dismissed = Sheet.Dismissed })
+    Dbg.Dump("side bubble", { Kind = tostring(Satellite.Right.kind) })
+    Dbg.Dump("sdk apps", Sdk.Apps)
+    for i, a in ipairs(Sdk.Acts) do
+        Dbg.Log("snapshot", string.format("activity %d: %s \"%s\" trailing %s progress %s ends in %s", i, a.app, tostring(a.title), tostring(a.trailing), tostring(a.progress), a.ends and string.format("%.1f", a.ends - os.clock()) or "-"))
+    end
+    Dbg.Dump("sdk", { Asks = table.concat(Sdk.Asks, ","), Prompt = Sdk.Prompt, Muted = Sdk.Muted, Errors = Sdk.Errors, Expanded = Sdk.Expanded })
+    Dbg.Dump("fuse errors", Fuse.Count)
+    Dbg.Log("snapshot", "now: " .. table.concat(Dbg.Check(true), "  "))
+    Dbg.PerfSummary()
+    Dbg.Log("snapshot", "-------- end of snapshot --------", true)
+end
+
+function Dbg.Reveal()
+    Dbg.Flush()
+    if not Dbg.Path then Dbg.Path = Dbg.Dir() .. Dbg.File end
+    pcall(HTTP.Request, "GET", "http://127.0.0.1:45455/reveal", {}, function() end, "di_reveal")
+    Log.Write("[Dynamic Island] debug log: " .. Dbg.Path)
+end
+
+function Dbg.RenderBubble(layout)
+    local want = Dbg.On and not HUDCustomizer.IsOpen and not Hello.Blocking()
+    local sat = Satellite.Step("rec", want, false)
+    local _, bh = Focus.SatRow(layout)
+    local moon = Satellite.S.moon
+    local shift = moon and (bh + 8 * layout.scale) * math.max(0, math.min(1, moon.p)) or 0
+    Dbg.Bounds = Satellite.Draw(layout, sat, -1, bh, function(x1, y1, x2, y2, d, ca)
+        if ca <= 0.01 then return end
+        Render.FilledCircle(Vec2((x1 + x2) / 2, (y1 + y2) / 2), d * 0.2, FadeColor(Config.Colors.Red, ca), 0, 1.0, 24)
+    end, shift)
 end
 
 Demo.Steps = {
@@ -13133,6 +13603,7 @@ function Impl.TickArt(dt)
 end
 
 function Impl.DismissNotif(nowClk)
+    if Dbg.On then Dbg.Log("notif", "dismissed by the user") end
     local inCombat = FightTracker.Active
     local mediaActive = IsMediaActive()
     NotificationQueue.LastDismissed = NotificationQueue.Active
@@ -13155,6 +13626,7 @@ function Impl.DismissNotif(nowClk)
 end
 
 function Impl.DismissSatellite(kind, nowClk)
+    if Dbg.On then Dbg.Log("notif", "side bubble " .. tostring(kind) .. " swiped away") end
     if kind == "notif" then
         NotificationQueue.LastDismissed = NotificationQueue.Active
         NotificationQueue.Active = nil
@@ -13524,6 +13996,7 @@ function DynamicIsland.OnFrame()
     Fuse.Guard("badge", Sheet.RenderBadge, layout)
     Fuse.Guard("satellite", Impl.RenderSecondarySatelliteBubble, layout)
     Fuse.Guard("focus_bubble", Focus.RenderBubble, layout)
+    Fuse.Guard("rec_bubble", Dbg.RenderBubble, layout)
     Fuse.Guard("hints", Impl.RenderMenuClosedHint, layout)
     Fuse.Guard("drawer", Impl.RenderHUDDrawer, layout, dt)
     Fuse.Guard("setup", Setup.Render, layout, dt)
@@ -13643,6 +14116,7 @@ function DynamicIsland.OnScriptsLoaded()
 
     Impl.PollMediaBridge()
     Hello.Init()
+    if UI.Main.Debug:Get() then Dbg.Start("script loaded") end
 end
 
 do
@@ -13659,7 +14133,9 @@ do
     for name, fn in pairs(DynamicIsland) do
         if type(fn) == "function" and string.sub(name, 1, 2) == "On" then
             DynamicIsland[name] = function(...)
-                if UI and UI.Main.Debug and UI.Main.Debug:Get() then
+                if Dbg.On then
+                    if name == "OnFrame" then pcall(Dbg.Tick) end
+                    if Dbg.TB then return Timed(name, Perf.Now(), xpcall(fn, Dbg.Trace, ...)) end
                     return Timed(name, Perf.Now(), pcall(fn, ...))
                 end
                 return Finish(name, pcall(fn, ...))
