@@ -855,6 +855,8 @@ local localization = qLocalization.new({
         di_media_compact_title = "Track Title in Compact View",
         di_media_artwork_tint = "Wave Color From Artwork",
         di_media_secondary_bubble = "Satellite Bubble",
+        di_media_in_menu = "Show in Main Menu",
+        di_media_in_menu_tip = "Show what is playing in the main menu too, not only in a match",
         di_media_shadow = "Soft Shadows",
         di_media_blur = "Backdrop Glass Blur",
         di_media_hints = "Control Hints",
@@ -1378,6 +1380,8 @@ local localization = qLocalization.new({
         di_media_compact_title = "Название трека в маленьком островке",
         di_media_artwork_tint = "Цвет волны из обложки",
         di_media_secondary_bubble = "Второй островок/баббл",
+        di_media_in_menu = "Показывать в главном меню",
+        di_media_in_menu_tip = "Показывать, что играет, и в главном меню, а не только в матче",
         di_media_shadow = "Мягкие тени",
         di_media_blur = "Размытие фона (Blur)",
         di_media_hints = "Подсказки управления",
@@ -2422,6 +2426,7 @@ local function SaveAllConfig()
                     if UI.Media.SpotifyLike then f:write("ui_m_like=" .. (UI.Media.SpotifyLike:Get() and "1" or "0") .. "\n") end
                     if UI.Media.MarqueeSpeed then f:write("ui_m_speed=" .. tostring(UI.Media.MarqueeSpeed:Get()) .. "\n") end
                     if UI.Media.SecondaryBubble then f:write("ui_m_bubble=" .. (UI.Media.SecondaryBubble:Get() and "1" or "0") .. "\n") end
+                    if UI.Media.InMenu then f:write("ui_m_menu=" .. (UI.Media.InMenu:Get() and "1" or "0") .. "\n") end
                     if UI.Media.Shadow then f:write("ui_m_shadow=" .. (UI.Media.Shadow:Get() and "1" or "0") .. "\n") end
                     if UI.Media.Blur then f:write("ui_m_blur=" .. (UI.Media.Blur:Get() and "1" or "0") .. "\n") end
                     if UI.Media.Hints then f:write("ui_m_hints=" .. (UI.Media.Hints:Get() and "1" or "0") .. "\n") end
@@ -2595,6 +2600,7 @@ function Impl.LoadAllConfig()
                     elseif k == "ui_m_like" and UI.Media and UI.Media.SpotifyLike then UI.Media.SpotifyLike:Set(v == "1")
                     elseif k == "ui_m_speed" and UI.Media and UI.Media.MarqueeSpeed then UI.Media.MarqueeSpeed:Set(tonumber(v) or 45)
                     elseif k == "ui_m_bubble" and UI.Media and UI.Media.SecondaryBubble then UI.Media.SecondaryBubble:Set(v == "1")
+                    elseif k == "ui_m_menu" and UI.Media and UI.Media.InMenu then UI.Media.InMenu:Set(v == "1")
                     elseif k == "ui_m_shadow" and UI.Media and UI.Media.Shadow then UI.Media.Shadow:Set(v == "1")
                     elseif k == "ui_m_blur" and UI.Media and UI.Media.Blur then UI.Media.Blur:Set(v == "1")
                     elseif k == "ui_m_hints" and UI.Media and UI.Media.Hints then UI.Media.Hints:Set(v == "1")
@@ -3336,6 +3342,8 @@ function Impl.InitMenu()
     snd(gSpotifyLike, "SpotifyLike")
     Md.VolumeWheel = gMedia:Switch("di_media_volume_wheel", true, "\u{f028}")
     Md.SecondaryBubble = gMedia:Switch("di_media_secondary_bubble", true, "\u{f111}")
+    Md.InMenu = gMedia:Switch("di_media_in_menu", false, "\u{f015}")
+    Md.InMenu:ToolTip("di_media_in_menu_tip")
     Md.Hints = gMedia:Switch("di_media_hints", true, "\u{f05a}")
 
     H.Enabled = gHaptics:Switch("di_haptics_enabled", true, "\u{f011}")
@@ -6770,6 +6778,10 @@ function Impl.HandleInteractions()
             end
             if detected == StateMachine.States.MENU_IDLE and not Hello.Blocking() and not HUDCustomizer.IsOpen and Sdk.Current() then
                 detected = StateMachine.TargetState == StateMachine.States.ACTIVITY_LARGE and StateMachine.States.ACTIVITY_LARGE or StateMachine.States.ACTIVITY
+            end
+            if detected == StateMachine.States.MENU_IDLE and not Hello.Blocking() and not HUDCustomizer.IsOpen and ToggleOn(UI and UI.Media and UI.Media.InMenu) and IsMediaActive() then
+                local cur = StateMachine.TargetState
+                detected = (cur == StateMachine.States.LARGE_MEDIA or cur == StateMachine.States.NOTIF_CENTER) and cur or StateMachine.States.COMPACT_MEDIA
             end
             if (HUDCustomizer.IsOpen or Hello.Blocking()) and detected ~= StateMachine.States.MENU_MATCH_FOUND then
                 detected = StateMachine.States.COMPACT_IDLE
