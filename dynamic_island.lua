@@ -6784,7 +6784,7 @@ function Impl.HandleInteractions()
         Config.Dimensions.CompactTargetR = Config.Dimensions.CompactFightRadius
     elseif StateMachine.TargetState == StateMachine.States.NOTIFICATION and Sdk.Expanded then
         Config.Dimensions.CompactTargetW = 360
-        Config.Dimensions.CompactTargetH = Sdk.ExpandH()
+        Config.Dimensions.CompactTargetH = Sdk.ExpandH(layout.scale)
         Config.Dimensions.CompactTargetR = 28
     elseif StateMachine.TargetState == StateMachine.States.NOTIFICATION then
         Config.Dimensions.CompactTargetW = Config.Dimensions.NotificationW
@@ -10167,7 +10167,7 @@ function Sheet.Desc()
     local C = Config.Colors
     local kind = Sheet.Kind
     if kind == "sdk_perm" then
-        local app = Sdk.Prompt or ""
+        local app = Sdk.Prompt or Sdk.LastPrompt or ""
         return { icon = "square", color = Sdk.AppTint(app), glyph = "bell", title = "\u{201C}" .. app .. "\u{201D}", sub = L("di_sdk_perm_sub"), buttons = { { L("di_sdk_deny"), false, "sdk_deny" }, { L("di_sdk_allow"), true, "sdk_allow" } } }
     end
     if kind == "bridge" then
@@ -10636,7 +10636,6 @@ Sdk.Strikes = {}
 Sdk.StrikeAt = {}
 Sdk.Muted = {}
 Sdk.Errors = {}
-Sdk.Bulk = {}
 Sdk.Early = {}
 Sdk.Warned = {}
 Sdk.Acts = {}
@@ -10709,14 +10708,16 @@ function Sdk.Str(v, max)
     if v == nil then return nil end
     v = tostring(v)
     if type(v) ~= "string" then return nil end
-    if #v > max * 4 + 16 then v = string.sub(v, 1, max * 4 + 16) end
+    if #v > max * 4 + 16 then
+        v = string.gsub(string.sub(v, 1, max * 4 + 16), "[\192-\255][\128-\191]*$", "")
+    end
     v = string.gsub(v, "%c", " ")
     local ok, n = pcall(utf8.len, v)
-    if ok and n then
-        if n > max then v = string.sub(v, 1, utf8.offset(v, max + 1) - 1) end
-    elseif #v > max then
-        v = string.sub(v, 1, max)
+    if not (ok and n) then
+        v = string.gsub(v, "[\128-\255]", "?")
+        n = #v
     end
+    if n > max then v = string.sub(v, 1, utf8.offset(v, max + 1) - 1) end
     return v
 end
 
@@ -10870,14 +10871,17 @@ function Sdk.Deliver(n)
         return
     end
     local cur = NotificationQueue.Active
+    n.Priority = Impl.GetNotifPriority(n)
     if cur and cur.SdkApp == n.SdkApp and not Focus.Blocks(n) then
         NotifCenter.Add(n)
         n.Duration = n.Duration or cur.Duration
-        n.Priority = cur.Priority
         NotificationQueue.Active = n
         NotificationQueue.StartTime = os.clock()
         Impl.NotifChime(n)
-        if Sdk.Expanded then Sdk.ExpandedFor = n end
+        if Sdk.Expanded then
+            Sdk.ExpandedFor = n
+            Sdk.Expanded = n.Body ~= nil or n.Actions ~= nil
+        end
         return
     end
     DynamicIsland.PushNotification(n)
@@ -10901,8 +10905,7 @@ function Sdk.Post(o, bulk)
     if o.level ~= "passive" and Sdk.QueueFull(app) then return nil, "busy" end
     local now = os.clock()
     if bulk then
-        Sdk.Bulk[app] = (Sdk.Bulk[app] or 0) + 1
-        if Sdk.Bulk[app] > 5 then return nil, "rate limited" end
+        if not Sdk.Take(app, now) then return nil, "rate limited" end
     elseif not Sdk.Take(app, now) then
         Sdk.Strikes[app] = Sdk.Strike(app, now) + 1
         if Sdk.Strikes[app] >= 15 then
@@ -10971,6 +10974,7 @@ end
 function Sdk.Answer(allow)
     local app = Sdk.Prompt
     if not app then return end
+    Sdk.Prompt, Sdk.LastPrompt = nil, app
     local p = Sdk.Pending[app]
     Sdk.Unask(app)
     Sdk.Apps[app] = allow
@@ -11050,7 +11054,7 @@ end
 function Sdk.InitMenu(page)
     local g = page:Create("di_group_sdk", Enum.GroupSide.Right)
     Sdk.NoneLabel = g:Label("di_sdk_none", "\u{f121}")
-    for i = 1, 8 do
+    for i = 1, 12 do
         local slot = {}
         slot.sw = g:Switch("sdk_slot_" .. i, false, "\u{f121}")
         slot.gear = slot.sw:Gear("sdk_gear_" .. i)
@@ -11161,7 +11165,7 @@ function Sdk.Handle(a)
         Sdk.ActEnd(a)
     end
     h.IsActive = function()
-        return not a.ended
+        return not a.ended and not a.endAt
     end
     return h
 end
@@ -11178,6 +11182,14 @@ function Sdk.ActStart(o)
     if not Sdk.Known(app) then return nil, "too many apps" end
     for i = #Sdk.Acts, 1, -1 do
         if Sdk.Acts[i].app == app then Sdk.ActEnd(Sdk.Acts[i]) end
+    end
+    if #Sdk.Acts >= 3 then
+        for _, other in ipairs(Sdk.Acts) do
+            if Sdk.Apps[other.app] ~= true then
+                Sdk.ActEnd(other)
+                break
+            end
+        end
     end
     if #Sdk.Acts >= 3 then
         Sdk.Warn(app, "only 3 live activities can run at once")
@@ -11310,20 +11322,20 @@ function Sdk.BodyLines(n, scale)
             local maxW = (360 - 32) * scale
             lines = Impl.Wrap(f, sz, n.Body, maxW)
             if #lines > 3 then
-                local rest = table.concat(lines, " ", 3)
-                lines = { lines[1], lines[2], TruncateToWidth(f, sz, rest, maxW) }
+                lines = { lines[1], lines[2], table.concat(lines, " ", 3) }
             end
+            for i, ln in ipairs(lines) do lines[i] = TruncateToWidth(f, sz, ln, maxW) end
         end
         n._lines[key] = lines
     end
     return n._lines[key]
 end
 
-function Sdk.ExpandH()
+function Sdk.ExpandH(scale)
     local n = NotificationQueue.Active
     if not n then return Config.Dimensions.NotificationH end
     local h = 14 + 38 + 16
-    local lines = Sdk.BodyLines(n, 1)
+    local lines = Sdk.BodyLines(n, scale or 1)
     if #lines > 0 then h = h + 6 + #lines * 19 end
     if n.Actions then h = h + 12 + 34 end
     return h
@@ -11475,6 +11487,9 @@ function Sdk.CompactW(scale)
     if txt then
         local fH, sH = TF("Headline", scale)
         tw = Odometer.Width(fH, sH, txt) / scale
+    elseif a.title then
+        local fS, sS = TF("Subhead", scale)
+        tw = math.min(180, Render.TextSize(fS, sS, a.title).x / scale) - 18
     end
     return math.max(150, math.ceil((12 + 18 + 28 + tw + 14) / 4) * 4)
 end
@@ -11521,6 +11536,11 @@ function Sdk.RenderCompact(layout, alphaMul, yOffset)
         local th = Render.TextSize(fH, sH, "Ag").y
         rightX = math.floor(rightX - tw)
         Odometer.Text("sdk_trail", fH, sH, txt, Vec2(rightX, math.floor(cy - th / 2)), FadeColor(tint, am))
+    elseif a.title and not a.progress then
+        local fS, sS = TF("Subhead", s)
+        local tx = math.floor(ix + isz + 10 * s)
+        local th = Render.TextSize(fS, sS, "Ag").y
+        Render.Text(fS, sS, TruncateToWidth(fS, sS, a.title, rightX - tx), Vec2(tx, math.floor(cy - th / 2)), FadeColor(Config.Colors.TextPrimary, am))
     end
     if a.progress then
         local x1 = math.floor(ix + isz + 10 * s)

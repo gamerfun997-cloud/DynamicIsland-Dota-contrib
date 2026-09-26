@@ -19,7 +19,7 @@ end
 Scripts load in alphabetical order, so yours may load before the island. Two ways around that:
 
 - call the island from `OnScriptsLoaded` or later, by then every script is loaded
-- or, if you want to say something right at load time, put it in the queue. The island picks it up as soon as it starts:
+- or, if you want to say something right at load time, put it in the queue. The island picks it up as soon as it starts. Queued notifications follow the same limits as `Notify`:
 
 ```lua
 DynamicIslandQueue = DynamicIslandQueue or {}
@@ -94,7 +94,7 @@ act:Update({ progress = 0.5 })
 act:End({ title = "Stacked", trailing = "Done", after = 3 })
 ```
 
-Compact, the island shows the icon, a progress bar if you set `progress`, and the timer or `trailing` text. Hovered, it expands with the title, subtitle and bar.
+Compact, the island shows the icon, a progress bar if you set `progress`, and the timer or `trailing` text. With neither, it shows the title. Hovered, it expands with the title, subtitle and bar.
 
 | Field | What it does |
 | --- | --- |
@@ -107,7 +107,7 @@ Compact, the island shows the icon, a progress bar if you set `progress`, and th
 | `onTap` | Called when the user clicks the expanded activity or its side bubble. |
 | `onEnd` | Called when the island ends the activity, not when you do. The reason is `"dismissed"` (the user swiped it away), `"denied"`, `"muted"`, `"stale"` or `"expired"` (after 4 hours). |
 
-The handle has `Update(fields)`, `End(fields)` and `IsActive()`. Both `act:Update{}` and `act.Update{}` work. `End` with `after` keeps your final content on screen for up to 10 seconds. `false` or `""` clears a text field.
+The handle has `Update(fields)`, `End(fields)` and `IsActive()`. `IsActive()` turns false as soon as you call `End` or the island ends it. Both `act:Update{}` and `act.Update{}` work. `End` with `after` keeps your final content on screen for up to 10 seconds. `false` or `""` clears a text field.
 
 When music is playing, the activity takes the island and the music moves to a side bubble. With two activities from different scripts, the newest one is in the island and the other one sits in the side bubble. In a fight the fight wins and your activity goes to the bubble.
 
