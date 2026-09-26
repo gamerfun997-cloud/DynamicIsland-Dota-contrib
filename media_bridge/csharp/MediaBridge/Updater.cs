@@ -59,7 +59,12 @@ public static class Updater
         var target = ReleasePage;
         if (url != null && url.StartsWith("https://github.com/qhols/DynamicIsland-Dota/", StringComparison.Ordinal) && Uri.TryCreate(url, UriKind.Absolute, out _))
             target = url;
-        try { Process.Start(new ProcessStartInfo(target) { UseShellExecute = true }); } catch { }
+        try
+        {
+            Process.Start(new ProcessStartInfo(target) { UseShellExecute = true });
+            Foreground.BringBrowser();
+        }
+        catch { }
     }
 
     public static void Start(string? scriptDir, string? scriptPath)

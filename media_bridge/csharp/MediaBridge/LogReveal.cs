@@ -16,7 +16,9 @@ internal static class LogReveal
                 ? new ProcessStartInfo("explorer.exe", "/select,\"" + file + "\"")
                 : new ProcessStartInfo("explorer.exe", "\"" + dir + "\"");
             info.UseShellExecute = false;
+            var before = Foreground.Snapshot();
             Process.Start(info);
+            Foreground.BringFolder(dir, before);
             return File.Exists(file) ? "ok" : "no_file";
         }
         catch
