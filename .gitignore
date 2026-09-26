@@ -18,3 +18,5 @@
 
 /media_bridge/csharp/**/bin/
 /media_bridge/csharp/**/obj/
+
+/CLAUDE.md
