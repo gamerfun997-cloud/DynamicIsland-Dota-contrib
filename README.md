@@ -13,18 +13,21 @@ iPhone style dynamic island for dota, made for umbrella. one small pill at the t
 
 ## What's in it
 
-- clock, kda, gold, net worth, cs, fps, ping, pick what you want and drag them around
-- music player: cover, track, seek by dragging the bar, volume on scroll, spotify likes
+- hello screen and a setup assistant on first launch: bridge, size, look, alerts, likes and focus in a few taps
+- clock, kda, gold, net worth, cs, fps, ping, pick what you want and drag them around, recolor them with an ios color picker (grid, spectrum, sliders)
+- music player: cover, track, live waveform from what's actually playing, seek by dragging the bar, volume on scroll, spotify likes, optionally in the main menu too
 - fight radar that pops up during fights
 - alerts for runes, stacks, lotus, neutrals, tormentor, roshan and aegis, kill streaks, buybacks, towers, couriers, enemy tps, invis and key items
-- every alert has its own priority and duration, lower ones go to a small bubble next to the island instead of covering your music
+- every alert has its own priority, duration and sound switch, lower ones go to a small bubble next to the island instead of covering your music
+- alert sounds and interface sounds are separate, each with its own volume
 - rampage timer after an ultra kill
 - match flow in the menu: queue timer, accept countdown, who accepted, loading, draft with picks and bans
 - do not disturb and your own reminders (like "smoke at 12:00")
 - system alerts: headphones or speakers switching, windows sound muted, laptop charging and low battery
-- notification center with your last alerts, even the ones do not disturb kept quiet
+- notification center with your last alerts, even the ones do not disturb kept quiet, repeats stack up
 - updates right from the island: a new version shows up in the menu and installs in one click
 - no sf pro yet? the island offers to install the fonts in one click, no admin rights needed
+- debug log for bug reports: turn on debug, reproduce, send the file (extra > diagnostics has a snapshot)
 - english and russian, switches live with the umbrella language
 
 ## Install

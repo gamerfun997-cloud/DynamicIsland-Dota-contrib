@@ -740,14 +740,14 @@ local localization = qLocalization.new({
         di_upd_retry = "Try Again",
         di_wn_title = "What's New",
         di_wn_continue = "Continue",
-        di_wn_1_t = "Fonts in one click",
-        di_wn_1_d = "SF Pro installs right from the island",
-        di_wn_2_t = "Sharp on any screen",
-        di_wn_2_d = "Scales itself for 1440p and 4K",
-        di_wn_3_t = "Smooth dragging",
-        di_wn_3_d = "Snaps to the center like on iPhone",
-        di_wn_4_t = "Rock solid",
-        di_wn_4_d = "One broken piece never takes it down",
+        di_wn_1_t = "Hello and setup",
+        di_wn_1_d = "A new welcome and a step by step setup",
+        di_wn_2_t = "Widget Editor",
+        di_wn_2_d = "Drag, add and recolor with a new picker",
+        di_wn_3_t = "SDK for scripts",
+        di_wn_3_d = "Other scripts send alerts and activities",
+        di_wn_4_t = "Sound for every alert",
+        di_wn_4_d = "Mute any alert or all of them at once",
         di_nc_title = "Notifications",
         di_nc_clear = "Clear",
         di_sdk_perm_sub = "Would Like to Send You Notifications",
@@ -1265,14 +1265,14 @@ local localization = qLocalization.new({
         di_upd_retry = "Повторить",
         di_wn_title = "Что нового",
         di_wn_continue = "Продолжить",
-        di_wn_1_t = "Шрифты в один клик",
-        di_wn_1_d = "SF Pro ставятся прямо из островка",
-        di_wn_2_t = "Чёткий на любом экране",
-        di_wn_2_d = "Сам подстраивается под 1440p и 4K",
-        di_wn_3_t = "Плавное перетаскивание",
-        di_wn_3_d = "Липнет к центру, как на айфоне",
-        di_wn_4_t = "Не падает",
-        di_wn_4_d = "Одна поломка больше не валит всё",
+        di_wn_1_t = "Hello и настройка",
+        di_wn_1_d = "Новое приветствие и пошаговая настройка",
+        di_wn_2_t = "Редактор виджетов",
+        di_wn_2_d = "Двигай, добавляй, перекрашивай в пикере",
+        di_wn_3_t = "SDK для скриптов",
+        di_wn_3_d = "Уведомления и активности от других скриптов",
+        di_wn_4_t = "Звук у каждого алерта",
+        di_wn_4_d = "Выключай звук любого алерта или всех сразу",
         di_nc_title = "Уведомления",
         di_nc_clear = "Очистить",
         di_sdk_perm_sub = "Хочет отправлять вам уведомления",
@@ -2038,7 +2038,7 @@ local Success = { Fired = {} }
 local Odometer = { States = {}, Widths = {}, WidthCount = 0, Digit = {}, Layouts = {}, LayoutCount = 0 }
 local SeekDrag = { Active = false, Frac = 0, Grow = 0, GrowVel = 0, HoldUntil = 0, HoldPos = 0, HoldStart = 0 }
 
-local SCRIPT_VERSION = "2.3.0"
+local SCRIPT_VERSION = "2.4.0"
 
 local BridgeStatus = { FirstPoll = 0, LastPoll = 0, LastOk = 0, Version = "", Latest = "", MediaSessions = "" }
 local SystemState = { LastPoll = 0, Seen = false }
@@ -10274,10 +10274,10 @@ function Sheet.Pick(now)
 end
 
 Sheet.News = {
-    { glyph = "arrow_down", color = "Blue", t = "di_wn_1_t", d = "di_wn_1_d" },
-    { glyph = "display", color = "Orange", t = "di_wn_2_t", d = "di_wn_2_d" },
-    { glyph = "hold", color = "Purple", t = "di_wn_3_t", d = "di_wn_3_d" },
-    { glyph = "check", color = "Green", t = "di_wn_4_t", d = "di_wn_4_d" }
+    { glyph = "home", color = "Blue", t = "di_wn_1_t", d = "di_wn_1_d" },
+    { glyph = "appearance", color = "Purple", t = "di_wn_2_t", d = "di_wn_2_d" },
+    { glyph = "bolt", color = "Orange", t = "di_wn_3_t", d = "di_wn_3_d" },
+    { glyph = "volume", color = "Green", t = "di_wn_4_t", d = "di_wn_4_d" }
 }
 
 function Sheet.Desc()
