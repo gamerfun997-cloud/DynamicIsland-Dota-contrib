@@ -734,6 +734,9 @@ local localization = qLocalization.new({
         di_sdk_allow = "Allow",
         di_sdk_deny = "Don't Allow",
         di_main_sdk_reset = "Reset Script Permissions",
+        di_group_sdk = "Scripts",
+        di_sdk_none = "No scripts have asked yet",
+        di_sdk_focus = "Allow in Focus",
         di_nc_empty = "No notifications",
         di_nc_now = "now",
         di_nc_min = "%dm",
@@ -758,10 +761,8 @@ local localization = qLocalization.new({
         di_sys_battery_tag = "Battery",
         di_sys_charging = "Charging, %d%%",
         di_sys_low = "Low Battery, %d%%",
-        di_ui_tap = "Tap",
         di_num_sep = ",",
         di_ui_map = "Map",
-        di_ui_success = "Done",
         di_ui_notification = "Notification",
         di_ui_track = "Track",
         di_ui_match = "Match ",
@@ -1247,6 +1248,9 @@ local localization = qLocalization.new({
         di_sdk_allow = "Разрешить",
         di_sdk_deny = "Запретить",
         di_main_sdk_reset = "Сбросить разрешения скриптов",
+        di_group_sdk = "Скрипты",
+        di_sdk_none = "Скрипты ещё не просили доступ",
+        di_sdk_focus = "Разрешить в фокусе",
         di_nc_empty = "Нет уведомлений",
         di_nc_now = "сейчас",
         di_nc_min = "%d мин",
@@ -1271,10 +1275,8 @@ local localization = qLocalization.new({
         di_sys_battery_tag = "Батарея",
         di_sys_charging = "Заряжается, %d%%",
         di_sys_low = "Низкий заряд, %d%%",
-        di_ui_tap = "Тап",
         di_num_sep = "\u{00A0}",
         di_ui_map = "Карта",
-        di_ui_success = "Готово",
         di_ui_notification = "Уведомление",
         di_ui_track = "Трек",
         di_ui_match = "Матч ",
@@ -2314,6 +2316,8 @@ local function SaveAllConfig()
             if Setup.Resume then f:write("setup_resume=" .. tostring(Setup.Resume) .. "\n") end
             local apps = Sdk.SaveLine()
             if apps then f:write("sdk_apps=" .. apps .. "\n") end
+            local focusApps = Sdk.FocusLine()
+            if focusApps then f:write("sdk_focus=" .. focusApps .. "\n") end
 
             for id, cfg in pairs(HUDCustomizer.WidgetConfigs) do
                 f:write(string.format("cfg_%s=%s,%d,%d,%s,%s\n", id, cfg.bold and "1" or "0", cfg.colorMode or 1, cfg.format or 1, cfg.showIcon and "1" or "0", cfg.customHex or ""))
@@ -2456,6 +2460,8 @@ function Impl.LoadAllConfig()
             end
         elseif string.sub(line, 1, 9) == "sdk_apps=" then
             Sdk.LoadLine(string.sub(line, 10))
+        elseif string.sub(line, 1, 10) == "sdk_focus=" then
+            Sdk.LoadFocus(string.sub(line, 11))
         elseif string.match(line, "^setup_resume=%d+$") then
             Setup.Resume = tonumber(string.match(line, "^setup_resume=(%d+)$"))
         elseif activeMatch then
@@ -3016,6 +3022,7 @@ function Impl.InitMenu()
     local gMap = pAlerts:Create("di_group_map_alerts", Enum.GroupSide.Right)
     local gSystem = pAlerts:Create("di_group_system", Enum.GroupSide.Right)
     local gLive = pAlerts:Create("di_group_live", Enum.GroupSide.Left)
+    Sdk.InitMenu(pAlerts)
     local pMedia = tab:Create(L("di_tab_media"))
     local gMedia = pMedia:Create("di_group_media", Enum.GroupSide.Left)
 
@@ -3724,6 +3731,7 @@ end
 
 function Focus.Blocks(notif)
     if not Focus.Active or notif.FocusExempt then return false end
+    if notif.SdkApp and Sdk.Focus[notif.SdkApp] then return false end
     local urgent = UI and UI.Focus and UI.Focus.Urgent and UI.Focus.Urgent:Get()
     if urgent and (notif.Priority or 0) >= 5 then return false end
     return true
@@ -3935,7 +3943,7 @@ function Impl.PollLevel()
     if not MediaData.IsPlaying or not Sheet.BridgeOnline() then return end
     local S = StateMachine.States
     local st = StateMachine.TargetState
-    if st ~= S.COMPACT_MEDIA and st ~= S.LARGE_MEDIA and Satellite.Right.kind ~= "combat" then return end
+    if st ~= S.COMPACT_MEDIA and st ~= S.LARGE_MEDIA and Satellite.Right.kind ~= "combat" and Satellite.Right.kind ~= "media" then return end
     local now = os.clock()
     if now - (MediaData.LevelPoll or 0) < 0.04 then return end
     if MediaData.LevelBusy and now - MediaData.LevelBusy < 0.5 then return end
@@ -6295,7 +6303,7 @@ function Impl.HandleInteractions()
     end
 
     if isLeftClicked and isHoverSatellite then
-        if inCombat then
+        if inCombat or Satellite.Right.kind == "media" then
             if ButtonHits.SatellitePrev and cx >= ButtonHits.SatellitePrev.x1 and cx <= ButtonHits.SatellitePrev.x2 and cy >= ButtonHits.SatellitePrev.y1 and cy <= ButtonHits.SatellitePrev.y2 then
                 SendMediaCommand("prev")
                 ButtonSprings.SatellitePrev.scale = 0.72
@@ -6759,6 +6767,10 @@ function Impl.HandleInteractions()
         Config.Dimensions.CompactTargetW = math.max(Config.Dimensions.CompactFightW, math.min(320, math.ceil((fw + 48) / 4) * 4))
         Config.Dimensions.CompactTargetH = Config.Dimensions.CompactFightH
         Config.Dimensions.CompactTargetR = Config.Dimensions.CompactFightRadius
+    elseif StateMachine.TargetState == StateMachine.States.NOTIFICATION and Sdk.Expanded then
+        Config.Dimensions.CompactTargetW = 360
+        Config.Dimensions.CompactTargetH = Sdk.ExpandH()
+        Config.Dimensions.CompactTargetR = 28
     elseif StateMachine.TargetState == StateMachine.States.NOTIFICATION then
         Config.Dimensions.CompactTargetW = Config.Dimensions.NotificationW
         Config.Dimensions.CompactTargetH = Config.Dimensions.NotificationH
@@ -6848,6 +6860,7 @@ function Impl.HandleInteractions()
     local expandable = StateMachine.TargetState == StateMachine.States.COMPACT_FIGHT or StateMachine.TargetState == StateMachine.States.COURIER_DELIVERY
         or StateMachine.TargetState == StateMachine.States.COMPACT_IDLE or StateMachine.TargetState == StateMachine.States.COMPACT_MEDIA
         or StateMachine.TargetState == StateMachine.States.ACTIVITY
+        or (StateMachine.TargetState == StateMachine.States.NOTIFICATION and Sdk.CanExpand() and not Sdk.Expanded)
 
     if holdMode then
         if isLeftClicked and isHover and not isCtrlOnly and expandable then
@@ -6886,9 +6899,14 @@ function Impl.HandleInteractions()
                 if (nowClk - StateMachine.HoverStartTime) >= hoverDelaySec then
                     TriggerStateTransition(StateMachine.States.COURIER_LARGE)
                 end
+            elseif StateMachine.TargetState == StateMachine.States.NOTIFICATION then
+                if not Sdk.Expanded and Sdk.CanExpand() and (nowClk - StateMachine.HoverStartTime) >= hoverDelaySec then
+                    Sdk.Expand(nowClk)
+                end
             elseif StateMachine.TargetState == StateMachine.States.ACTIVITY then
                 if (nowClk - StateMachine.HoverStartTime) >= hoverDelaySec then
                     TriggerStateTransition(StateMachine.States.ACTIVITY_LARGE)
+                    Sdk.ExpandedAt = nowClk
                 end
             elseif StateMachine.TargetState == StateMachine.States.COMPACT_IDLE or StateMachine.TargetState == StateMachine.States.COMPACT_MEDIA then
                 if (nowClk - StateMachine.HoverStartTime) >= hoverDelaySec then
@@ -6903,6 +6921,10 @@ function Impl.HandleInteractions()
             StateMachine.UnhoverStartTime = nowClk
         end
         StateMachine.HoverStartTime = 0
+
+        if Sdk.Expanded and StateMachine.UnhoverStartTime > 0 and (nowClk - StateMachine.UnhoverStartTime) >= 0.22 then
+            Sdk.Expanded = false
+        end
 
         do
             if StateMachine.TargetState == StateMachine.States.LARGE_FIGHT then
@@ -6924,10 +6946,6 @@ function Impl.HandleInteractions()
                 end
             end
         end
-    end
-
-    if isLeftClicked and isHover and not isCtrlOnly and StateMachine.TargetState == StateMachine.States.ACTIVITY_LARGE then
-        Sdk.TapActivity()
     end
 
     if isLeftClicked and isHover and not isCtrlOnly and StateMachine.TargetState == StateMachine.States.MENU_MATCH_FOUND then
@@ -8638,8 +8656,14 @@ function Impl.RenderSecondarySatelliteBubble(layout)
             if left > 0.45 then
                 desired, notif = "notif", active
             end
+        elseif FightTracker.Active and not active and Sdk.Current() then
+            desired, R.act = "activity", Sdk.Current()
         elseif FightTracker.Active and (active or IsMediaActive()) then
             desired = "combat"
+        elseif (ts == StateMachine.States.ACTIVITY or ts == StateMachine.States.ACTIVITY_LARGE) and IsMediaActive() then
+            desired = "media"
+        elseif (ts == StateMachine.States.ACTIVITY or ts == StateMachine.States.ACTIVITY_LARGE) and Sdk.Second() then
+            desired, R.act = "activity", Sdk.Second()
         else
             local ros = GameTracker.Roshan
             if ros.AegisExpiryTime - GameRules.GetGameTime() > 0 and not ros.Dismissed and ts ~= StateMachine.States.NOTIFICATION then
@@ -8656,6 +8680,7 @@ function Impl.RenderSecondarySatelliteBubble(layout)
     local kind = R.kind
     local combatMedia = kind == "combat" and not active and IsMediaActive()
     local wide = kind == "notif" or kind == "aegis" or (combatMedia and FightTracker.SatelliteHover) or (kind == "rampage" and not rampageSuccess)
+        or ((kind == "media" or kind == "activity") and FightTracker.SatelliteHover)
     local sat = Satellite.Step("right", kind ~= nil and kind == desired, wide)
     ButtonHits.SatellitePrev = nil
     ButtonHits.SatellitePlay = nil
@@ -8762,12 +8787,41 @@ function Impl.RenderSecondarySatelliteBubble(layout)
                 Odometer.Text("aegis_time", fontBold, fontSize, timeStr, Vec2(math.floor(x1 + d + 5 * scale), math.floor(c.y - tsz.y / 2)), FadeColor(Config.Colors.TextPrimary, ta))
             end
         end
+    elseif kind == "activity" and R.act then
+        local a = R.act
+        local txt = Sdk.Trailing(a)
+        local tw = txt and Odometer.Width(fontBold, headSize, txt) or 0
+        local th = Render.TextSize(fontBold, headSize, "0").y
+        fullW = txt and (bh + math.floor(5 * scale) + tw + math.floor(bh * 0.38)) or bh
+        content = function(x1, y1, x2, y2, d, ca, ta)
+            local c = Vec2(x1 + d / 2, (y1 + y2) / 2)
+            local ringR = d / 2 - 4 * scale
+            local tint = Impl.OnLight(a.tint or Config.Colors.Blue)
+            local frac = Sdk.Frac(a)
+            if frac then
+                local rt = math.max(1.2, 1.5 * scale)
+                Render.Circle(c, ringR, FadeColor(Config.Colors.FillTertiary, ca), rt, 0, 1.0, false, 48)
+                if frac > 0.002 then
+                    Render.Circle(c, ringR, FadeColor(tint, ca), rt, 270, frac, true, 48)
+                end
+            end
+            local isz = math.floor(ringR * (frac and 1.05 or 1.35))
+            local img = a.image and GetCachedImage(a.image) or nil
+            if img then
+                Render.Image(img, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), ca), math.floor(isz / 2))
+            else
+                Glyph(a.glyph or "bell", c.x, c.y, isz, FadeColor(tint, ca))
+            end
+            if ta > 0.01 and txt then
+                Odometer.Text("sat_activity", fontBold, headSize, txt, Vec2(math.floor(x1 + d + 5 * scale), math.floor(c.y - th / 2)), FadeColor(tint, ta))
+            end
+        end
     else
         local step = math.floor(26 * scale)
         fullW = bh + step * 3 + math.floor(6 * scale)
         content = function(x1, y1, x2, y2, d, ca, ta)
             local c = Vec2(x1 + d / 2, (y1 + y2) / 2)
-            if active then
+            if active and kind ~= "media" then
                 local isz = math.floor(d * 0.52)
                 local hIcon = GetCachedImage(active.Icon, active.FallbackSvg)
                 if hIcon then
@@ -9171,6 +9225,13 @@ function Impl.RenderNotificationState(layout, alphaMul, yOffset)
         return
     end
 
+    if notif.SdkApp and Sdk.ExpandK > 0.01 and notif == NotificationQueue.Active then
+        local k = math.max(0, math.min(1, Sdk.ExpandK))
+        Sdk.RenderExpanded(layout, (alphaMul or 1) * math.max(0, (k - 0.35) / 0.65), yOffset, notif)
+        alphaMul = (alphaMul or 1) * math.max(0, 1 - k * 2.2)
+        if alphaMul <= 0.01 then return end
+    end
+
     local aMul = alphaMul or 1.0
     local yOff = yOffset or 0
     local scale = layout.scale
@@ -9203,59 +9264,6 @@ function Impl.RenderNotificationState(layout, alphaMul, yOffset)
         Render.FilledRect(Vec2(bx, by), Vec2(bx + w, by + h), FadeColor(Config.Colors.Fill, aMul), h / 2)
         Odometer.Draw(fB, sB, txt, Vec2(math.floor(bx + (w - tw) / 2), math.floor(by + (h - th) / 2)), FadeColor(Config.Colors.TextSecondary, aMul))
         return math.floor(w + 8 * scale)
-    end
-
-    if notif.Type == "apple_pay" then
-        local green = Config.Colors.Green
-        local elapsed = now - (NotificationQueue.StartTime or now)
-        local pulseT = math.min(1.0, elapsed * 5.0)
-        local checkScale = EaseOutBack(pulseT)
-
-        local iconSz = math.floor(24 * scale)
-        local iconX = math.floor(layout.x + 12 * scale)
-        local iconY = math.floor(layout.y + (layout.h - iconSz) / 2 + yOff)
-
-        Render.FilledCircle(Vec2(iconX + iconSz / 2, iconY + iconSz / 2), math.floor(iconSz / 2 * checkScale), FadeColor(green, aMul), 0, 1.0, 28)
-
-        Glyph("check", iconX + iconSz / 2, iconY + iconSz / 2, math.floor(iconSz * 0.62 * checkScale), FadeColor(Color(255, 255, 255, 255), aMul))
-
-        local textX = math.floor(iconX + iconSz + 10 * scale)
-        local qW = QueueBadge()
-        TwoLines(textX, math.floor(layout.x + layout.w - textX - 14 * scale - qW), notif.Tag or L("di_ui_notification"), green, notif.Title or L("di_ui_success"))
-        return
-    end
-
-    if notif.Type == "apple_action_dial" then
-        local accent = notif.AccentColor or Config.Colors.Green
-        local isEnabled = (notif.Subtitle == "ENABLED")
-        local isTap = (notif.Subtitle == "TRIGGERED")
-
-        local iconSz = math.floor(24 * scale)
-        local iconX = math.floor(layout.x + 12 * scale)
-        local iconY = math.floor(layout.y + (layout.h - iconSz) / 2 + yOff)
-
-        Render.FilledCircle(Vec2(iconX + iconSz / 2, iconY + iconSz / 2), math.floor(iconSz / 2), FadeColor(accent, aMul * 0.22), 0, 1.0, 24)
-        Render.Circle(Vec2(iconX + iconSz / 2, iconY + iconSz / 2), math.floor(iconSz / 2), FadeColor(accent, aMul * 0.85), 1.2 * scale)
-
-        Glyph(isTap and "bolt" or (isEnabled and "check" or "close"), iconX + iconSz / 2, iconY + iconSz / 2, math.floor(iconSz * 0.55), FadeColor(accent, aMul))
-
-        local badgeTxt = isTap and L("di_ui_tap") or (isEnabled and L("di_focus_on") or L("di_focus_off"))
-        local fB, sB = TF("Caption", scale)
-        fB = Config.Fonts.Semibold
-        local badgeSz = Render.TextSize(fB, sB, badgeTxt)
-        local badgeH = math.floor(20 * scale)
-        local badgeW = math.floor(math.max(40 * scale, badgeSz.x + 16 * scale))
-        local badgeX = math.floor(layout.x + layout.w - 14 * scale - badgeW)
-        local badgeY = math.floor(layout.y + (layout.h - badgeH) / 2 + yOff)
-        local badgeR = math.floor(badgeH / 2)
-
-        local badgeBg = isTap and Config.Colors.Blue or (isEnabled and Config.Colors.Green or Config.Colors.Fill)
-        Render.FilledRect(Vec2(badgeX, badgeY), Vec2(badgeX + badgeW, badgeY + badgeH), FadeColor(badgeBg, aMul), badgeR)
-        Render.Text(fB, sB, badgeTxt, Vec2(math.floor(badgeX + (badgeW - badgeSz.x) / 2), math.floor(badgeY + (badgeH - badgeSz.y) / 2)), FadeColor(Color(255, 255, 255, 255), aMul))
-
-        local textX = math.floor(iconX + iconSz + 10 * scale)
-        TwoLines(textX, math.floor(badgeX - textX - 8 * scale), notif.Tag or L("di_ui_notification"), Config.Colors.TextSecondary, notif.Title)
-        return
     end
 
     local accent = notif.AccentColor or GetPrimaryThemeColor()
@@ -9325,6 +9333,9 @@ function Impl.RenderNotificationState(layout, alphaMul, yOffset)
 
     local textX = math.floor(layout.x + 12 * scale + iconW + 10 * scale)
     local qW = QueueBadge()
+    if notif.Trailing then
+        qW = qW + Sdk.DrawPill(layout, notif, qW, yOff, aMul)
+    end
     TwoLines(textX, math.floor(layout.x + layout.w - textX - 16 * scale - qW), notif.Tag or L("di_ui_notification"), accent, notif.Title)
 end
 
@@ -10416,7 +10427,7 @@ function Sheet.RenderBadge(layout)
 end
 
 function NotifCenter.Add(n)
-    table.insert(NotifCenter.Items, 1, { tag = n.Tag or "", title = n.Title or "", accent = n.AccentColor, fb = n.FallbackSvg, icon = n.Icon, mono = n.Mono, t = os.clock() })
+    table.insert(NotifCenter.Items, 1, { tag = n.Tag or "", title = n.Title or "", accent = n.AccentColor, fb = n.FallbackSvg, icon = n.Icon, mono = n.Mono, app = n.SdkApp, onTap = n.OnTap, t = os.clock() })
     while #NotifCenter.Items > 24 do table.remove(NotifCenter.Items) end
 end
 
@@ -10606,7 +10617,6 @@ Sdk.Asks = {}
 Sdk.AskAt = {}
 Sdk.AskHidden = {}
 Sdk.Pending = {}
-Sdk.Last = {}
 Sdk.Strikes = {}
 Sdk.Muted = {}
 Sdk.Errors = {}
@@ -10614,7 +10624,19 @@ Sdk.Bulk = {}
 Sdk.Early = {}
 Sdk.Warned = {}
 Sdk.Acts = {}
+Sdk.Bucket = {}
+Sdk.Hits = {}
+Sdk.Expanded = false
+Sdk.ExpandK, Sdk.ExpandV = 0, 0
+Sdk.LastT = 0
+Sdk.Focus = {}
+Sdk.Slots = {}
+Sdk.MenuDirty = true
+Sdk.MenuAt = 0
+Sdk.SoundWin = { t = 0, n = 0 }
 Sdk.Seq = 0
+Sdk.Features = { notify = true, activity = true, queue = true, levels = true, sounds = true, body = true, actions = true, trailing = true, onEnd = true, staleAfter = true, endAfter = true, playSound = true, focus = true }
+Sdk.SoundFiles = { notification_toast = true, timer_chime = true, courier_delivered = true, courier_death_or_fail = true, button_press = true, button_dismiss = true, wheel_notch = true, wheel_boundary_bump = true, island_expand = true, island_collapse = true, island_hover = true, toast_dismiss = true }
 Sdk.Levels = { passive = 1, active = 3, ["time-sensitive"] = 5 }
 Sdk.Sounds = { default = "notification_toast", chime = "timer_chime", success = "courier_delivered", failure = "courier_death_or_fail" }
 Sdk.Tints = { "red", "orange", "yellow", "green", "mint", "teal", "cyan", "blue", "indigo", "purple", "pink", "brown", "gray" }
@@ -10732,15 +10754,52 @@ function Sdk.Build(app, title, o)
         n.Chime = Sdk.Sounds[o.sound] or (lvl == "time-sensitive" and "timer_chime" or "notification_toast")
     end
     if type(o.onTap) == "function" then n.OnTap = o.onTap end
+    n.Trailing = Sdk.Text(o.trailing, 12)
+    n.Body = Sdk.Text(o.body, 160)
+    if type(o.actions) == "table" then
+        local list = {}
+        for i = 1, 2 do
+            local ac = o.actions[i]
+            if type(ac) == "table" then
+                local t = Sdk.Text(ac.title, 20)
+                if t then list[#list + 1] = { title = t, fn = type(ac.fn) == "function" and ac.fn or nil, destructive = ac.destructive == true } end
+            end
+        end
+        if #list > 0 then n.Actions = list end
+    end
     return n
+end
+
+function Sdk.Take(app, now)
+    local b = Sdk.Bucket[app]
+    if not b then
+        b = { n = 3, t = now }
+        Sdk.Bucket[app] = b
+    end
+    b.n = math.min(3, b.n + (now - b.t) / 2)
+    b.t = now
+    if b.n < 1 then return false end
+    b.n = b.n - 1
+    return true
 end
 
 function Sdk.Deliver(n)
     if n.SdkLevel == "passive" then
         NotifCenter.Add(n)
-    else
-        DynamicIsland.PushNotification(n)
+        return
     end
+    local cur = NotificationQueue.Active
+    if cur and cur.SdkApp == n.SdkApp and not Focus.Blocks(n) then
+        NotifCenter.Add(n)
+        n.Duration = n.Duration or cur.Duration
+        n.Priority = cur.Priority
+        NotificationQueue.Active = n
+        NotificationQueue.StartTime = os.clock()
+        Impl.NotifChime(n)
+        if Sdk.Expanded then Sdk.ExpandedFor = n end
+        return
+    end
+    DynamicIsland.PushNotification(n)
 end
 
 function Sdk.Post(o, bulk)
@@ -10760,19 +10819,18 @@ function Sdk.Post(o, bulk)
     if bulk then
         Sdk.Bulk[app] = (Sdk.Bulk[app] or 0) + 1
         if Sdk.Bulk[app] > 5 then return nil, "rate limited" end
-    elseif now - (Sdk.Last[app] or -99) < 2 then
+    elseif not Sdk.Take(app, now) then
         Sdk.Strikes[app] = (Sdk.Strikes[app] or 0) + 1
         if Sdk.Strikes[app] >= 10 then
             Sdk.Muted[app] = true
-            Sdk.EndApp(app)
+            Sdk.EndApp(app, "muted")
             Sdk.Unask(app)
             Sdk.Log(app, "muted until reload for sending too many notifications")
         else
-            Sdk.Warn(app, "notifications are limited to one every 2 seconds")
+            Sdk.Warn(app, "notifications are limited to 3 in a row, then one every 2 seconds")
         end
         return nil, "rate limited"
     end
-    Sdk.Last[app] = now
     Sdk.Strikes[app] = math.max(0, (Sdk.Strikes[app] or 0) - 1)
     Sdk.Seq = Sdk.Seq + 1
     local n = Sdk.Build(app, title, o)
@@ -10821,11 +10879,12 @@ function Sdk.Answer(allow)
     local p = Sdk.Pending[app]
     Sdk.Unask(app)
     Sdk.Apps[app] = allow
+    Sdk.MenuDirty = true
     SaveAllConfig()
     if allow then
         for _, n in ipairs(p or {}) do Sdk.Deliver(n) end
     else
-        Sdk.EndApp(app)
+        Sdk.EndApp(app, "denied")
     end
 end
 
@@ -10850,6 +10909,8 @@ function Sdk.AskInGame(inCombat, now)
 end
 
 function Sdk.Reset()
+    Sdk.MenuDirty = true
+    Sdk.Focus = {}
     Sdk.Apps = {}
     Sdk.Muted = {}
     Sdk.Strikes = {}
@@ -10867,17 +10928,107 @@ function Sdk.SaveLine()
     return table.concat(parts, "|")
 end
 
+function Sdk.FocusLine()
+    local parts = {}
+    for app, v in pairs(Sdk.Focus) do
+        if v then parts[#parts + 1] = app end
+    end
+    if #parts == 0 then return nil end
+    table.sort(parts)
+    return table.concat(parts, "|")
+end
+
 function Sdk.LoadLine(s)
     for pair in string.gmatch(s .. "|", "([^|]*)|") do
         local app, v = string.match(pair, "^(.+):([01])$")
         if app then Sdk.Apps[app] = v == "1" end
     end
+    Sdk.MenuDirty = true
+end
+
+function Sdk.LoadFocus(s)
+    for app in string.gmatch(s .. "|", "([^|]*)|") do
+        if app ~= "" then Sdk.Focus[app] = true end
+    end
+end
+
+function Sdk.InitMenu(page)
+    local g = page:Create("di_group_sdk", Enum.GroupSide.Right)
+    Sdk.NoneLabel = g:Label("di_sdk_none", "\u{f121}")
+    for i = 1, 8 do
+        local slot = {}
+        slot.sw = g:Switch("sdk_slot_" .. i, false, "\u{f121}")
+        slot.gear = slot.sw:Gear("sdk_gear_" .. i)
+        slot.focus = slot.gear:Switch("sdk_focus_" .. i, false, "\u{f186}")
+        slot.sw:SetCallback(function(w)
+            if Sdk.Syncing or not slot.app then return end
+            local on = w:Get() == true
+            Sdk.Apps[slot.app] = on
+            if not on then Sdk.EndApp(slot.app, "denied") end
+            Sdk.Unask(slot.app)
+            SaveAllConfig()
+        end)
+        slot.focus:SetCallback(function(w)
+            if Sdk.Syncing or not slot.app then return end
+            Sdk.Focus[slot.app] = w:Get() == true or nil
+            SaveAllConfig()
+        end)
+        pcall(slot.sw.Visible, slot.sw, false)
+        Sdk.Slots[i] = slot
+    end
+    Sdk.MenuDirty = true
+end
+
+function Sdk.MenuSync(now)
+    if #Sdk.Slots == 0 then return end
+    local open = Menu.Opened and Menu.Opened()
+    if not Sdk.MenuDirty and not (open and now - Sdk.MenuAt > 1) then return end
+    Sdk.MenuDirty = false
+    Sdk.MenuAt = now
+    local apps = {}
+    for app in pairs(Sdk.Apps) do apps[#apps + 1] = app end
+    table.sort(apps, function(a, b) return string.lower(a) < string.lower(b) end)
+    Sdk.Syncing = true
+    for i, slot in ipairs(Sdk.Slots) do
+        local app = apps[i]
+        slot.app = app
+        if app then
+            local label = string.gsub(app, "%.", " ")
+            pcall(slot.sw.ForceLocalization, slot.sw, label)
+            pcall(slot.gear.ForceLocalization, slot.gear, label)
+            pcall(slot.focus.ForceLocalization, slot.focus, L("di_sdk_focus"))
+            if slot.sw:Get() ~= (Sdk.Apps[app] == true) then slot.sw:Set(Sdk.Apps[app] == true) end
+            if slot.focus:Get() ~= (Sdk.Focus[app] == true) then slot.focus:Set(Sdk.Focus[app] == true) end
+        end
+        pcall(slot.sw.Visible, slot.sw, app ~= nil)
+    end
+    if Sdk.NoneLabel then pcall(Sdk.NoneLabel.Visible, Sdk.NoneLabel, #apps == 0) end
+    Sdk.Syncing = false
+end
+
+function Sdk.PlaySound(name, vol)
+    if type(name) ~= "string" then return false end
+    name = Sdk.Sounds[name] or name
+    if not Sdk.SoundFiles[name] then return false end
+    local now = os.clock()
+    local w = Sdk.SoundWin
+    if now - w.t > 1 then
+        w.t, w.n = now, 0
+    end
+    w.n = w.n + 1
+    if w.n > 25 then return false end
+    local v = tonumber(vol) or 0.5
+    HapticPlaySound(name, math.max(0.05, math.min(1, v)))
+    return true
 end
 
 function Sdk.ActApply(a, o)
     if o.title ~= nil then a.title = Sdk.Text(o.title, 60) end
     if o.subtitle ~= nil then a.subtitle = Sdk.Text(o.subtitle, 80) end
-    if o.trailing ~= nil then a.trailing = Sdk.Text(o.trailing, 12) end
+    if o.trailing ~= nil then
+        a.trailing = Sdk.Text(o.trailing, 12)
+        if o.timer == nil then a.ends, a.timerLen = nil, nil end
+    end
     if o.progress ~= nil then
         local p = tonumber(o.progress)
         a.progress = p and math.max(0, math.min(1, p)) or nil
@@ -10885,21 +11036,38 @@ function Sdk.ActApply(a, o)
     if o.timer ~= nil then
         local t = tonumber(o.timer)
         a.ends = t and (os.clock() + math.max(0, t)) or nil
+        a.timerLen = t and math.max(1, t) or nil
     end
     if o.icon ~= nil then a.glyph, a.image = Sdk.Icon(o.icon) end
     if o.tint ~= nil then a.tint = Sdk.Tint(o.tint, a.app) end
     if o.onTap ~= nil then a.onTap = type(o.onTap) == "function" and o.onTap or nil end
+    if o.onEnd ~= nil then a.onEnd = type(o.onEnd) == "function" and o.onEnd or nil end
+    if o.staleAfter ~= nil then
+        local st = tonumber(o.staleAfter)
+        a.staleAfter = st and math.max(5, st) or nil
+    end
+    a.touched = os.clock()
 end
 
 function Sdk.Handle(a)
     local h = { id = a.id }
     h.Update = function(p1, p2)
         local o = p1 == h and p2 or p1
-        if a.ended or type(o) ~= "table" then return false end
+        if a.ended or a.endAt or type(o) ~= "table" then return false end
         Sdk.Guard(Sdk.ActApply, a, o)
         return true
     end
-    h.End = function()
+    h.End = function(p1, p2)
+        local o = p1 == h and p2 or p1
+        if a.ended then return end
+        if type(o) == "table" then
+            Sdk.Guard(Sdk.ActApply, a, o)
+            local after = tonumber(o.after)
+            if after and after > 0 then
+                a.endAt = os.clock() + math.min(after, 10)
+                return
+            end
+        end
         Sdk.ActEnd(a)
     end
     h.IsActive = function()
@@ -10932,18 +11100,40 @@ function Sdk.ActStart(o)
     return Sdk.Handle(a)
 end
 
-function Sdk.ActEnd(a)
-    if a.ended then return end
+function Sdk.ActEnd(a, reason)
+    if not a or a.ended then return end
     a.ended = true
     for i = #Sdk.Acts, 1, -1 do
         if Sdk.Acts[i] == a then table.remove(Sdk.Acts, i) end
     end
+    if reason and a.onEnd then Sdk.Call(a.app, a.onEnd, reason) end
 end
 
-function Sdk.EndApp(app)
+function Sdk.EndApp(app, reason)
     for i = #Sdk.Acts, 1, -1 do
-        if Sdk.Acts[i].app == app then Sdk.ActEnd(Sdk.Acts[i]) end
+        if Sdk.Acts[i] and Sdk.Acts[i].app == app then Sdk.ActEnd(Sdk.Acts[i], reason) end
     end
+end
+
+function Sdk.Dismiss(a)
+    if not a or a.ended then return end
+    HapticPlaySound("toast_dismiss", 0.45)
+    Sdk.ActEnd(a, "dismissed")
+end
+
+function Sdk.Second()
+    local first = Sdk.Current()
+    for i = #Sdk.Acts, 1, -1 do
+        local a = Sdk.Acts[i]
+        if a ~= first and Sdk.Apps[a.app] == true and not Sdk.Muted[a.app] then return a end
+    end
+    return nil
+end
+
+function Sdk.Frac(a)
+    if a.progress then return a.progress end
+    if a.ends and a.timerLen then return math.max(0, math.min(1, (a.ends - os.clock()) / a.timerLen)) end
+    return nil
 end
 
 function Sdk.Current()
@@ -10956,26 +11146,160 @@ end
 
 function Sdk.ShowActivity(inCombat)
     if inCombat or HUDCustomizer.IsOpen or not Sdk.Current() then return false end
-    if NotificationQueue.Active and not IsNotifDeferred(NotificationQueue.Active) then return false end
+    if NotificationQueue.Active then return false end
     return true
 end
 
 function Sdk.TapNotif(now)
     local n = NotificationQueue.Active
-    if not (n and n.OnTap) then return end
-    Sdk.Call(n.SdkApp, n.OnTap)
+    if not n then return end
+    if Sdk.ExpandedAt and Sdk.PressAt and Sdk.ExpandedAt >= Sdk.PressAt then return end
+    local fn = n.OnTap
+    if Sdk.Expanded and Sdk.ExpandK > 0.9 then
+        for _, h in ipairs(Sdk.Hits) do
+            if Pointer.x >= h.x1 and Pointer.x <= h.x2 and Pointer.y >= h.y1 and Pointer.y <= h.y2 then
+                fn = h.fn
+                if not fn then
+                    Impl.DismissNotif(now)
+                    return
+                end
+                break
+            end
+        end
+    end
+    if not fn then return end
+    Haptic.Trigger(Haptic.Types.TAP_MEDIUM)
+    Sdk.Call(n.SdkApp, fn)
     Impl.DismissNotif(now)
 end
 
-function Sdk.TapActivity()
-    local a = Sdk.Current()
+function Sdk.TapActivity(a)
+    a = a or Sdk.Current()
     if a and a.onTap then
         Haptic.Trigger(Haptic.Types.TAP_MEDIUM)
         Sdk.Call(a.app, a.onTap)
     end
 end
 
+function Sdk.CanExpand()
+    local n = NotificationQueue.Active
+    return n ~= nil and n.SdkApp ~= nil and (n.Body ~= nil or n.Actions ~= nil) and StateMachine.TargetState == StateMachine.States.NOTIFICATION and not IsNotifDeferred(n)
+end
+
+function Sdk.Expand(now)
+    Sdk.Expanded = true
+    Sdk.ExpandedAt = now
+    Sdk.ExpandedFor = NotificationQueue.Active
+    Haptic.Silent(Haptic.Types.SNAP_EXPAND)
+end
+
+function Sdk.TickExpand(now)
+    local dt = math.min(0.05, math.max(0.001, now - (Sdk.LastT > 0 and Sdk.LastT or now - 0.016)))
+    Sdk.LastT = now
+    local n = NotificationQueue.Active
+    if Sdk.Expanded and (n ~= Sdk.ExpandedFor or StateMachine.TargetState ~= StateMachine.States.NOTIFICATION) then
+        Sdk.Expanded = false
+    end
+    if Sdk.Expanded and n then
+        NotificationQueue.StartTime = math.max(NotificationQueue.StartTime or now, now - math.max(0, (n.Duration or 4) - 1.5))
+    end
+    if not Sdk.Expanded then Sdk.Hits = {} end
+    Sdk.ExpandK, Sdk.ExpandV = MotionEngine.Step(Sdk.ExpandK, Sdk.ExpandV, Sdk.Expanded and 1 or 0, dt / AnimScale(), "SNAPPY")
+end
+
+function Sdk.BodyLines(n, scale)
+    n._lines = n._lines or {}
+    local key = math.floor(scale * 100)
+    if not n._lines[key] then
+        local lines = {}
+        if n.Body then
+            local f, sz = TF("Subhead", scale)
+            local maxW = (360 - 32) * scale
+            lines = Impl.Wrap(f, sz, n.Body, maxW)
+            if #lines > 3 then
+                local rest = table.concat(lines, " ", 3)
+                lines = { lines[1], lines[2], TruncateToWidth(f, sz, rest, maxW) }
+            end
+        end
+        n._lines[key] = lines
+    end
+    return n._lines[key]
+end
+
+function Sdk.ExpandH()
+    local n = NotificationQueue.Active
+    if not n then return Config.Dimensions.NotificationH end
+    local h = 14 + 38 + 16
+    local lines = Sdk.BodyLines(n, 1)
+    if #lines > 0 then h = h + 6 + #lines * 19 end
+    if n.Actions then h = h + 12 + 34 end
+    return h
+end
+
+function Sdk.RenderExpanded(layout, am, yOffset, n)
+    Sdk.Hits = {}
+    if am <= 0.01 then return end
+    local s = layout.scale
+    local C = Config.Colors
+    local pad = math.floor(16 * s)
+    local yOff = yOffset or 0
+    local tint = n.AccentColor or C.Blue
+    local isz = math.floor(38 * s)
+    local ix = layout.x + pad
+    local iy = math.floor(layout.y + 14 * s + yOff)
+    local icx, icy = ix + isz / 2, iy + isz / 2
+    local img = n.Icon and GetCachedImage(n.Icon) or nil
+    if img then
+        Render.Image(img, Vec2(ix, iy), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), am), math.floor(isz / 2))
+    else
+        Render.FilledCircle(Vec2(icx, icy), isz / 2, FadeColor(tint, am), 0, 1.0, 32)
+        Glyph(n.FallbackSvg or "bell", icx, icy, math.floor(isz * 0.54), FadeColor(Color(255, 255, 255, 255), am))
+    end
+    local fC, sC = TF("Caption", s)
+    local fH, sH = TF("Headline", s)
+    local ch = Render.TextSize(fC, sC, "Ag").y
+    local hh = Render.TextSize(fH, sH, "Ag").y
+    local tx = math.floor(ix + isz + 12 * s)
+    local maxW = layout.x + layout.w - pad - tx
+    local ty = math.floor(icy - (ch + hh) / 2)
+    Render.Text(fC, sC, TruncateToWidth(fC, sC, n.Tag or "", maxW), Vec2(tx, ty), FadeColor(Impl.OnLight(tint), am))
+    Render.Text(fH, sH, TruncateToWidth(fH, sH, n.Title or "", maxW), Vec2(tx, math.floor(ty + ch)), FadeColor(C.TextPrimary, am))
+    local y = iy + isz + math.floor(6 * s)
+    local lines = Sdk.BodyLines(n, s)
+    if #lines > 0 then
+        local fS, sS = TF("Subhead", s)
+        local lh = math.floor(19 * s)
+        y = y + math.floor(6 * s)
+        for _, ln in ipairs(lines) do
+            Render.Text(fS, sS, ln, Vec2(layout.x + pad, y), FadeColor(C.TextSecondary, am))
+            y = y + lh
+        end
+    end
+    if n.Actions then
+        local bh = math.floor(34 * s)
+        local by = math.floor(layout.y + layout.h - 16 * s - bh + yOff)
+        local gap = math.floor(10 * s)
+        local cnt = #n.Actions
+        local bw = math.floor((layout.w - pad * 2 - gap * (cnt - 1)) / cnt)
+        for i, ac in ipairs(n.Actions) do
+            local bx = math.floor(layout.x + pad + (i - 1) * (bw + gap))
+            local _, pk = Pointer.Button("sdk_ac_" .. i, bx, by, bx + bw, by + bh)
+            local kx, ky = bw * 0.0175 * pk, bh * 0.0175 * pk
+            local dim = am * (1 - 0.22 * pk)
+            Render.FilledRect(Vec2(bx + kx, by + ky), Vec2(bx + bw - kx, by + bh - ky), FadeColor(C.FillSecondary, dim), (bh - ky * 2) / 2)
+            local ts = Render.TextSize(fH, sH, ac.title)
+            local label = TruncateToWidth(fH, sH, ac.title, bw - 16 * s)
+            local lw = Render.TextSize(fH, sH, label).x
+            Render.Text(fH, sH, label, Vec2(math.floor(bx + (bw - lw) / 2), math.floor(by + (bh - ts.y) / 2)), FadeColor(ac.destructive and C.Red or C.TextPrimary, dim))
+            if am > 0.9 then
+                Sdk.Hits[#Sdk.Hits + 1] = { x1 = bx, y1 = by, x2 = bx + bw, y2 = by + bh, fn = ac.fn }
+            end
+        end
+    end
+end
+
 function Sdk.Tick(now)
+    Sdk.TickExpand(now)
     if not Sdk.Ready then return end
     if #Sdk.Early > 0 then
         local early = Sdk.Early
@@ -10989,9 +11313,35 @@ function Sdk.Tick(now)
             if type(q[i]) == "table" then Sdk.Guard(Sdk.Post, q[i], true) end
         end
     end
-    for _, a in ipairs(Sdk.Acts) do
-        if Sdk.Apps[a.app] == nil then Sdk.Ask(a.app) end
+    for i = #Sdk.Acts, 1, -1 do
+        local a = Sdk.Acts[i]
+        if a then
+            if Sdk.Apps[a.app] == nil then Sdk.Ask(a.app) end
+            if a.endAt and now >= a.endAt then
+                Sdk.ActEnd(a)
+            elseif a.staleAfter and now - (a.touched or now) > a.staleAfter then
+                Sdk.ActEnd(a, "stale")
+            elseif now - a.started > 14400 then
+                Sdk.ActEnd(a, "expired")
+            end
+        end
     end
+    Sdk.MenuSync(now)
+end
+
+function Sdk.DrawPill(layout, notif, used, yOff, aMul)
+    local s = layout.scale
+    local fB, sB = TF("Caption", s)
+    fB = Config.Fonts.Semibold
+    local txt = notif.Trailing
+    local ts = Render.TextSize(fB, sB, txt)
+    local h = math.floor(20 * s)
+    local w = math.floor(math.max(40 * s, ts.x + 16 * s))
+    local x2 = math.floor(layout.x + layout.w - 14 * s - used)
+    local y = math.floor(layout.y + (layout.h - h) / 2 + yOff)
+    Render.FilledRect(Vec2(x2 - w, y), Vec2(x2, y + h), FadeColor(notif.AccentColor or Config.Colors.Blue, aMul), h / 2)
+    Render.Text(fB, sB, txt, Vec2(math.floor(x2 - w + (w - ts.x) / 2), math.floor(y + (h - ts.y) / 2)), FadeColor(Color(255, 255, 255, 255), aMul))
+    return w + math.floor(8 * s)
 end
 
 function Sdk.Trailing(a)
@@ -11136,6 +11486,8 @@ do
             api = Sdk.API,
             version = SCRIPT_VERSION,
             Notify = function(...) return Sdk.Guard(Sdk.Notify, ...) end,
+            PlaySound = function(name, vol) return Sdk.Guard(Sdk.PlaySound, name, vol) end,
+            Has = function(feature) return Sdk.Features[feature] == true end,
             Activity = activity,
             IsAllowed = function(app)
                 local name = Sdk.AppName(app)
@@ -12679,6 +13031,8 @@ function Impl.DismissSatellite(kind, nowClk)
             NotificationQueue.Active = Impl.PopHighestPriorityNotif()
             NotificationQueue.StartTime = nowClk
         end
+    elseif kind == "activity" then
+        Sdk.ActEnd(Satellite.Right.act, "dismissed")
     else
         GameTracker.Roshan.Dismissed = true
     end
@@ -12694,13 +13048,22 @@ function Swipe.Start(x, y)
     local ctrl = Input.IsKeyDown(Enum.ButtonCode.KEY_LCONTROL) or Input.IsKeyDown(Enum.ButtonCode.KEY_RCONTROL)
     if ctrl or Hello.Blocking() or DragState.IsDragging or Demo.Active or HUDCustomizer.IsOpen then return false end
     local l = Swipe.Layout
-    if StateMachine.TargetState == S.NOTIFICATION and NotificationQueue.Active and l and x >= l.x and x <= l.x + l.w and y >= l.y and y <= l.y + l.h then
+    local inside = l and x >= l.x and x <= l.x + l.w and y >= l.y and y <= l.y + l.h
+    if StateMachine.TargetState == S.NOTIFICATION and NotificationQueue.Active and inside then
         Swipe.Target = "island"
+        Swipe.IslandKind = "notif"
+        Sdk.PressAt = os.clock()
+        return true
+    end
+    if (StateMachine.TargetState == S.ACTIVITY or StateMachine.TargetState == S.ACTIVITY_LARGE) and Sdk.Current() and inside then
+        Swipe.Target = "island"
+        Swipe.IslandKind = "activity"
+        Sdk.PressAt = os.clock()
         return true
     end
     local sb = SatelliteBounds
     local kind = Satellite.Right.kind
-    if sb and (kind == "notif" or kind == "aegis") and x >= sb.x1 and x <= sb.x2 and y >= sb.y1 and y <= sb.y2 then
+    if sb and (kind == "notif" or kind == "aegis" or kind == "activity") and x >= sb.x1 and x <= sb.x2 and y >= sb.y1 and y <= sb.y2 then
         Swipe.Target = "sat"
         Swipe.SatKind = kind
         return true
@@ -12736,20 +13099,37 @@ function Swipe.Tick(layout, now, dt)
     elseif ev == "end" then
         local dx, dy = g.x - g.x0, g.y - g.y0
         if t == "island" then
-            if g.moved and math.abs(dx) > 6 and (math.abs(dx) > 28 * s or math.abs(g.vx) > 600) then
+            local far = g.moved and math.abs(dx) > 6 and (math.abs(dx) > 28 * s or math.abs(g.vx) > 600)
+            if Swipe.IslandKind == "activity" then
+                if far then
+                    Sdk.Dismiss(Sdk.Current())
+                elseif not g.moved and StateMachine.TargetState == StateMachine.States.ACTIVITY_LARGE and not (Sdk.ExpandedAt and Sdk.ExpandedAt >= (Sdk.PressAt or 0)) then
+                    Sdk.TapActivity()
+                end
+            elseif far then
                 Impl.DismissNotif(now)
             elseif not g.moved then
                 Sdk.TapNotif(now)
             end
         elseif t == "sat" then
-            if g.moved and math.abs(dx) > 6 and (math.abs(dx) > 24 * s or math.abs(g.vx) > 600) then Impl.DismissSatellite(Swipe.SatKind, now) end
+            if g.moved and math.abs(dx) > 6 and (math.abs(dx) > 24 * s or math.abs(g.vx) > 600) then
+                Impl.DismissSatellite(Swipe.SatKind, now)
+            elseif not g.moved and Swipe.SatKind == "activity" then
+                Sdk.TapActivity(Satellite.Right.act)
+            end
         elseif t == "nc" and Swipe.Row then
             local it = Swipe.Row.item
             if g.moved and dx < -6 and (dx < -layout.w * 0.33 or g.vx < -700) then
                 it._gone = true
                 HapticPlaySound("toast_dismiss", 0.45)
             elseif not g.moved then
-                NotifCenter.Toggle(Swipe.Row)
+                if it.onTap and Swipe.Row.count == 1 then
+                    Haptic.Trigger(Haptic.Types.TAP_MEDIUM)
+                    Sdk.Call(it.app, it.onTap)
+                    it._gone = true
+                else
+                    NotifCenter.Toggle(Swipe.Row)
+                end
             end
         end
         Swipe.Target = nil
@@ -13157,8 +13537,6 @@ do
     end
 end
 
-DynamicIsland.HapticPlaySound = HapticPlaySound
-DynamicIslandGlobal = DynamicIsland
 PublishIsland(Sdk.Facade)
 
 return DynamicIsland

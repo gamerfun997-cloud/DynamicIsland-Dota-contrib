@@ -61,7 +61,11 @@ Step by step guide with spicetify install and troubleshooting (english and russi
 - scroll over the player for volume
 - right click the island with the umbrella menu open for the widget editor
 - ctrl + drag to move it, it snaps to the center of the screen
-- double click a side bubble to close it
+- swipe a notification or a side bubble sideways to close it
+
+## For script authors
+
+Other scripts can send notifications and live activities to the island through the `DynamicIsland` global: permission prompt like on iPhone, alert levels, action buttons, timers and progress. Guide: [docs/sdk.md](docs/sdk.md), working example: [examples/di_sdk_demo.lua](examples/di_sdk_demo.lua).
 
 ## Building the bridge
 

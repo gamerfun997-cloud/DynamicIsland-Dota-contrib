@@ -7,6 +7,8 @@
 /docs/*
 !/docs/autostart.md
 !/docs/spotify-likes.md
+!/docs/sdk.md
+!/examples/
 
 /media_bridge/*
 !/media_bridge/README.md

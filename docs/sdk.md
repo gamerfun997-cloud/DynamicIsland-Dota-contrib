@@ -1,0 +1,133 @@
+# Dynamic Island for script authors
+
+Any Umbrella script can send notifications and live activities to the island. You don't draw anything yourself: you pass text, an icon and a color, the island does the rest and keeps the look consistent.
+
+A full working example: [examples/di_sdk_demo.lua](../examples/di_sdk_demo.lua). Drop it next to `dynamic_island.lua` and open General > Dynamic Island > SDK Demo.
+
+## Getting the island
+
+All Umbrella scripts share one set of globals, so the island is just a global called `DynamicIsland`. It only exists when the user runs the island script, so always check:
+
+```lua
+local function Island()
+    local di = DynamicIsland
+    if type(di) == "table" and di.api then return di end
+    return nil
+end
+```
+
+Scripts load in alphabetical order, so yours may load before the island. Two ways around that:
+
+- call the island from `OnScriptsLoaded` or later, by then every script is loaded
+- or, if you want to say something right at load time, put it in the queue. The island picks it up as soon as it starts:
+
+```lua
+DynamicIslandQueue = DynamicIslandQueue or {}
+table.insert(DynamicIslandQueue, { app = "My Script", title = "Loaded", level = "passive" })
+```
+
+`DynamicIsland` is read only. `DynamicIsland.api` is the API version, currently `1`. `DynamicIsland.Has("actions")` tells you if a feature is there.
+
+## Permission
+
+The first time your script sends something, the island asks the user if it's allowed, the same way an iPhone asks for an app. Until they answer, up to 3 notifications wait. If they say no, your calls return `nil, "not allowed"`. The user can change it later in Alerts > Scripts, and allow your script during Focus there too.
+
+`DynamicIsland.IsAllowed("My Script")` returns `true` once the user has allowed it.
+
+## Notifications
+
+```lua
+local id, err = DynamicIsland.Notify({
+    app = "Auto Stacker",
+    title = "Stack the ancients in 0:10",
+    body = "Pull at 0:53 from the left side",
+    icon = "stack",
+    tint = "green",
+    level = "active",
+    sound = "default",
+    trailing = "On",
+    duration = 4,
+    onTap = function() end,
+    actions = {
+        { title = "Remind me", fn = function() end },
+        { title = "Skip", destructive = true, fn = function() end }
+    }
+})
+```
+
+Only `app` and `title` are required.
+
+| Field | What it does |
+| --- | --- |
+| `app` | Your script's name, up to 24 characters. Shown above the title, groups your alerts in the notification center, and it's what the user allows or denies. Keep it the same everywhere. |
+| `title` | Main line, up to 80 characters. |
+| `body` | Longer text, up to 160 characters. Shown when the user hovers the notification and it expands. |
+| `icon` | One of the island's glyphs (see below) or a path to an image, for example `panorama/images/items/blink_png.vtex_c`. |
+| `tint` | `"red"`, `"orange"`, `"yellow"`, `"green"`, `"mint"`, `"teal"`, `"cyan"`, `"blue"`, `"indigo"`, `"purple"`, `"pink"`, `"brown"`, `"gray"`, a hex string like `"FF9F0A"`, or a `Color`. Without it your app gets its own color. |
+| `level` | `"passive"` goes straight to the notification center without a banner or sound. `"active"` is the normal banner. `"time-sensitive"` jumps the queue and gets through Focus when the user allows urgent alerts. |
+| `sound` | `"default"`, `"chime"`, `"success"`, `"failure"`, or `false` for silence. |
+| `trailing` | A short pill on the right, up to 12 characters, like `"On"` or `"Off"`. |
+| `duration` | Seconds on screen, 1.5 to 8. Without it the user's own setting is used. |
+| `onTap` | Called when the user clicks the notification, in the island or in the notification center. |
+| `actions` | Up to 2 buttons in the expanded notification. `fn` is called on click, then the notification closes. |
+
+A new notification from the same app replaces the one on screen instead of waiting in line, so toggles like On / Off feel instant.
+
+## Live activities
+
+For things that last: timers, progress, anything the user wants to keep an eye on.
+
+```lua
+local act = DynamicIsland.Activity.Start({
+    app = "Auto Stacker",
+    icon = "clock",
+    tint = "orange",
+    title = "Ancients stack",
+    subtitle = "Pull when the timer hits zero",
+    timer = 30,
+    progress = 0,
+    onTap = function() end,
+    onEnd = function(reason) end
+})
+
+act:Update({ progress = 0.5 })
+act:End({ title = "Stacked", trailing = "Done", after = 3 })
+```
+
+Compact, the island shows the icon, a progress bar if you set `progress`, and the timer or `trailing` text. Hovered, it expands with the title, subtitle and bar.
+
+| Field | What it does |
+| --- | --- |
+| `title`, `subtitle` | Text in the expanded view. |
+| `trailing` | Short text on the right, up to 12 characters. Setting it in `Update` or `End` stops the timer. |
+| `timer` | Seconds to count down. The island counts by itself, you don't need to update it. |
+| `progress` | 0 to 1. `false` hides the bar. |
+| `icon`, `tint` | Same as notifications. |
+| `staleAfter` | Seconds without an `Update` after which the island ends the activity. Handy if your script can lose track of it. |
+| `onTap` | Called when the user clicks the expanded activity or its side bubble. |
+| `onEnd` | Called when the island ends the activity, not when you do. The reason is `"dismissed"` (the user swiped it away), `"denied"`, `"muted"`, `"stale"` or `"expired"` (after 4 hours). |
+
+The handle has `Update(fields)`, `End(fields)` and `IsActive()`. Both `act:Update{}` and `act.Update{}` work. `End` with `after` keeps your final content on screen for up to 10 seconds. `false` or `""` clears a text field.
+
+When music is playing, the activity takes the island and the music moves to a side bubble. With two activities from different scripts, the newest one is in the island and the other one sits in the side bubble. In a fight the fight wins and your activity goes to the bubble.
+
+## Sounds
+
+```lua
+DynamicIsland.PlaySound("wheel_notch", 0.8)
+```
+
+Plays one of the island's own sounds through the user's sound settings. Allowed names: `notification_toast`, `timer_chime`, `courier_delivered`, `courier_death_or_fail`, `button_press`, `button_dismiss`, `wheel_notch`, `wheel_boundary_bump`, `island_expand`, `island_collapse`, `island_hover`, `toast_dismiss`, plus the aliases `default`, `chime`, `success`, `failure`. Returns `false` for anything else.
+
+## Icons
+
+`DynamicIsland.Glyphs()` returns every glyph name. The ones that work best as monochrome icons: `bell`, `bolt`, `check`, `close`, `clock`, `stack`, `swords`, `moon`, `music`, `search`, `home`, `plus`, `flame`, `gold`, `courier`, `heart_fill`, `volume`, `headphones`, `display`.
+
+## Limits
+
+- 3 notifications in a row per app, then one every 2 seconds. A script that keeps hammering gets muted until the next reload, and it's written to the console.
+- One live activity per app. Starting a new one ends your previous one. 3 activities at most across all scripts.
+- Your callbacks run in `pcall`. After 3 errors the island stops calling that script's callbacks and writes why to the console.
+- The island copies what it needs from your tables and trims long text, so changing a table after the call does nothing.
+
+Every call returns `nil, reason` when it doesn't go through, so you can log it.
