@@ -4051,8 +4051,55 @@ IsNotifDeferred = function(notif)
     if not (UI.Media and UI.Media.SecondaryBubble and UI.Media.SecondaryBubble:Get()) then return false end
     if HUDCustomizer.IsOpen or FightTracker.Active then return false end
     if not (Engine.IsInGame and Engine.IsInGame()) then return false end
-    if not IsMediaActive() then return false end
+    if not IsMediaActive() or Impl.MainKind ~= "media" then return false end
     return (notif.Priority or DEFAULT_NOTIF_PRIORITY) <= UI.Priority.Media:Get()
+end
+
+Impl.MainKinds = { pause = true, fight = true, media = true, courier = true, sdk = true }
+Impl.SatHidden = {}
+
+function Impl.Plan(inCombat, mediaActive, now)
+    local list, seen = {}, {}
+    local function add(kind, act)
+        if seen[kind] then return end
+        seen[kind] = true
+        list[#list + 1] = { kind = kind, act = act }
+    end
+    local media = mediaActive and not HUDCustomizer.IsOpen
+    if PauseTracker.IsPaused and ToggleOn(UI and UI.Combat and UI.Combat.PauseAlert) then
+        if media then add("media") end
+        add("pause")
+    end
+    if inCombat then add("fight") end
+    if media then add("media") end
+    if CourierTracker.Delivering or CourierTracker.Delivered then add("courier") end
+    if Rampage.Active or now - Rampage.SuccessAt < 1.5 then add("rampage") end
+    local ros = GameTracker.Roshan
+    if ros.AegisExpiryTime - GameRules.GetGameTime() > 0 and not ros.Dismissed then add("aegis") end
+    if not HUDCustomizer.IsOpen then
+        local cur = Sdk.Current()
+        if cur then
+            add("sdk", cur)
+            local sec = Sdk.Second()
+            if sec then add("sdk2", sec) end
+        end
+    end
+    for kind in pairs(Impl.SatHidden) do
+        if not seen[kind] then Impl.SatHidden[kind] = nil end
+    end
+    return list
+end
+
+function Impl.RestState()
+    if not (Engine.IsInGame and Engine.IsInGame()) then return nil end
+    local S = StateMachine.States
+    local k = Impl.MainKind
+    if k == "pause" then return S.GAME_PAUSED end
+    if k == "fight" then return S.COMPACT_FIGHT end
+    if k == "courier" then return CourierTracker.Delivered and S.COURIER_DELIVERED or S.COURIER_DELIVERY end
+    if k == "sdk" then return S.ACTIVITY end
+    if k == "media" then return S.COMPACT_MEDIA end
+    return S.COMPACT_IDLE
 end
 
 Impl.WaveWeights = { 0.62, 0.86, 1.0, 0.8, 0.58 }
@@ -5877,11 +5924,6 @@ function Impl.ProcessCourierTracker()
         if (nowClk - CourierTracker.DeliveredStartTime) > CourierTracker.DeliveredDuration then
             CourierTracker.Delivered = false
             CourierTracker.IsGoingToStash = false
-            if StateMachine.TargetState == StateMachine.States.COURIER_DELIVERED then
-                local mediaActive = (MediaData.IsPlaying or (MediaData.LastPauseTime > 0 and (nowClk - MediaData.LastPauseTime) <= 6.0)) and (MediaData.Title ~= "")
-                local desired = (mediaActive and not HUDCustomizer.IsOpen) and StateMachine.States.COMPACT_MEDIA or StateMachine.States.COMPACT_IDLE
-                TriggerStateTransition(desired)
-            end
         end
     end
 
@@ -6251,7 +6293,7 @@ function Impl.HandleInteractions()
                     TriggerStateTransition(StateMachine.States.NOTIFICATION)
                 end
             elseif StateMachine.TargetState == StateMachine.States.NOTIFICATION then
-                local target = inCombat and StateMachine.States.COMPACT_FIGHT or (mediaActive and StateMachine.States.COMPACT_MEDIA or StateMachine.States.COMPACT_IDLE)
+                local target = Impl.RestState() or (inCombat and StateMachine.States.COMPACT_FIGHT or (mediaActive and StateMachine.States.COMPACT_MEDIA or StateMachine.States.COMPACT_IDLE))
                 TriggerStateTransition(target)
             end
         else
@@ -6805,55 +6847,59 @@ function Impl.HandleInteractions()
         end
     else
         Sheet.MenuSince = nil
-        local pauseEnabled = ToggleOn(UI and UI.Combat and UI.Combat.PauseAlert)
-        if PauseTracker.IsPaused and pauseEnabled then
-            if StateMachine.TargetState ~= StateMachine.States.GAME_PAUSED then
-                TriggerStateTransition(StateMachine.States.GAME_PAUSED)
+        if CourierTracker.Delivered and nowClk - CourierTracker.DeliveredStartTime > CourierTracker.DeliveredDuration then
+            CourierTracker.Delivered = false
+        end
+        local plan = Impl.Plan(inCombat, mediaActive, nowClk)
+        Impl.PlanList = plan
+        local mainKind
+        for _, it in ipairs(plan) do
+            if Impl.MainKinds[it.kind] then
+                mainKind = it.kind
+                break
             end
-        elseif CourierTracker.Delivered then
-            if (nowClk - CourierTracker.DeliveredStartTime) <= CourierTracker.DeliveredDuration then
-                if StateMachine.TargetState ~= StateMachine.States.COURIER_DELIVERED then
-                    TriggerStateTransition(StateMachine.States.COURIER_DELIVERED)
-                end
-            else
-                CourierTracker.Delivered = false
-            end
-        elseif CourierTracker.Delivering then
-            if StateMachine.TargetState ~= StateMachine.States.COURIER_DELIVERY and StateMachine.TargetState ~= StateMachine.States.COURIER_LARGE then
-                TriggerStateTransition(StateMachine.States.COURIER_DELIVERY)
-            end
-        elseif Sdk.AskInGame(inCombat, nowClk) then
+        end
+        Impl.MainKind = mainKind
+        local S = StateMachine.States
+        local ts = StateMachine.TargetState
+        local notif = NotificationQueue.Active
+        local desired
+        if Sdk.AskInGame(inCombat, nowClk) then
             Sheet.Kind = "sdk_perm"
-            if StateMachine.TargetState ~= StateMachine.States.SHEET then
-                TriggerStateTransition(StateMachine.States.SHEET)
+            desired = S.SHEET
+        elseif notif and not IsNotifDeferred(notif) then
+            desired = S.NOTIFICATION
+        elseif mainKind == "pause" then
+            desired = S.GAME_PAUSED
+        elseif mainKind == "fight" then
+            desired = (ts == S.LARGE_FIGHT) and ts or S.COMPACT_FIGHT
+        elseif mainKind == "courier" then
+            if CourierTracker.Delivered then
+                desired = S.COURIER_DELIVERED
+            else
+                desired = (ts == S.COURIER_LARGE) and ts or S.COURIER_DELIVERY
             end
-        elseif Sdk.ShowActivity(inCombat) then
-            if StateMachine.TargetState ~= StateMachine.States.ACTIVITY and StateMachine.TargetState ~= StateMachine.States.ACTIVITY_LARGE then
-                TriggerStateTransition(StateMachine.States.ACTIVITY)
-            end
-        elseif not NotificationQueue.Active or IsNotifDeferred(NotificationQueue.Active) then
-            if inCombat then
-                if StateMachine.TargetState ~= StateMachine.States.COMPACT_FIGHT and StateMachine.TargetState ~= StateMachine.States.LARGE_FIGHT then
-                    TriggerStateTransition(StateMachine.States.COMPACT_FIGHT)
-                end
-            elseif StateMachine.TargetState == StateMachine.States.NOTIFICATION or StateMachine.TargetState == StateMachine.States.MENU_IDLE or StateMachine.TargetState == StateMachine.States.MENU_SEARCHING or StateMachine.TargetState == StateMachine.States.MENU_MATCH_FOUND or StateMachine.TargetState == StateMachine.States.FOCUS_BANNER or StateMachine.TargetState == StateMachine.States.GAME_PAUSED or StateMachine.TargetState == StateMachine.States.COURIER_DELIVERED or StateMachine.TargetState == StateMachine.States.COURIER_DELIVERY or StateMachine.TargetState == StateMachine.States.COURIER_LARGE or StateMachine.TargetState == StateMachine.States.SHEET or StateMachine.TargetState == StateMachine.States.ACTIVITY or StateMachine.TargetState == StateMachine.States.ACTIVITY_LARGE then
-                local desired = (mediaActive and not HUDCustomizer.IsOpen) and StateMachine.States.COMPACT_MEDIA or StateMachine.States.COMPACT_IDLE
-                TriggerStateTransition(desired)
-            elseif StateMachine.TargetState == StateMachine.States.COMPACT_IDLE or StateMachine.TargetState == StateMachine.States.COMPACT_MEDIA or StateMachine.TargetState == StateMachine.States.COMPACT_FIGHT then
-                local desired = (mediaActive and not HUDCustomizer.IsOpen) and StateMachine.States.COMPACT_MEDIA or StateMachine.States.COMPACT_IDLE
-                if StateMachine.TargetState ~= desired then
-                    TriggerStateTransition(desired)
-                end
-            elseif StateMachine.TargetState == StateMachine.States.LARGE_IDLE or StateMachine.TargetState == StateMachine.States.LARGE_MEDIA or StateMachine.TargetState == StateMachine.States.LARGE_FIGHT then
-                local desiredLarge = mediaActive and StateMachine.States.LARGE_MEDIA or StateMachine.States.LARGE_IDLE
-                if StateMachine.TargetState ~= desiredLarge then
-                    TriggerStateTransition(desiredLarge)
-                end
+        elseif mainKind == "sdk" then
+            desired = (ts == S.ACTIVITY_LARGE) and ts or S.ACTIVITY
+        elseif mainKind == "media" then
+            if ts == S.NOTIF_CENTER then
+                desired = ts
+            elseif ts == S.LARGE_MEDIA or ts == S.LARGE_IDLE then
+                desired = S.LARGE_MEDIA
+            else
+                desired = S.COMPACT_MEDIA
             end
         else
-            if StateMachine.TargetState ~= StateMachine.States.NOTIFICATION then
-                TriggerStateTransition(StateMachine.States.NOTIFICATION)
+            if ts == S.NOTIF_CENTER then
+                desired = ts
+            elseif ts == S.LARGE_MEDIA or ts == S.LARGE_IDLE then
+                desired = S.LARGE_IDLE
+            else
+                desired = S.COMPACT_IDLE
             end
+        end
+        if ts ~= desired then
+            TriggerStateTransition(desired)
         end
     end
 
@@ -8780,7 +8826,29 @@ function Impl.RenderSecondarySatelliteBubble(layout)
     local active = NotificationQueue.Active
     local desired, notif = nil, nil
     local rampageSuccess = now - Rampage.SuccessAt < 1.5
-    if not HUDCustomizer.IsOpen and (Rampage.Active or rampageSuccess) then
+    local S = StateMachine.States
+    if Engine.IsInGame and Engine.IsInGame() then
+        if not HUDCustomizer.IsOpen then
+            local bubbleOn = UI.Media.SecondaryBubble:Get()
+            if bubbleOn and active and ts ~= S.NOTIFICATION and IsNotifDeferred(active) then
+                local left = (active.Duration or 3) - (now - (NotificationQueue.StartTime or now))
+                if left > 0.45 then
+                    desired, notif = "notif", active
+                end
+            end
+            if not desired then
+                local mainKind = (ts == S.NOTIFICATION or ts == S.SHEET) and "" or Impl.MainKind
+                for _, it in ipairs(Impl.PlanList or {}) do
+                    local k = (it.kind == "sdk" or it.kind == "sdk2") and "activity" or it.kind
+                    if it.kind ~= mainKind and not Impl.SatHidden[k] and (bubbleOn or k == "rampage") then
+                        desired = k
+                        if k == "activity" then R.act = it.act end
+                        break
+                    end
+                end
+            end
+        end
+    elseif not HUDCustomizer.IsOpen and (Rampage.Active or rampageSuccess) then
         desired = "rampage"
     elseif UI.Media.SecondaryBubble:Get() and not HUDCustomizer.IsOpen then
         if active and IsNotifDeferred(active) and (ts == StateMachine.States.COMPACT_MEDIA or ts == StateMachine.States.LARGE_MEDIA) then
@@ -8812,7 +8880,7 @@ function Impl.RenderSecondarySatelliteBubble(layout)
     local kind = R.kind
     local combatMedia = kind == "combat" and not active and IsMediaActive()
     local wide = kind == "notif" or kind == "aegis" or (combatMedia and FightTracker.SatelliteHover) or (kind == "rampage" and not rampageSuccess)
-        or ((kind == "media" or kind == "activity") and FightTracker.SatelliteHover)
+        or ((kind == "media" or kind == "activity" or kind == "pause" or kind == "courier" or kind == "fight") and FightTracker.SatelliteHover)
     local sat = Satellite.Step("right", kind ~= nil and kind == desired, wide)
     ButtonHits.SatellitePrev = nil
     ButtonHits.SatellitePlay = nil
@@ -8917,6 +8985,72 @@ function Impl.RenderSecondarySatelliteBubble(layout)
             end
             if ta > 0.01 then
                 Odometer.Text("aegis_time", fontBold, fontSize, timeStr, Vec2(math.floor(x1 + d + 5 * scale), math.floor(c.y - tsz.y / 2)), FadeColor(Config.Colors.TextPrimary, ta))
+            end
+        end
+    elseif kind == "pause" then
+        local elapsed = PauseTracker.PauseStartTime > 0 and math.floor(now - PauseTracker.PauseStartTime) or 0
+        local timeStr = string.format("%d:%02d", math.floor(elapsed / 60), elapsed % 60)
+        local tw = Odometer.Width(fontBold, headSize, timeStr)
+        local th = Render.TextSize(fontBold, headSize, "0").y
+        fullW = bh + math.floor(5 * scale) + tw + math.floor(bh * 0.38)
+        content = function(x1, y1, x2, y2, d, ca, ta)
+            local c = Vec2(x1 + d / 2, (y1 + y2) / 2)
+            local isz = math.floor(d * 0.46)
+            local h = GetVectorIcon("pause")
+            if h then
+                Render.Image(h, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Config.Colors.Orange, ca), 0)
+            end
+            if ta > 0.01 then
+                Odometer.Text("sat_pause", fontBold, headSize, timeStr, Vec2(math.floor(x1 + d + 5 * scale), math.floor(c.y - th / 2)), FadeColor(Config.Colors.TextPrimary, ta))
+            end
+        end
+    elseif kind == "courier" then
+        local delivered = CourierTracker.Delivered
+        local txt = delivered and L("di_courier_delivered") or ((CourierTracker.ETA > 0) and FormatTime(CourierTracker.ETA) or L("di_ui_courier_delivering_short"))
+        local tw = delivered and Render.TextSize(fontBold, headSize, txt).x or Odometer.Width(fontBold, headSize, txt)
+        local th = Render.TextSize(fontBold, headSize, "0").y
+        fullW = bh + math.floor(5 * scale) + tw + math.floor(bh * 0.38)
+        content = function(x1, y1, x2, y2, d, ca, ta)
+            local c = Vec2(x1 + d / 2, (y1 + y2) / 2)
+            local ringR = d / 2 - 4 * scale
+            if delivered then
+                Success.Draw("sat_courier" .. CourierTracker.DeliveredStartTime, c, ringR, now - CourierTracker.DeliveredStartTime, ca, scale)
+            else
+                local rt = math.max(1.2, 1.5 * scale)
+                Render.Circle(c, ringR, FadeColor(Config.Colors.FillTertiary, ca), rt, 0, 1.0, false, 48)
+                local frac = math.max(0, math.min(1, CourierTracker.Progress or 0))
+                if frac > 0.002 then
+                    Render.Circle(c, ringR, FadeColor(Config.Colors.Green, ca), rt, 270, frac, true, 48)
+                end
+                local isz = math.floor(ringR * 1.1)
+                local h = GetVectorIcon("courier")
+                if h then
+                    Render.Image(h, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Config.Colors.Yellow, ca), 0)
+                end
+            end
+            if ta > 0.01 then
+                local pos = Vec2(math.floor(x1 + d + 5 * scale), math.floor(c.y - th / 2))
+                if delivered then
+                    Render.Text(fontBold, headSize, txt, pos, FadeColor(Config.Colors.TextPrimary, ta))
+                else
+                    Odometer.Text("sat_courier", fontBold, headSize, txt, pos, FadeColor(Config.Colors.TextPrimary, ta))
+                end
+            end
+        end
+    elseif kind == "fight" then
+        local txt = string.format("%d vs %d", FightTracker.AllyCount or 0, FightTracker.EnemyCount or 0)
+        local tw = Odometer.Width(fontBold, headSize, txt)
+        local th = Render.TextSize(fontBold, headSize, "0").y
+        fullW = bh + math.floor(5 * scale) + tw + math.floor(bh * 0.38)
+        content = function(x1, y1, x2, y2, d, ca, ta)
+            local c = Vec2(x1 + d / 2, (y1 + y2) / 2)
+            local isz = math.floor(d * 0.5)
+            local h = GetVectorIcon("swords")
+            if h then
+                Render.Image(h, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Config.Colors.Red, ca), 0)
+            end
+            if ta > 0.01 then
+                Odometer.Text("sat_fight", fontBold, headSize, txt, Vec2(math.floor(x1 + d + 5 * scale), math.floor(c.y - th / 2)), FadeColor(Config.Colors.TextPrimary, ta))
             end
         end
     elseif kind == "activity" and R.act then
@@ -13736,7 +13870,7 @@ function Impl.DismissNotif(nowClk)
     if NotificationQueue.Active and not IsNotifDeferred(NotificationQueue.Active) then
         TriggerStateTransition(StateMachine.States.NOTIFICATION)
     else
-        local target = inCombat and StateMachine.States.COMPACT_FIGHT or (mediaActive and StateMachine.States.COMPACT_MEDIA or StateMachine.States.COMPACT_IDLE)
+        local target = Impl.RestState() or (inCombat and StateMachine.States.COMPACT_FIGHT or (mediaActive and StateMachine.States.COMPACT_MEDIA or StateMachine.States.COMPACT_IDLE))
         TriggerStateTransition(target)
     end
 end
@@ -13752,8 +13886,10 @@ function Impl.DismissSatellite(kind, nowClk)
         end
     elseif kind == "activity" then
         Sdk.ActEnd(Satellite.Right.act, "dismissed")
-    else
+    elseif kind == "aegis" then
         GameTracker.Roshan.Dismissed = true
+    elseif kind then
+        Impl.SatHidden[kind] = true
     end
     HapticPlaySound("toast_dismiss", 0.45)
 end
