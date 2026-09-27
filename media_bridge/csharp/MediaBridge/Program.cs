@@ -151,10 +151,10 @@ internal static class Program
             {
                 MediaSessionService.SetScriptsDir(request.QueryString["dir"]);
                 SpotifyFlags.SetEnabled(request.QueryString["likes"]);
-                var data = await MediaSessionService.GetMediaInfoAsync() ?? MediaSessionService.LastValidData ?? new MediaInfo
+                var data = await MediaSessionService.GetMediaInfoAsync() ?? new MediaInfo
                 {
                     is_playing = false,
-                    volume = 100,
+                    volume = -100,
                     is_liked = MediaSessionService.CurrentIsLiked
                 };
                 await WriteJsonAsync(response, data, AppJson.Context.MediaInfo);

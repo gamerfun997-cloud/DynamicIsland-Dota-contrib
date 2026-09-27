@@ -427,12 +427,19 @@ public static class MediaSessionService
         }
     }
 
+    private static DateTime _lastValidAt = DateTime.MinValue;
+
+    private static MediaInfo? Recent()
+    {
+        return (DateTime.UtcNow - _lastValidAt).TotalSeconds < 4 ? _lastValidData : null;
+    }
+
     public static async Task<MediaInfo?> GetMediaInfoAsync()
     {
         try
         {
             var mgr = await GetManagerAsync();
-            if (mgr == null) return _lastValidData;
+            if (mgr == null) return Recent();
 
             GlobalSystemMediaTransportControlsSession? session;
             try
@@ -442,12 +449,18 @@ public static class MediaSessionService
             catch
             {
                 DropManager();
-                return _lastValidData;
+                return Recent();
             }
-            if (session == null) return _lastValidData;
+            if (session == null)
+            {
+                _lastValidData = null;
+                CurrentFamily = "";
+                CurrentAppId = "";
+                return null;
+            }
 
             var props = await WinRtAsync.WithTimeout(session.TryGetMediaPropertiesAsync(), 350);
-            if (props == null) return _lastValidData;
+            if (props == null) return Recent();
 
             var playback = session.GetPlaybackInfo();
             var timeline = session.GetTimelineProperties();
@@ -577,16 +590,18 @@ public static class MediaSessionService
                 is_liked = CurrentIsLiked
             };
 
-            if (title != "" || isPlaying) _lastValidData = res;
+            if (title != "" || isPlaying)
+            {
+                _lastValidData = res;
+                _lastValidAt = DateTime.UtcNow;
+            }
             return res;
         }
         catch
         {
-            return _lastValidData;
+            return Recent();
         }
     }
-
-    public static MediaInfo? LastValidData => _lastValidData;
 
     public static async Task<bool> SeekAsync(double seconds)
     {
