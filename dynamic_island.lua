@@ -2257,7 +2257,9 @@ local MouseInput = {
     LeftPressed = false,
     LeftLastPressed = false,
     RightPressed = false,
-    RightLastPressed = false
+    RightLastPressed = false,
+    Swallow = {},
+    LiveAt = 0
 }
 
 local KeyItemColors = {
@@ -6526,6 +6528,33 @@ function Impl.ProcessCourierTracker()
     end
 end
 
+function Impl.OverIsland(cx, cy)
+    if os.clock() - (MouseInput.LiveAt or 0) > 0.25 then return false end
+    local l = GetIslandLayout()
+    if l and l.w > 0 and l.h > 0 and cx >= l.x - 6 and cx <= l.x + l.w + 6 and cy >= l.y - 6 and cy <= l.y + l.h + 6 then return true end
+    local sb = SatelliteBounds
+    if sb and cx >= sb.x1 and cx <= sb.x2 and cy >= sb.y1 and cy <= sb.y2 then return true end
+    return false
+end
+
+function Impl.SwallowClick(data)
+    local k = data.key
+    if k ~= Enum.ButtonCode.KEY_MOUSE1 and k ~= Enum.ButtonCode.KEY_MOUSE2 then return nil end
+    if data.event == Enum.EKeyEvent.EKeyEvent_KEY_DOWN then
+        MouseInput.Swallow[k] = nil
+        if Menu.Opened and Menu.Opened() and not HUDCustomizer.IsOpen then return nil end
+        local cx, cy = Input.GetCursorPos()
+        if not Impl.OverIsland(cx, cy) then return nil end
+        MouseInput.Swallow[k] = true
+        if Dbg.On then Dbg.Log("input", string.format("click swallowed %d,%d", cx, cy)) end
+        return false
+    elseif data.event == Enum.EKeyEvent.EKeyEvent_KEY_UP and MouseInput.Swallow[k] then
+        MouseInput.Swallow[k] = nil
+        return false
+    end
+    return nil
+end
+
 function DynamicIsland.OnKeyEvent(data)
     if Hello.Phase then
         if Setup.Capture then return Setup.OnKey(data) end
@@ -6549,6 +6578,7 @@ function DynamicIsland.OnKeyEvent(data)
             return false
         end
     end
+    if UI and UI.Main.Enabled:Get() and Impl.SwallowClick(data) == false then return false end
 
     local isUp = (data.key == Enum.ButtonCode.KEY_MWHEELUP or data.key == 124 or data.event == Enum.EKeyEvent.EKeyEvent_SCROLL_UP or data.event == 1)
     local isDown = (data.key == Enum.ButtonCode.KEY_MWHEELDOWN or data.key == 125 or data.event == Enum.EKeyEvent.EKeyEvent_SCROLL_DOWN or data.event == 0)
@@ -15325,6 +15355,7 @@ function DynamicIsland.OnUpdateEx()
         CourierTracker.BasePos = nil
         CourierTracker.CachedCourier = nil
     end
+    MouseInput.LiveAt = os.clock()
     Fuse.Guard("input", Impl.HandleInteractions)
     Fuse.Guard("media", Impl.PollMediaBridge)
     Fuse.Guard("level", Impl.PollLevel)
