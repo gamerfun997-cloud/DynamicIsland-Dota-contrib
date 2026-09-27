@@ -718,6 +718,14 @@ local localization = qLocalization.new({
         di_main_debug_tip = "Writes a detailed log to scripts/dynamic_island_debug.log: what the island did, errors, frame time and your settings. Turn it on, repeat the problem and send the file",
         di_main_debug_open = "Show Debug Log",
         di_tab_diag = "Diagnostics",
+        di_tab_access = "Accessibility",
+        di_group_access = "Accessibility",
+        di_access_motion = "Reduce Motion",
+        di_access_motion_tip = "Springs stop bouncing, side bubbles fade in place instead of budding off the island, no squeeze, shake or lean, numbers change without rolling",
+        di_access_bold = "Bold Text",
+        di_access_bold_tip = "All text on the island becomes one weight heavier",
+        di_access_contrast = "Increase Contrast",
+        di_access_contrast_tip = "Secondary text, borders, fills and separators become easier to see, system colors switch to their high contrast versions",
         di_group_diag = "Diagnostics",
         di_diag_snapshot = "Save Snapshot to Log",
         di_diag_snapshot_tip = "Writes everything the island knows right now into the debug log. Press it while the problem is on screen",
@@ -1245,6 +1253,14 @@ local localization = qLocalization.new({
         di_main_debug_tip = "Пишет подробный лог в scripts/dynamic_island_debug.log: что делал островок, ошибки, время кадра и твои настройки. Включи, повтори проблему и скинь файл",
         di_main_debug_open = "Показать лог",
         di_tab_diag = "Диагностика",
+        di_tab_access = "Универсальный доступ",
+        di_group_access = "Универсальный доступ",
+        di_access_motion = "Уменьшение движения",
+        di_access_motion_tip = "Пружины перестают пружинить, боковые кружки плавно проявляются на месте вместо отделения от острова, без сжатия, тряски и наклона, цифры меняются без прокрутки",
+        di_access_bold = "Жирный шрифт",
+        di_access_bold_tip = "Весь текст на островке становится на ступень жирнее",
+        di_access_contrast = "Увеличение контраста",
+        di_access_contrast_tip = "Второстепенный текст, обводка, заливки и разделители становятся заметнее, системные цвета переключаются на контрастные версии",
         di_group_diag = "Диагностика",
         di_diag_snapshot = "Сохранить снимок в лог",
         di_diag_snapshot_tip = "Записывает в лог всё, что островок знает прямо сейчас. Жми, пока проблема на экране",
@@ -1500,6 +1516,7 @@ function MotionEngine.SolveSpring(pos, vel, target, dt, omega, zeta, eps)
         return target, 0
     end
     local z = zeta or 0.78
+    if MotionEngine.Reduce and z < 1 then z = 1 end
     local w0 = omega or 24.0
     local wd = w0 * math.sqrt(math.max(0.0001, 1.0 - z * z))
     local decay = math.exp(-z * w0 * dt)
@@ -2706,13 +2723,32 @@ local function GetCachedImage(path, fallbackSvgKey)
     return nil
 end
 
+function Impl.A11yTick()
+    local A = UI and UI.Access
+    if not A or not A.Motion then return end
+    MotionEngine.Reduce = A.Motion:Get()
+    Impl.HighContrast = A.Contrast:Get()
+    local bold = A.Bold:Get()
+    if bold ~= (Impl.Bold or false) then
+        Impl.Bold = bold
+        Impl.LoadScriptFonts()
+    end
+end
+
 function Impl.LoadScriptFonts()
     local aa = Enum.FontCreate.FONTFLAG_ANTIALIAS
-    Config.Fonts.Regular = Render.LoadFont("SF Pro Text", aa, 400)
-    Config.Fonts.Medium = Render.LoadFont("SF Pro Text", aa, 500)
-    Config.Fonts.Semibold = Render.LoadFont("SF Pro Text", aa, 600)
-    Config.Fonts.Display = Render.LoadFont("SF Pro Display", aa, 500)
-    Config.Fonts.Lyric = Render.LoadFont("SF Pro Display", aa, 700)
+    local bold = Impl.Bold
+    Impl.FontCache = Impl.FontCache or {}
+    local function F(name, weight)
+        local key = name .. weight
+        if not Impl.FontCache[key] then Impl.FontCache[key] = Render.LoadFont(name, aa, weight) end
+        return Impl.FontCache[key]
+    end
+    Config.Fonts.Regular = F("SF Pro Text", bold and 600 or 400)
+    Config.Fonts.Medium = F("SF Pro Text", bold and 700 or 500)
+    Config.Fonts.Semibold = F("SF Pro Text", bold and 700 or 600)
+    Config.Fonts.Display = F("SF Pro Display", bold and 700 or 500)
+    Config.Fonts.Lyric = F("SF Pro Display", bold and 800 or 700)
     Config.Fonts.Main = Config.Fonts.Regular
     Config.Fonts.Bold = Config.Fonts.Semibold
 end
@@ -2900,13 +2936,13 @@ function Haptic.Trigger(hType, p1, p2)
             Haptic.State.VelScaleY = Haptic.State.VelScaleY + 0.08 * intensity
             Haptic.State.GlowAlpha = 40 * intensity
             Haptic.State.GlowColor = Color(255, 69, 58, 240)
-            if p1 == 1 or p1 == -1 then
+            if (p1 == 1 or p1 == -1) and not MotionEngine.Reduce then
                 Haptic.State.VelX = Haptic.State.VelX + p1 * 220 * intensity
             end
         end
     elseif hType == Haptic.Types.ERROR then
         if visualOn then
-            Haptic.ShakeAt = nowClk
+            if not MotionEngine.Reduce then Haptic.ShakeAt = nowClk end
             Haptic.ShakeAmp = 7 * intensity
             Haptic.State.GlowAlpha = 45 * intensity
             Haptic.State.GlowColor = Color(255, 69, 58, 240)
@@ -3119,13 +3155,21 @@ function Impl.InitMenu()
     local pHaptics = extra:Create(L("di_tab_haptics"))
     local gHaptics = pHaptics:Create("di_group_haptics", Enum.GroupSide.Left)
     local gDuck = pHaptics:Create("di_group_ducking", Enum.GroupSide.Right)
+    local pAccess = extra:Create(L("di_tab_access"))
+    local gAccess = pAccess:Create("di_group_access", Enum.GroupSide.Left)
     local pDiag = extra:Create(L("di_tab_diag"))
     local gDiag = pDiag:Create("di_group_diag", Enum.GroupSide.Left)
     local snap = gDiag:Button("di_diag_snapshot", function() Dbg.Snapshot() end)
     snap:ToolTip("di_diag_snapshot_tip")
 
-    UI = { Main = {}, Media = {}, Combat = {}, Runes = {}, Timings = {}, Haptics = {}, Priority = {}, Durations = {}, Sounds = {}, Focus = {}, Reminders = {}, System = {} }
+    UI = { Main = {}, Media = {}, Combat = {}, Runes = {}, Timings = {}, Haptics = {}, Priority = {}, Durations = {}, Sounds = {}, Focus = {}, Reminders = {}, System = {}, Access = {} }
     local M, Md, C, R, T, H, P, D = UI.Main, UI.Media, UI.Combat, UI.Runes, UI.Timings, UI.Haptics, UI.Priority, UI.Durations
+    UI.Access.Motion = gAccess:Switch("di_access_motion", false, "\u{f021}")
+    UI.Access.Motion:ToolTip("di_access_motion_tip")
+    UI.Access.Bold = gAccess:Switch("di_access_bold", false, "\u{f032}")
+    UI.Access.Bold:ToolTip("di_access_bold_tip")
+    UI.Access.Contrast = gAccess:Switch("di_access_contrast", false, "\u{f042}")
+    UI.Access.Contrast:ToolTip("di_access_contrast_tip")
 
     local function prio(gear, key, def)
         local w = gear:Slider(key, 1, 5, def, "%d")
@@ -3560,7 +3604,7 @@ local function TriggerStateTransition(nextState)
     end
 
     tr.SqueezeUntil = nil
-    if not toLarge and not fromLarge and not shared and prev ~= nextState then
+    if not toLarge and not fromLarge and not shared and prev ~= nextState and not MotionEngine.Reduce then
         tr.SqueezeW = math.max(70, StateMachine.Spring.W.value * 0.58)
         tr.SqueezeUntil = os.clock() + 0.12 * AnimScale()
         MotionEngine.CurrentProfile = "BOUNCY"
@@ -6424,7 +6468,7 @@ function Impl.HandleInteractions()
     if Dbg.On and isLeftClicked and isHover then
         Dbg.Log("input", string.format("click on the island at %d%% of its width%s", math.floor((cx - layout.x) / math.max(1, layout.w) * 100), isCtrlOnly and " with ctrl" or ""))
     end
-    if isLeftClicked and isHover and not isCtrlOnly and ToggleOn(UI.Haptics.Enabled) and ToggleOn(UI.Haptics.VisualFeedback) then
+    if isLeftClicked and isHover and not isCtrlOnly and not MotionEngine.Reduce and ToggleOn(UI.Haptics.Enabled) and ToggleOn(UI.Haptics.VisualFeedback) then
         local rel = math.max(-1, math.min(1, (cx - (layout.x + layout.w / 2)) / math.max(1, layout.w / 2)))
         local intensity = UI.Haptics.Intensity and (UI.Haptics.Intensity:Get() / 100) or 1
         Haptic.State.VelX = Haptic.State.VelX + rel * 260 * layout.scale * intensity
@@ -7876,6 +7920,7 @@ function Odometer.Text(id, font, size, text, pos, col, soft)
         st.prev, st.cur, st.t0 = st.cur, text, now
     end
     st.seen = now
+    soft = soft or MotionEngine.Reduce
     local p = (now - st.t0) / (soft and 0.2 or 0.42)
     if not st.prev or p >= 1 then
         st.prev = nil
@@ -8000,13 +8045,15 @@ function Satellite.Draw(layout, st, side, fullW, content, shift)
     local p = st.p
     if p < 0.01 then return nil end
     local scale = layout.scale
+    local rm = MotionEngine.Reduce
+    local pg = rm and 1 or p
     local rowY, bh = Focus.SatRow(layout)
     local cy = rowY + bh / 2
-    local d = bh * (0.34 + 0.66 * math.min(p, 1.12))
+    local d = bh * (0.34 + 0.66 * math.min(pg, 1.12))
     local w = d + math.max(0, fullW - bh) * math.max(0, math.min(1.08, st.w))
     local gap = 8 * scale
     local edge = (side > 0) and (layout.x + layout.w) or layout.x
-    local travel = (gap + d / 2) * p - d / 2
+    local travel = (gap + d / 2) * pg - d / 2
     local x1 = (side > 0) and (edge + travel) or (edge - travel - w)
     if side > 0 then x1 = x1 + Swipe.SatX end
     if shift then x1 = x1 + side * shift end
@@ -8014,8 +8061,8 @@ function Satellite.Draw(layout, st, side, fullW, content, shift)
     local y1 = math.floor(cy - d / 2 + 0.5)
     local x2 = x1 + math.floor(w + 0.5)
     local y2 = y1 + math.floor(d + 0.5)
-    local a = math.min(1, p * 3)
-    if p < 0.6 and not IsPureGlass() then
+    local a = rm and math.min(1, p) or math.min(1, p * 3)
+    if p < 0.6 and not rm and not IsPureGlass() then
         local k = 1 - p / 0.6
         local nh = bh * 0.46 * k * k
         if nh > 1 then
@@ -9847,9 +9894,9 @@ function Impl.LyDraw(x, y, w, h, scale, aMul)
     local rowH = math.floor(Render.TextSize(font, size, "Ag").y + 1 * scale)
     local dotsH = 16 * scale
     local space = 7 * scale
-    if Ly.WrapW ~= w or Ly.WrapS ~= size then
+    if Ly.WrapW ~= w or Ly.WrapS ~= size or Ly.WrapF ~= font then
         for _, ln in ipairs(Ly.Lines) do ln.rows = ln.gap and {} or Impl.LyWrap(font, size, ln.x, w) end
-        Ly.WrapW, Ly.WrapS = w, size
+        Ly.WrapW, Ly.WrapS, Ly.WrapF = w, size, font
     end
     local tops, acc = {}, 0
     for i, ln in ipairs(Ly.Lines) do
@@ -14457,6 +14504,7 @@ function DynamicIsland.OnFrame()
         VolumeState.OverstretchVel = nVO
     end
 
+    Impl.A11yTick()
     local isPureGlass = IsPureGlass()
     local currentBg = UI.Main.IslandBgColor:Get()
     local targetFactor = ThemeSpring.target
@@ -14478,37 +14526,39 @@ function DynamicIsland.OnFrame()
     ThemeSpring.vel = nV
 
     local f = math.min(1.0, math.max(0.0, ThemeSpring.factor))
-    if f ~= ThemeSpring.LastF then
+    local hc = Impl.HighContrast and true or false
+    if f ~= ThemeSpring.LastF or hc ~= ThemeSpring.LastHC then
         ThemeSpring.LastF = f
+        ThemeSpring.LastHC = hc
         local C = Config.Colors
         local function D(r1, g1, b1, a1, r2, g2, b2, a2)
             return LerpColor(Color(r1, g1, b1, a1), Color(r2, g2, b2, a2), f)
         end
         C.TextPrimary = D(255, 255, 255, 255, 0, 0, 0, 255)
-        C.TextSecondary = D(235, 235, 245, 153, 60, 60, 67, 153)
-        C.TextMuted = D(235, 235, 245, 77, 60, 60, 67, 77)
-        C.TextQuaternary = D(235, 235, 245, 46, 60, 60, 67, 46)
+        C.TextSecondary = hc and D(235, 235, 245, 210, 40, 40, 45, 210) or D(235, 235, 245, 153, 60, 60, 67, 153)
+        C.TextMuted = hc and D(235, 235, 245, 150, 40, 40, 45, 150) or D(235, 235, 245, 77, 60, 60, 67, 77)
+        C.TextQuaternary = hc and D(235, 235, 245, 110, 40, 40, 45, 110) or D(235, 235, 245, 46, 60, 60, 67, 46)
         C.TextInverse = D(0, 0, 0, 255, 255, 255, 255, 255)
-        C.Separator = D(84, 84, 88, 153, 60, 60, 67, 74)
-        C.Fill = D(120, 120, 128, 92, 120, 120, 128, 51)
-        C.FillSecondary = D(120, 120, 128, 82, 120, 120, 128, 41)
-        C.FillTertiary = D(118, 118, 128, 61, 118, 118, 128, 31)
-        C.FillQuaternary = D(118, 118, 128, 46, 116, 116, 128, 20)
-        C.Border = D(255, 255, 255, 28, 0, 0, 0, 35)
+        C.Separator = hc and D(120, 120, 128, 220, 40, 40, 45, 150) or D(84, 84, 88, 153, 60, 60, 67, 74)
+        C.Fill = hc and D(140, 140, 150, 130, 100, 100, 110, 90) or D(120, 120, 128, 92, 120, 120, 128, 51)
+        C.FillSecondary = hc and D(140, 140, 150, 115, 100, 100, 110, 75) or D(120, 120, 128, 82, 120, 120, 128, 41)
+        C.FillTertiary = hc and D(135, 135, 148, 95, 100, 100, 110, 60) or D(118, 118, 128, 61, 118, 118, 128, 31)
+        C.FillQuaternary = hc and D(130, 130, 145, 75, 100, 100, 110, 45) or D(118, 118, 128, 46, 116, 116, 128, 20)
+        C.Border = hc and D(255, 255, 255, 90, 0, 0, 0, 110) or D(255, 255, 255, 28, 0, 0, 0, 35)
         C.SegThumb = D(99, 99, 102, 255, 255, 255, 255, 255)
         C.ChipActiveBorder = D(255, 255, 255, 255, 0, 0, 0, 255)
-        C.Red = D(255, 69, 58, 255, 255, 59, 48, 255)
-        C.Orange = D(255, 159, 10, 255, 255, 149, 0, 255)
-        C.Yellow = D(255, 214, 10, 255, 255, 204, 0, 255)
-        C.Green = D(48, 209, 88, 255, 52, 199, 89, 255)
-        C.Mint = D(99, 230, 226, 255, 0, 199, 190, 255)
-        C.Teal = D(64, 200, 224, 255, 48, 176, 199, 255)
-        C.Cyan = D(100, 210, 255, 255, 50, 173, 230, 255)
-        C.Blue = D(10, 132, 255, 255, 0, 122, 255, 255)
-        C.Indigo = D(94, 92, 230, 255, 88, 86, 214, 255)
-        C.Purple = D(191, 90, 242, 255, 175, 82, 222, 255)
-        C.Pink = D(255, 55, 95, 255, 255, 45, 85, 255)
-        C.Brown = D(172, 142, 104, 255, 162, 132, 94, 255)
+        C.Red = hc and D(255, 105, 97, 255, 215, 0, 21, 255) or D(255, 69, 58, 255, 255, 59, 48, 255)
+        C.Orange = hc and D(255, 179, 64, 255, 201, 52, 0, 255) or D(255, 159, 10, 255, 255, 149, 0, 255)
+        C.Yellow = hc and D(255, 212, 38, 255, 178, 80, 0, 255) or D(255, 214, 10, 255, 255, 204, 0, 255)
+        C.Green = hc and D(48, 219, 91, 255, 36, 138, 61, 255) or D(48, 209, 88, 255, 52, 199, 89, 255)
+        C.Mint = hc and D(102, 212, 207, 255, 12, 129, 123, 255) or D(99, 230, 226, 255, 0, 199, 190, 255)
+        C.Teal = hc and D(93, 230, 255, 255, 0, 130, 153, 255) or D(64, 200, 224, 255, 48, 176, 199, 255)
+        C.Cyan = hc and D(112, 215, 255, 255, 0, 113, 164, 255) or D(100, 210, 255, 255, 50, 173, 230, 255)
+        C.Blue = hc and D(64, 156, 255, 255, 0, 64, 221, 255) or D(10, 132, 255, 255, 0, 122, 255, 255)
+        C.Indigo = hc and D(125, 122, 255, 255, 54, 52, 163, 255) or D(94, 92, 230, 255, 88, 86, 214, 255)
+        C.Purple = hc and D(218, 143, 255, 255, 137, 68, 171, 255) or D(191, 90, 242, 255, 175, 82, 222, 255)
+        C.Pink = hc and D(255, 100, 130, 255, 211, 15, 69, 255) or D(255, 55, 95, 255, 255, 45, 85, 255)
+        C.Brown = hc and D(181, 148, 105, 255, 127, 101, 69, 255) or D(172, 142, 104, 255, 162, 132, 94, 255)
         C.TrackProgressBg = C.Fill
         C.ChipInactive = C.FillTertiary
         C.SegTrack = C.FillTertiary
