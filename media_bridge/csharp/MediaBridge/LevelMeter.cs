@@ -41,8 +41,58 @@ internal static class RawAudio
 
     private static string ProcessName(uint pid)
     {
-        if (pid == 0) return "";
-        try { return Process.GetProcessById((int)pid).ProcessName.ToLowerInvariant(); } catch { return ""; }
+        return AppAudioControl.GetProcessName(pid);
+    }
+
+    public delegate void SessionVisitor(IntPtr session, int index, uint pid, string display, string icon, int state);
+
+    public static void ForEachSession(SessionVisitor visit)
+    {
+        CoInitializeEx(IntPtr.Zero, 0);
+        IntPtr en = IntPtr.Zero, dev = IntPtr.Zero, mgr = IntPtr.Zero, senum = IntPtr.Zero;
+        try
+        {
+            if (CoCreateInstance(ref ClsidEnumerator, IntPtr.Zero, 1, ref IidEnumerator, out en) != 0 || en == IntPtr.Zero) return;
+            if (Fn<GetDefaultEndpointFn>(en, 4)(en, 0, 1, out dev) != 0 || dev == IntPtr.Zero) return;
+            if (Fn<ActivateFn>(dev, 3)(dev, ref IidManager2, 1, IntPtr.Zero, out mgr) != 0 || mgr == IntPtr.Zero) return;
+            if (Fn<GetPtrFn>(mgr, 5)(mgr, out senum) != 0 || senum == IntPtr.Zero) return;
+            Fn<GetIntFn>(senum, 3)(senum, out int count);
+            for (int i = 0; i < count; i++)
+            {
+                if (Fn<GetSessionFn>(senum, 4)(senum, i, out IntPtr ses) != 0 || ses == IntPtr.Zero) continue;
+                try
+                {
+                    var qi = Fn<QueryInterfaceFn>(ses, 0);
+                    uint pid = 0;
+                    if (qi(ses, ref IidControl2, out IntPtr c2) == 0 && c2 != IntPtr.Zero)
+                    {
+                        Fn<GetPidFn>(c2, 14)(c2, out pid);
+                        Marshal.Release(c2);
+                    }
+                    string display = "", icon = "";
+                    int state = 0;
+                    if (qi(ses, ref IidControl, out IntPtr c1) == 0 && c1 != IntPtr.Zero)
+                    {
+                        Fn<GetIntFn>(c1, 3)(c1, out state);
+                        if (Fn<GetPtrFn>(c1, 4)(c1, out IntPtr dn) == 0) display = TakeString(dn);
+                        if (Fn<GetPtrFn>(c1, 6)(c1, out IntPtr ic) == 0) icon = TakeString(ic);
+                        Marshal.Release(c1);
+                    }
+                    visit(ses, i, pid, display, icon, state);
+                }
+                finally
+                {
+                    Marshal.Release(ses);
+                }
+            }
+        }
+        finally
+        {
+            if (senum != IntPtr.Zero) Marshal.Release(senum);
+            if (mgr != IntPtr.Zero) Marshal.Release(mgr);
+            if (dev != IntPtr.Zero) Marshal.Release(dev);
+            if (en != IntPtr.Zero) Marshal.Release(en);
+        }
     }
 
     public static List<IntPtr> FamilyMeters(string family)

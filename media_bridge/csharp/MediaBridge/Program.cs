@@ -9,7 +9,8 @@ using System.Text.Json.Serialization.Metadata;
 
 namespace MediaBridge;
 
-public record CommandResponse(string status, int volume, bool is_liked);
+public record CommandResponse(string status, int volume, bool is_liked, string target);
+public record AudioDiag(string status, string app, string family, string sessions);
 public record FocusResponse(string status, bool focused);
 public record SoundResponse(string status);
 public record LevelResponse(double[] l, string src, int n, double p);
@@ -24,6 +25,7 @@ public record StatusResponse(string status, string version, string latest_versio
 [JsonSerializable(typeof(UpdateStatus))]
 [JsonSerializable(typeof(FontStatus))]
 [JsonSerializable(typeof(LevelResponse))]
+[JsonSerializable(typeof(AudioDiag))]
 internal partial class AppJsonContext : JsonSerializerContext { }
 
 internal static class AppJson
@@ -184,10 +186,10 @@ internal static class Program
                 }
 
                 float? curVol = await MediaSessionService.HandleMediaCommandAsync(cmd);
-                curVol ??= AppAudioControl.GetAppVolume();
+                curVol ??= AppAudioControl.GetAppVolume(MediaSessionService.CurrentFamily);
                 int volInt = (int)Math.Round(curVol.Value * 100);
 
-                await WriteJsonAsync(response, new CommandResponse("ok", volInt, MediaSessionService.CurrentIsLiked), AppJson.Context.CommandResponse);
+                await WriteJsonAsync(response, new CommandResponse("ok", volInt, MediaSessionService.CurrentIsLiked, AppAudioControl.LastTarget), AppJson.Context.CommandResponse);
             }
             else if (path == "/sound")
             {
@@ -262,6 +264,10 @@ internal static class Program
             else if (path == "/level")
             {
                 await WriteJsonAsync(response, new LevelResponse(LevelMeter.Snapshot(), LevelMeter.Source, LevelMeter.Sessions, Math.Round(LevelMeter.Peak, 3)), AppJson.Context.LevelResponse);
+            }
+            else if (path == "/diag/audio")
+            {
+                await WriteJsonAsync(response, new AudioDiag("ok", MediaSessionService.CurrentAppId, MediaSessionService.CurrentFamily, AppAudioControl.DescribeSessions()), AppJson.Context.AudioDiag);
             }
             else if (path == "/focus")
             {

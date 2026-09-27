@@ -50,6 +50,7 @@ internal static class WinRtAsync
 public static class MediaSessionService
 {
     public static string CurrentFamily { get; private set; } = "";
+    public static string CurrentAppId { get; private set; } = "";
 
     private static readonly string TempDir = Path.Combine(Path.GetTempPath(), "dynamic_island_covers");
     private static string ScriptsDir = @"C:\Umbrella\scripts";
@@ -531,6 +532,7 @@ public static class MediaSessionService
             bool hasCover = _hasCover && (_coverBase64 != "" || (_coverPng != "" && File.Exists(_coverPng)));
             string targetFam = GetMediaSessionFamily(session);
             CurrentFamily = targetFam;
+            CurrentAppId = appId;
             if (isPlaying && targetFam != "" && AppAudioControl.IsMusicPlayerFamily(targetFam))
             {
                 int audioState = AppAudioControl.GetFamilyAudioState(targetFam);
@@ -630,6 +632,7 @@ public static class MediaSessionService
                 catch { DropManager(); }
             }
             string targetFam = session != null ? GetMediaSessionFamily(session) : "";
+            AppAudioControl.LastTarget = "none";
 
             if (cmd == "volup") return AppAudioControl.StepAppVolume(0.04f, targetFam);
             if (cmd == "voldown") return AppAudioControl.StepAppVolume(-0.04f, targetFam);
