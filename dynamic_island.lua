@@ -10227,6 +10227,38 @@ function Impl.LyFrac(i, pos)
     return math.max(0, math.min(1, (pos - ln.t) / sing))
 end
 
+function Impl.LyGlyphs(font, size, text, x, y, fillPx, colDim, colLit, clipL, clipR, fadeW)
+    local glyphs = Marquee.Layout(font, size, text)
+    local edge = size * 0.9
+    local dA, lA = colDim.a or 255, colLit.a or 255
+    for _, gl in ipairs(glyphs) do
+        local gx0, gx1 = x + gl.x0, x + gl.x1
+        if (not clipR or gx0 < clipR) and (not clipL or gx1 > clipL) then
+            local lit = fillPx and math.max(0, math.min(1, (fillPx - gl.x0) / edge + 0.5)) or 1
+            local a = dA + (lA - dA) * lit
+            if fadeW then
+                local mid = (gx0 + gx1) / 2
+                if clipR and mid > clipR - fadeW then a = a * math.max(0, (clipR - mid) / fadeW) end
+                if clipL and mid < clipL + fadeW then a = a * math.max(0, (mid - clipL) / fadeW) end
+            end
+            if a > 2 then
+                Render.Text(font, size, gl.ch, Vec2(gx0, y), Color(colLit.r, colLit.g, colLit.b, math.floor(a)))
+            end
+        end
+    end
+    return glyphs
+end
+
+function Impl.LyFillPx(glyphs, frac)
+    local n = #glyphs
+    if n == 0 then return 0 end
+    local kf = math.max(0, math.min(n, frac * n))
+    local ki = math.floor(kf)
+    if ki >= n then return glyphs[n].x1 end
+    local gl = glyphs[ki + 1]
+    return gl.x0 + (gl.x1 - gl.x0) * (kf - ki)
+end
+
 function Impl.LyKaraoke(font, size, rows, x, y, rowH, frac, colDim, colLit)
     local lens, total = {}, 0
     for r, row in ipairs(rows) do
@@ -10234,28 +10266,12 @@ function Impl.LyKaraoke(font, size, rows, x, y, rowH, frac, colDim, colLit)
         total = total + lens[r]
     end
     local lit = frac * total
-    local edge = size * 0.9
     for r, row in ipairs(rows) do
         local ry = math.floor(y + (r - 1) * rowH)
         local k = math.max(0, math.min(lens[r], lit))
         lit = lit - lens[r]
-        if k >= lens[r] then
-            Render.Text(font, size, row, Vec2(x, ry), colLit)
-        else
-            Render.Text(font, size, row, Vec2(x, ry), colDim)
-            if k > 0 then
-                local fw = Impl.LyPrefixW(font, size, row, k)
-                Render.PushClip(Vec2(x - 4, ry - 4), Vec2(x + fw, ry + rowH + 4), true)
-                Render.Text(font, size, row, Vec2(x, ry), colLit)
-                Render.PopClip()
-                Render.PushClip(Vec2(x + fw, ry - 4), Vec2(x + fw + edge * 0.5, ry + rowH + 4), true)
-                Render.Text(font, size, row, Vec2(x, ry), FadeColor(colLit, 0.55))
-                Render.PopClip()
-                Render.PushClip(Vec2(x + fw + edge * 0.5, ry - 4), Vec2(x + fw + edge, ry + rowH + 4), true)
-                Render.Text(font, size, row, Vec2(x, ry), FadeColor(colLit, 0.25))
-                Render.PopClip()
-            end
-        end
+        local glyphs = Marquee.Layout(font, size, row)
+        Impl.LyGlyphs(font, size, row, x, ry, Impl.LyFillPx(glyphs, lens[r] > 0 and k / lens[r] or 1), colDim, colLit)
     end
 end
 
@@ -10297,12 +10313,10 @@ function Impl.LyCompactLine(i, title, x, y, w, font, size, aMul, scale, done)
             Ly.COff[i] = off
         end
     end
-    local rowH = Render.TextSize(font, size, "Ag").y
-    if karaoke and not done then
-        Impl.LyKaraoke(font, size, { text }, math.floor(x - off), y, rowH, frac, FadeColor(col, aMul * 0.4), FadeColor(col, aMul))
-    else
-        Render.Text(font, size, text, Vec2(math.floor(x - off), math.floor(y)), FadeColor(col, aMul))
-    end
+    local glyphs = Marquee.Layout(font, size, text)
+    local fillPx = (karaoke and not done) and Impl.LyFillPx(glyphs, frac) or nil
+    local fadeW = 12 * scale
+    Impl.LyGlyphs(font, size, text, x - off, math.floor(y), fillPx, FadeColor(col, aMul * 0.4), FadeColor(col, aMul), off > 0.5 and x or nil, (tw - off > w + 0.5) and (x + w) or nil, fadeW)
 end
 
 function Impl.LyCompactDraw(x, y, w, font, size, aMul, scale, title)
