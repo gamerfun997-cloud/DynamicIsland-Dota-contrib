@@ -916,7 +916,7 @@ local localization = qLocalization.new({
         di_media_lyrics_compact = "Lyrics in the Small Island",
         di_media_lyrics_compact_tip = "Shows the line being sung instead of\nthe song name in the small island",
         di_media_karaoke = "Karaoke",
-        di_media_karaoke_tip = "The line fills in as it is sung,\nlike in Apple Music",
+        di_media_karaoke_tip = "In songs with word timings the line fills in\nas it is sung, like in Apple Music",
         di_media_lyrics_tip = "Song text in time with the music, from lrclib.net.\nThe quote button opens it, click a line to jump",
         di_media_marquee_speed = "Marquee Speed",
         di_media_marquee_speed_tip = "How fast long titles scroll",
@@ -1537,7 +1537,7 @@ local localization = qLocalization.new({
         di_media_lyrics_compact = "Текст в маленьком островке",
         di_media_lyrics_compact_tip = "Показывает строку, которую поют,\nвместо названия трека в маленьком островке",
         di_media_karaoke = "Караоке",
-        di_media_karaoke_tip = "Строка заливается по мере пения,\nкак в Apple Music",
+        di_media_karaoke_tip = "В песнях с таймингами слов строка заливается\nпо мере пения, как в Apple Music",
         di_media_lyrics_tip = "Текст песни в такт музыке, с lrclib.net.\nКавычки открывают его, клик по строке перематывает",
         di_media_marquee_speed = "Скорость бегущей строки",
         di_media_marquee_speed_tip = "Как быстро прокручиваются длинные названия",
@@ -2901,6 +2901,17 @@ local function GetCachedImage(path, fallbackSvgKey)
         return GetVectorIcon(fallbackSvgKey)
     end
     return nil
+end
+
+function Impl.AutoSave(now)
+    if now - (Impl.SaveCheckAt or 0) < 1 then return end
+    Impl.SaveCheckAt = now
+    local set, order = Dbg.Settings()
+    local parts = {}
+    for _, p in ipairs(order) do parts[#parts + 1] = p .. "=" .. set[p] end
+    local sig = table.concat(parts, ";")
+    if Impl.SaveSig and sig ~= Impl.SaveSig then SaveAllConfig() end
+    Impl.SaveSig = sig
 end
 
 function Impl.A11yTick()
@@ -10221,8 +10232,7 @@ function Impl.LyFrac(i, pos)
         end
         return math.max(0, math.min(1, c / n))
     end
-    local sing = math.max(0.6, math.min(span * 0.92, 0.35 + n * rate))
-    return math.max(0, math.min(1, (pos - ln.t) / sing))
+    return 1
 end
 
 function Impl.LyFillText(font, size, text, x, y, frac, colDim, colLit)
@@ -10263,20 +10273,6 @@ function Impl.LyKaraoke(font, size, rows, x, y, rowH, frac, colDim, colLit)
     end
 end
 
-function Impl.LySegs(ln, font, size, w)
-    if ln.segW ~= w or ln.segF ~= font or ln.segS ~= size then
-        ln.segs = Impl.LyWrap(font, size, ln.x, w)
-        ln.segStart = {}
-        local acc = 0
-        for k, s in ipairs(ln.segs) do
-            ln.segStart[k] = acc
-            acc = acc + Impl.LyLen(s) + 1
-        end
-        ln.segW, ln.segF, ln.segS = w, font, size
-    end
-    return ln.segs, ln.segStart
-end
-
 function Impl.LyCompactOn()
     local Ly = Impl.Ly
     return Impl.LyOn() and UI.Media.LyricsCompact and UI.Media.LyricsCompact:Get() and Ly.Status == "ok" and #Ly.Lines > 0 or false
@@ -10289,38 +10285,30 @@ function Impl.LyCompactLine(key, title, x, y, w, font, size, aMul, scale, done)
         RenderMarqueeText(font, size, title, x, y, w, FadeColor(col, aMul), scale)
         return
     end
-    local i, seg = math.floor(key / 100), key % 100
-    local ln = Impl.Ly.Lines[i]
+    local ln = Impl.Ly.Lines[key]
     if not ln then return end
-    local segs, starts = Impl.LySegs(ln, font, size, w)
-    local text = segs[seg]
-    if not text then return end
+    local text = ln.x
+    if Render.TextSize(font, size, text).x > w then
+        RenderMarqueeText(font, size, text, x, y, w, FadeColor(col, aMul), scale)
+        return
+    end
     local frac = 1
-    if not done and Impl.LyKaraokeOn() then
-        local chars = Impl.LyFrac(i, (MediaData.PosSmooth or 0) + 0.1) * (ln.len or 1)
-        frac = math.max(0, math.min(1, (chars - starts[seg]) / math.max(1, Impl.LyLen(text))))
+    if not done and ln.knots and Impl.LyKaraokeOn() then
+        frac = Impl.LyFrac(key, (MediaData.PosSmooth or 0) + 0.1)
     end
     Impl.LyFillText(font, size, text, x, y, frac, FadeColor(col, aMul * 0.4), FadeColor(col, aMul))
 end
 
-function Impl.LyCompactKey(font, size, w)
+function Impl.LyCompactKey()
     local Ly = Impl.Ly
-    local i = Ly.Idx
-    local ln = Ly.Lines[i]
+    local ln = Ly.Lines[Ly.Idx]
     if not ln or ln.gap then return 0 end
-    local segs, starts = Impl.LySegs(ln, font, size, w)
-    if #segs <= 1 then return i * 100 + 1 end
-    local chars = Impl.LyFrac(i, (MediaData.PosSmooth or 0) + 0.1) * (ln.len or 1)
-    local seg = 1
-    for k = 2, #segs do
-        if chars >= starts[k] - 0.5 then seg = k end
-    end
-    return i * 100 + seg
+    return Ly.Idx
 end
 
 function Impl.LyCompactDraw(x, y, w, font, size, aMul, scale, title)
     local Ly = Impl.Ly
-    local cur = Impl.LyCompactKey(font, size, w)
+    local cur = Impl.LyCompactKey()
     local now = os.clock()
     if cur ~= Ly.CCur then
         Ly.CPrev, Ly.CCur, Ly.CAt = Ly.CCur, cur, now
@@ -10402,7 +10390,7 @@ function Impl.LyDraw(x, y, w, h, scale, aMul)
                         Render.FilledCircle(Vec2(x + (4 + d * 11) * scale, ty + dotsH * ln.h / 2), r, FadeColor(Config.Colors.TextPrimary, al * ln.h * (0.45 + 0.55 * ph)))
                     end
                 end
-            elseif i == Ly.Idx and Impl.LyKaraokeOn() then
+            elseif i == Ly.Idx and ln.knots and Impl.LyKaraokeOn() then
                 Impl.LyKaraoke(font, size, ln.rows, x, ty, rowH, Impl.LyFrac(i, (MediaData.PosSmooth or 0) + 0.1), FadeColor(Config.Colors.TextPrimary, al * 0.42), FadeColor(Config.Colors.TextPrimary, al))
                 Ly.Hits[#Ly.Hits + 1] = { x1 = x, y1 = math.max(y, ty), x2 = x + w, y2 = math.min(y + h, ty + lh), t = ln.t }
             else
@@ -15132,6 +15120,7 @@ function DynamicIsland.OnFrame()
             SaveAllConfig()
         end
         LastMenuOpenState = isOpened
+        if isOpened then Impl.AutoSave(os.clock()) end
     end
 
     local curClock = os.clock()
