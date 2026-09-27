@@ -7838,7 +7838,7 @@ local function RenderMarqueeText(font, size, text, boxX, boxY, boxW, color, scal
     local hold = holdArg or 2.2
     local offset, atEnd
     if once then
-        local travel = fullSize.x - iw
+        local travel = math.ceil(fullSize.x - iw)
         offset = math.floor(math.max(0, math.min(travel, (now - run.t0 - hold) * speed)))
         atEnd = offset >= travel
     else
@@ -7862,8 +7862,14 @@ local function RenderMarqueeText(font, size, text, boxX, boxY, boxW, color, scal
                 if gx1 > ix and gx0 < right then
                     local mid = (gx0 + gx1) / 2
                     local a = 1
-                    if mid > right - fadeW and not atEnd then a = math.max(0, (right - mid) / fadeW) end
-                    if mid < ix + fadeW then a = math.min(a, 1 - leftFade * (1 - math.max(0, (mid - ix) / fadeW))) end
+                    if once then
+                        local gw = math.max(1, gx1 - gx0)
+                        if gx0 < ix then a = math.max(0, (gx1 - ix) / gw) end
+                        if gx1 > right then a = math.min(a, math.max(0, (right - gx0) / gw)) end
+                    else
+                        if mid > right - fadeW then a = math.max(0, (right - mid) / fadeW) end
+                        if mid < ix + fadeW then a = math.min(a, 1 - leftFade * (1 - math.max(0, (mid - ix) / fadeW))) end
+                    end
                     if a > 0.01 then
                         Render.Text(font, size, gl.ch, Vec2(math.floor(gx0), iy), Color(color.r, color.g, color.b, math.floor(baseA * a)))
                     end
