@@ -382,16 +382,16 @@ local localization = qLocalization.new({
         di_ui_likes_unavailable = "Likes unavailable",
         di_ui_restart_spotify = "Restart Spotify from the taskbar or Start",
         di_rampage_timer = "Rampage timer",
-        di_rampage_timer_tip = "After an Ultra Kill, shows how long you have left to get the fifth",
+        di_rampage_timer_tip = "After an Ultra Kill, shows how long\nyou have left to get the Rampage",
         di_streak_mega_kill = "Mega Kill!",
         di_streak_unstoppable = "Unstoppable!",
         di_streak_wicked_sick = "Wicked Sick!",
         di_streak_godlike = "Godlike!",
         di_group_live = "Live Activities",
         di_group_alerts_all = "All Alerts",
-        di_toast_duration_tip = "Used by every alert that has no duration of its own",
+        di_toast_duration_tip = "Used by every alert that has\nno duration of its own",
         di_alert_duration = "Duration",
-        di_alert_duration_tip = "0 uses the shared duration from the top of the page",
+        di_alert_duration_tip = "0 uses the shared duration\nfrom the top of the page",
         di_dur_default = "Shared",
         di_reminder_duration = "Reminder Duration",
         di_look_customize = "Customize look",
@@ -412,23 +412,25 @@ local localization = qLocalization.new({
         di_gear_audio = "Sound",
         di_gear_ducking = "Ducking",
         di_alert_priority = "Priority",
-        di_alert_priority_tip = "When alerts collide, the higher one shows first",
-        di_media_priority_tip = "Alerts at or below this priority won't cover the player",
+        di_alert_priority_tip = "When alerts collide,\nthe higher one shows first",
+        di_media_priority_tip = "Alerts at or below this priority\nwon't cover the player",
         di_runes_neutrals = "Neutral Item Tiers",
+        di_runes_neutrals_tip = "A new tier of neutral items is open",
         di_tab_focus = "Focus",
         di_tab_focus_group = "Do Not Disturb",
         di_tab_reminders_group = "Reminders",
         di_focus_key = "Toggle key",
-        di_focus_key_tip = "Or tap the Do Not Disturb tile in the expanded island",
+        di_focus_key_tip = "Or tap the Do Not Disturb tile\nin the expanded island",
         di_focus_until = "Turn off",
+        di_focus_until_tip = "When Do Not Disturb\nturns itself off",
         di_focus_until_off = "When I turn it off",
         di_focus_until_10 = "In 10 minutes",
         di_focus_until_20 = "In 20 minutes",
         di_focus_until_match = "When the match ends",
         di_focus_urgent = "Let urgent alerts through",
-        di_focus_urgent_tip = "Alerts with priority 5 still show up",
+        di_focus_urgent_tip = "Alerts with priority 5\nstill show up",
         di_focus_moon_tint = "Moon in artwork color",
-        di_focus_moon_tint_tip = "While music plays, the Do Not Disturb moon takes the color of the cover",
+        di_focus_moon_tint_tip = "While music plays, the moon\ntakes the color of the cover",
         di_focus_name = "Do Not Disturb",
         di_focus_on = "On",
         di_focus_off = "Off",
@@ -438,7 +440,7 @@ local localization = qLocalization.new({
         di_rem_tag = "REMINDER",
         di_rem_default = "Reminder %d",
         di_rem_text_tip = "What the island shows",
-        di_rem_every_tip = "0 means once",
+        di_rem_every_tip = "Repeat every N minutes,\n0 means once",
         di_priority_reminder = "Custom Reminder",
         di_rem_1 = "Reminder 1",
         di_rem_gear_1 = "Reminder 1",
@@ -652,7 +654,9 @@ local localization = qLocalization.new({
         di_cp_blue = "BLUE",
         di_cp_hex = "Hex Color",
         di_main_hello = "Hello on Launch",
+        di_main_hello_tip = "The iPhone style hello\nwhen Dota starts",
         di_main_setup = "Run Setup Again",
+        di_main_setup_tip = "Opens the setup assistant again.\nWorks in the main menu",
         di_hello_swipe = "Swipe up to get started",
         di_su_continue = "Continue",
         di_su_later = "Set Up Later",
@@ -715,22 +719,24 @@ local localization = qLocalization.new({
         di_fonts_failed = "Couldn't install fonts",
         di_fonts_failed_sub = "Get them from the link in the README",
         di_main_debug = "Debug log",
-        di_main_debug_tip = "Writes a detailed log to scripts/dynamic_island_debug.log: what the island did, errors, frame time and your settings. Turn it on, repeat the problem and send the file",
+        di_main_debug_tip = "Writes a detailed log of what the island does.\nTurn it on, repeat the problem, send the file",
         di_main_debug_open = "Show Debug Log",
+        di_main_debug_open_tip = "Opens the folder with the log file.\nNeeds MediaBridge",
         di_tab_diag = "Diagnostics",
         di_tab_access = "Accessibility",
         di_group_access = "Accessibility",
         di_access_motion = "Reduce Motion",
-        di_access_motion_tip = "Springs stop bouncing, side bubbles fade in place instead of budding off the island, no squeeze, shake or lean, numbers change without rolling",
+        di_access_motion_tip = "No bouncing, bubbles fade in place,\nno squeeze, shake or rolling digits",
         di_access_bold = "Bold Text",
-        di_access_bold_tip = "All text on the island becomes one weight heavier",
+        di_access_bold_tip = "All text on the island\nbecomes one weight heavier",
         di_access_contrast = "Increase Contrast",
-        di_access_contrast_tip = "Secondary text, borders, fills and separators become easier to see, system colors switch to their high contrast versions",
+        di_access_contrast_tip = "Brighter secondary text, borders and fills,\nhigh contrast system colors",
         di_group_diag = "Diagnostics",
         di_diag_snapshot = "Save Snapshot to Log",
-        di_diag_snapshot_tip = "Writes everything the island knows right now into the debug log. Press it while the problem is on screen",
+        di_diag_snapshot_tip = "Writes everything the island knows into the log.\nPress it while the problem is on screen",
         di_ui_module_off = "Part of the island turned off after an error. Turn on Debug log and send dynamic_island_debug.log",
         di_main_demo = "Show all screens",
+        di_main_demo_tip = "Plays every screen of the island in a row\nto see how it all looks",
         di_upd_available = "Update available",
         di_upd_manual = "Download it from GitHub",
         di_upd_bridge_title = "Update MediaBridge",
@@ -762,9 +768,11 @@ local localization = qLocalization.new({
         di_sdk_allow = "Allow",
         di_sdk_deny = "Don't Allow",
         di_main_sdk_reset = "Reset Script Permissions",
+        di_main_sdk_reset_tip = "Forgets which scripts you allowed,\nthey will ask again",
         di_group_sdk = "Scripts",
         di_sdk_none = "No scripts have asked yet",
         di_sdk_focus = "Allow in Focus",
+        di_sdk_focus_tip = "Its time-sensitive alerts show\neven in Do Not Disturb",
         di_nc_empty = "No notifications",
         di_nc_now = "now",
         di_nc_min = "%dm",
@@ -772,14 +780,14 @@ local localization = qLocalization.new({
         di_main_expand = "Expand island",
         di_main_expand_hover = "On hover",
         di_main_expand_hold = "Press and hold",
-        di_main_expand_tip = "Press and hold works like on iPhone: hold the island for a moment to open it",
+        di_main_expand_tip = "Hover opens the island under the cursor,\nhold opens it after a long press like on iPhone",
         di_group_system = "System",
         di_sys_output = "Audio output",
-        di_sys_output_tip = "Shows the device when Windows switches sound output, like when headphones connect. Needs MediaBridge",
+        di_sys_output_tip = "Shows the new device when Windows\nswitches sound output. Needs MediaBridge",
         di_sys_mute = "Sound on and off",
-        di_sys_mute_tip = "Shows when Windows sound gets muted or unmuted. Needs MediaBridge",
+        di_sys_mute_tip = "Shows when Windows sound\nis muted or unmuted. Needs MediaBridge",
         di_sys_battery = "Battery",
-        di_sys_battery_tip = "Laptops only: charging and low battery. Needs MediaBridge",
+        di_sys_battery_tip = "Laptops only: charging and low battery.\nNeeds MediaBridge",
         di_sys_headphones = "Headphones",
         di_sys_speakers = "Speakers",
         di_sys_display = "Display",
@@ -799,17 +807,29 @@ local localization = qLocalization.new({
         di_tab_media = "Media",
         di_tab_haptics = "Haptic Engine",
         di_main_enabled = "Enable Island",
+        di_main_enabled_tip = "Turns the whole island on or off.\nMore settings are in the gear",
         di_main_only_in_game = "Only In-Game",
+        di_main_only_in_game_tip = "Hide the island in the main menu,\nshow it only in a match",
         di_main_preset = "Position Preset",
+        di_main_preset_tip = "Where the island sits.\nCtrl and drag moves it anywhere",
         di_main_offset_y = "Vertical Offset (Y)",
+        di_main_offset_y_tip = "Distance from the top of the screen",
         di_main_offset_x = "Horizontal Offset (X)",
+        di_main_offset_x_tip = "Shift left or right from the preset",
         di_main_scale = "Island Scale",
+        di_main_scale_tip = "Size of the island and everything in it",
         di_main_custom_label = "Hero Tag",
+        di_main_custom_label_tip = "Shown instead of the hero name\nin the Hero widget",
         di_main_bg_color = "Island Background Color",
+        di_main_bg_color_tip = "Island color. On a light color\nthe text turns dark",
         di_main_pure_glass = "Glass Mode",
+        di_main_pure_glass_tip = "A see-through glass island\ninstead of a solid one",
         di_main_border_thickness = "Border Thickness",
+        di_main_border_thickness_tip = "Thin outline around the island,\n0 turns it off",
         di_main_widget_editor = "Widget Editor (RMB)",
+        di_main_widget_editor_tip = "Choose and arrange the widgets in the island.\nRight click on the island opens it too",
         di_main_reset_pos = "Reset Position",
+        di_main_reset_pos_tip = "Puts the island back\nto the top center",
         di_preset_top_center = "Top Center",
         di_preset_custom = "Custom (Draggable)",
         di_preset_top_left = "Top Left",
@@ -817,36 +837,65 @@ local localization = qLocalization.new({
         di_preset_screen_center = "Screen Center",
         di_preset_bottom_center = "Bottom Center",
         di_combat_fight_hud = "Live Combat Radar",
+        di_combat_fight_hud_tip = "A live radar of the fight\nwith the heroes of both teams",
         di_combat_fight_scope = "Fight Scope",
+        di_combat_fight_scope_tip = "Only fights around your hero\nor any fight on the map",
         di_combat_scope_local = "Local Hero Only",
         di_combat_scope_any = "Any Fight on Map",
         di_combat_min_heroes = "Min Heroes in Fight",
+        di_combat_min_heroes_tip = "How many heroes must fight\nfor the radar to show up",
         di_combat_fight_radius = "Fight Detection Radius",
+        di_combat_fight_radius_tip = "How close heroes must be\nto count as one fight",
         di_combat_radar_zoom = "Radar Zoom Range",
+        di_combat_radar_zoom_tip = "How much of the map\nthe radar shows",
         di_combat_fight_timeout = "Fight Completion Timeout",
+        di_combat_fight_timeout_tip = "How long the radar stays\nafter the fight ends",
         di_combat_fight_large_w = "Fight Card Width",
+        di_combat_fight_large_w_tip = "Width of the expanded radar",
         di_combat_fight_large_h = "Fight Card Height",
+        di_combat_fight_large_h_tip = "Height of the expanded radar",
         di_combat_kills = "Kill Streaks",
+        di_combat_kills_tip = "Your hero's kill streaks:\ndouble, triple, ultra, rampage",
         di_combat_invis = "Enemy Invis & Smoke",
+        di_combat_invis_tip = "An enemy went invisible\nor used Smoke",
         di_combat_teleports = "Enemy Teleports",
+        di_combat_teleports_tip = "An enemy hero started a teleport",
         di_combat_key_enemy_items = "Key Enemy Items",
+        di_combat_key_enemy_items_tip = "An enemy got Blink, BKB, Hex\nor another key item",
         di_combat_couriers = "Courier Under Attack",
+        di_combat_couriers_tip = "Your courier is taking damage",
         di_combat_towers = "Tower Under Attack",
+        di_combat_towers_tip = "Your tower is taking damage",
         di_combat_buybacks = "Player Buybacks",
+        di_combat_buybacks_tip = "A player bought back",
         di_combat_low_hp = "Low HP Kill Opportunities",
+        di_combat_low_hp_tip = "An enemy hero has 350 HP or less,\ntime to finish him",
         di_combat_level_up = "Hero Level Up",
+        di_combat_level_up_tip = "Your hero got a new level",
         di_combat_courier_delivery = "Courier Delivery Activity",
+        di_combat_courier_delivery_tip = "A live activity while the courier\ncarries your items",
         di_combat_pause_alert = "Pause Notification Pill",
+        di_combat_pause_alert_tip = "Shows when the game is paused",
         di_runes_active_runes = "Active Power Runes",
+        di_runes_active_runes_tip = "Reminder before power runes spawn",
         di_runes_water_runes = "Water Runes",
+        di_runes_water_runes_tip = "Reminder before water runes spawn\nin the first minutes",
         di_runes_bounty_runes = "Bounty Runes",
+        di_runes_bounty_runes_tip = "Reminder before bounty runes spawn",
         di_runes_wisdom_runes = "Wisdom Runes",
+        di_runes_wisdom_runes_tip = "Reminder before wisdom runes spawn",
         di_runes_rune_pickups = "Rune Pickups",
+        di_runes_rune_pickups_tip = "Which hero picked up a rune",
         di_runes_rune_world_spawn = "Rune World Spawns",
+        di_runes_rune_world_spawn_tip = "A rune appeared on the map",
         di_runes_lotus = "Lotus Pools",
+        di_runes_lotus_tip = "Reminder before lotus pools fill",
         di_runes_tormentor = "Tormentor Objective",
+        di_runes_tormentor_tip = "Tormentor spawn and kill",
         di_runes_roshan = "Roshan & Aegis",
+        di_runes_roshan_tip = "Roshan kill, Aegis\nand Roshan under attack",
         di_runes_stacks = "Camp Stack Reminder",
+        di_runes_stacks_tip = "Reminder to stack camps\nbefore the minute mark",
         di_timings_toast_duration = "Alert Duration",
         di_timings_stack_time = "Stack Reminder Lead (pull at :53)",
         di_timings_power_rune_time = "Power Runes Lead Time",
@@ -857,22 +906,35 @@ local localization = qLocalization.new({
         di_timings_tormentor1_time = "Tormentor 1st Warning",
         di_timings_tormentor2_time = "Tormentor 2nd Warning",
         di_media_enabled = "Media Sync",
+        di_media_enabled_tip = "The music player in the island.\nNeeds MediaBridge",
         di_media_spotify_like = "Spotify Like Button",
+        di_media_spotify_like_tip = "The heart likes the song in Spotify.\nNeeds MediaBridge",
         di_media_volume_wheel = "Scroll Wheel Volume Control",
+        di_media_volume_wheel_tip = "Scroll over the island to change\nthe player's volume",
         di_media_lyrics = "Synced Lyrics",
-        di_media_lyrics_tip = "Shows the song text in time with the music in the expanded player. The lyrics come from lrclib.net through the bridge. Press the quote button to open them, press a line to jump to it",
+        di_media_lyrics_tip = "Song text in time with the music, from lrclib.net.\nThe quote button opens it, click a line to jump",
         di_media_marquee_speed = "Marquee Speed",
+        di_media_marquee_speed_tip = "How fast long titles scroll",
         di_media_compact_title = "Track Title in Compact View",
+        di_media_compact_title_tip = "Song name in the small island,\nnot only the cover and the wave",
         di_media_artwork_tint = "Wave Color From Artwork",
+        di_media_artwork_tint_tip = "The music wave takes\nthe color of the cover",
         di_media_secondary_bubble = "Satellite Bubble",
+        di_media_secondary_bubble_tip = "Minor alerts drop into a side bubble\ninstead of covering the player",
         di_media_in_menu = "Show in Main Menu",
-        di_media_in_menu_tip = "Show what is playing in the main menu too, not only in a match",
+        di_media_in_menu_tip = "Show what is playing in the main menu too,\nnot only in a match",
         di_media_shadow = "Soft Shadows",
+        di_media_shadow_tip = "Soft shadow under the island\nand its bubbles",
         di_media_blur = "Backdrop Glass Blur",
+        di_media_blur_tip = "Blurs the game behind the island",
         di_media_hints = "Control Hints",
+        di_media_hints_tip = "Control hints under the island\nwhile the Umbrella menu is open",
         di_media_accent_color = "Primary Theme Color",
+        di_media_accent_color_tip = "Color of the music wave when\nthe cover color is off",
         di_media_export_cfg = "Export All Settings to File",
+        di_media_export_cfg_tip = "Saves every setting\nto the island's config file",
         di_media_import_cfg = "Import All Settings from File",
+        di_media_import_cfg_tip = "Loads every setting back\nfrom the island's config file",
         di_courier_delivering = "Delivering Items",
         di_courier_delivered = "Delivered",
         di_courier_eta = "ETA",
@@ -888,24 +950,43 @@ local localization = qLocalization.new({
         di_island_ping = "Ping",
         di_island_paused = "Paused",
         di_haptics_enabled = "Enable Haptic Engine",
+        di_haptics_enabled_tip = "Squish, glow and clicks\nwhen the island reacts",
         di_haptics_visual = "Visual Haptics (Squish & Bounce)",
+        di_haptics_visual_tip = "The island squishes and glows\non taps and alerts",
         di_haptics_audio = "Interface Sounds",
+        di_haptics_audio_tip = "Soft clicks on taps, scrolling\nand expanding",
         di_haptics_volume = "Interface Volume",
+        di_haptics_volume_tip = "Volume of interface clicks",
         di_alert_sounds = "Alert Sounds",
-        di_alert_sounds_tip = "Sounds of alerts, the courier, pause and match found. Interface clicks are in Extra, Haptics",
+        di_alert_sounds_tip = "Sounds of alerts, courier, pause and match found.\nInterface clicks are in Extra, Haptic Engine",
         di_alert_volume = "Alert Volume",
+        di_alert_volume_tip = "Volume of alert sounds",
         di_alert_sound = "Sound",
-        di_alert_sound_tip = "Play a sound when this alert shows up",
+        di_alert_sound_tip = "Play a sound when\nthis alert shows up",
+        di_sdk_slot_tip = "Lets this script show notifications,\nactivities and widgets",
+        di_rem_time_tip = "Game time of the reminder",
+        di_rem_on_tip = "Your own reminder at a game time.\nText and time are in the gear",
+        di_lead_tip = "How many seconds before\nto remind you",
         di_haptics_intensity = "Kinetic Intensity",
+        di_haptics_intensity_tip = "How strong the squish is",
         di_haptics_combat_filter = "Combat Anti-Spam Filter",
+        di_haptics_combat_filter_tip = "Skips light taps during a fight\nso nothing distracts you",
         di_haptics_audio_ducking = "Audio Auto-Ducking",
+        di_haptics_audio_ducking_tip = "Other sounds get quieter while the island\nplays its own. Needs MediaBridge",
         di_haptics_ducking_amount = "Ducking Strength",
+        di_haptics_ducking_amount_tip = "How much quieter the rest gets",
         di_haptics_ducking_alerts = "Ducking: Critical Alerts",
+        di_haptics_ducking_alerts_tip = "Duck for important alerts",
         di_haptics_ducking_courier = "Ducking: Courier",
+        di_haptics_ducking_courier_tip = "Duck when the courier delivers",
         di_haptics_ducking_notifs = "Ducking: Notifications",
+        di_haptics_ducking_notifs_tip = "Duck for regular notifications",
         di_haptics_ducking_motion = "Ducking: Island Motion",
+        di_haptics_ducking_motion_tip = "Duck for expand and collapse sounds",
         di_haptics_ducking_taptics = "Ducking: Clicks & Taptics",
+        di_haptics_ducking_taptics_tip = "Duck for clicks and buttons",
         di_haptics_test_ducking = "Audition Ducking",
+        di_haptics_test_ducking_tip = "Plays a sound so you can hear\nhow much the rest ducks",
         di_priority_roshan_kill = "Roshan Killed",
         di_priority_aegis = "Aegis Picked Up",
         di_priority_roshan_attack = "Roshan Under Attack",
@@ -917,16 +998,16 @@ local localization = qLocalization.new({
         di_ui_likes_unavailable = "Лайки недоступны",
         di_ui_restart_spotify = "Перезапусти Спотифай с панели задач или из Пуска",
         di_rampage_timer = "Таймер рампаги",
-        di_rampage_timer_tip = "После Ультра-убийства показывает, сколько осталось до Рампаги",
+        di_rampage_timer_tip = "После Ультра-убийства показывает,\nсколько осталось до Рампаги",
         di_streak_mega_kill = "Мега-убийство!",
         di_streak_unstoppable = "Неудержимый!",
         di_streak_wicked_sick = "Нечто!",
         di_streak_godlike = "Божественно!",
         di_group_live = "Живые активности",
         di_group_alerts_all = "Все оповещения",
-        di_toast_duration_tip = "Для всех оповещений, у которых не задана своя длительность",
+        di_toast_duration_tip = "Для всех оповещений, у которых\nне задана своя длительность",
         di_alert_duration = "Длительность",
-        di_alert_duration_tip = "0 значит общая длительность сверху страницы",
+        di_alert_duration_tip = "0 значит общая длительность\nсверху страницы",
         di_dur_default = "Общая",
         di_reminder_duration = "Длительность напоминаний",
         di_look_customize = "Настроить внешний вид",
@@ -947,23 +1028,25 @@ local localization = qLocalization.new({
         di_gear_audio = "Звук",
         di_gear_ducking = "Приглушение",
         di_alert_priority = "Приоритет",
-        di_alert_priority_tip = "Если оповещения совпали, первым покажется более важное",
-        di_media_priority_tip = "Оповещения с таким приоритетом или ниже не перекрывают плеер",
+        di_alert_priority_tip = "Если оповещения совпали,\nпервым покажется более важное",
+        di_media_priority_tip = "Оповещения с таким приоритетом\nили ниже не перекрывают плеер",
         di_runes_neutrals = "Тиры нейтральных предметов",
+        di_runes_neutrals_tip = "Открылся новый тир нейтральных предметов",
         di_tab_focus = "Фокус",
         di_tab_focus_group = "Не беспокоить",
         di_tab_reminders_group = "Напоминания",
         di_focus_key = "Клавиша",
-        di_focus_key_tip = "Или плитка «Не беспокоить» в развёрнутом островке",
+        di_focus_key_tip = "Или плитка Не беспокоить\nв раскрытом островке",
         di_focus_until = "Выключить",
+        di_focus_until_tip = "Когда Не беспокоить\nвыключится само",
         di_focus_until_off = "Когда выключу сам",
         di_focus_until_10 = "Через 10 минут",
         di_focus_until_20 = "Через 20 минут",
         di_focus_until_match = "После матча",
         di_focus_urgent = "Пропускать срочные",
-        di_focus_urgent_tip = "Оповещения с приоритетом 5 всё равно покажутся",
+        di_focus_urgent_tip = "Оповещения с приоритетом 5\nвсе равно покажутся",
         di_focus_moon_tint = "Луна в цвет обложки",
-        di_focus_moon_tint_tip = "Пока играет музыка, луна «Не беспокоить» красится в цвет обложки",
+        di_focus_moon_tint_tip = "Пока играет музыка, луна\nкрасится в цвет обложки",
         di_focus_name = "Не беспокоить",
         di_focus_on = "Вкл",
         di_focus_off = "Выкл",
@@ -973,7 +1056,7 @@ local localization = qLocalization.new({
         di_rem_tag = "НАПОМИНАНИЕ",
         di_rem_default = "Напоминание %d",
         di_rem_text_tip = "Что покажет островок",
-        di_rem_every_tip = "0 значит один раз",
+        di_rem_every_tip = "Повторять каждые N минут,\n0 значит один раз",
         di_priority_reminder = "Своё напоминание",
         di_rem_1 = "Напоминание 1",
         di_rem_gear_1 = "Напоминание 1",
@@ -1187,7 +1270,9 @@ local localization = qLocalization.new({
         di_cp_blue = "СИНИЙ",
         di_cp_hex = "Hex-цвет",
         di_main_hello = "Приветствие при запуске",
+        di_main_hello_tip = "Приветствие как на айфоне\nпри запуске доты",
         di_main_setup = "Пройти настройку заново",
+        di_main_setup_tip = "Заново открывает помощник настройки.\nРаботает в главном меню",
         di_hello_swipe = "Смахни вверх, чтобы начать",
         di_su_continue = "Продолжить",
         di_su_later = "Настроить позже",
@@ -1250,22 +1335,24 @@ local localization = qLocalization.new({
         di_fonts_failed = "Не удалось поставить шрифты",
         di_fonts_failed_sub = "Скачай их по ссылке в README",
         di_main_debug = "Лог отладки",
-        di_main_debug_tip = "Пишет подробный лог в scripts/dynamic_island_debug.log: что делал островок, ошибки, время кадра и твои настройки. Включи, повтори проблему и скинь файл",
+        di_main_debug_tip = "Пишет подробный лог того, что делает островок.\nВключи, повтори проблему и скинь файл",
         di_main_debug_open = "Показать лог",
+        di_main_debug_open_tip = "Открывает папку с файлом лога.\nНужен MediaBridge",
         di_tab_diag = "Диагностика",
         di_tab_access = "Универсальный доступ",
         di_group_access = "Универсальный доступ",
         di_access_motion = "Уменьшение движения",
-        di_access_motion_tip = "Пружины перестают пружинить, боковые кружки плавно проявляются на месте вместо отделения от острова, без сжатия, тряски и наклона, цифры меняются без прокрутки",
+        di_access_motion_tip = "Без пружинок, кружки проявляются на месте,\nбез сжатия, тряски и прокрутки цифр",
         di_access_bold = "Жирный шрифт",
-        di_access_bold_tip = "Весь текст на островке становится на ступень жирнее",
+        di_access_bold_tip = "Весь текст на островке\nстановится на ступень жирнее",
         di_access_contrast = "Увеличение контраста",
-        di_access_contrast_tip = "Второстепенный текст, обводка, заливки и разделители становятся заметнее, системные цвета переключаются на контрастные версии",
+        di_access_contrast_tip = "Ярче второстепенный текст, обводка и заливки,\nконтрастные системные цвета",
         di_group_diag = "Диагностика",
         di_diag_snapshot = "Сохранить снимок в лог",
-        di_diag_snapshot_tip = "Записывает в лог всё, что островок знает прямо сейчас. Жми, пока проблема на экране",
+        di_diag_snapshot_tip = "Записывает в лог все, что знает островок.\nЖми, пока проблема на экране",
         di_ui_module_off = "Часть островка отключилась из-за ошибки. Включи лог отладки и скинь dynamic_island_debug.log",
         di_main_demo = "Показать все экраны",
+        di_main_demo_tip = "Показывает все экраны островка по очереди,\nчтобы посмотреть, как все выглядит",
         di_upd_available = "Доступно обновление",
         di_upd_manual = "Скачай новую версию на GitHub",
         di_upd_bridge_title = "Обнови MediaBridge",
@@ -1297,9 +1384,11 @@ local localization = qLocalization.new({
         di_sdk_allow = "Разрешить",
         di_sdk_deny = "Запретить",
         di_main_sdk_reset = "Сбросить разрешения скриптов",
+        di_main_sdk_reset_tip = "Забывает, каким скриптам ты разрешил,\nони спросят заново",
         di_group_sdk = "Скрипты",
         di_sdk_none = "Скрипты ещё не просили доступ",
         di_sdk_focus = "Разрешить в фокусе",
+        di_sdk_focus_tip = "Его срочные оповещения видны\nдаже в Не беспокоить",
         di_nc_empty = "Нет уведомлений",
         di_nc_now = "сейчас",
         di_nc_min = "%d мин",
@@ -1307,14 +1396,14 @@ local localization = qLocalization.new({
         di_main_expand = "Раскрытие",
         di_main_expand_hover = "При наведении",
         di_main_expand_hold = "Удержанием",
-        di_main_expand_tip = "Удержанием как на айфоне: зажми островок на секунду, и он раскроется",
+        di_main_expand_tip = "Наведение раскрывает островок под курсором,\nудержание после долгого нажатия, как на айфоне",
         di_group_system = "Система",
         di_sys_output = "Вывод звука",
-        di_sys_output_tip = "Показывает устройство, когда Windows переключает вывод звука, например при подключении наушников. Нужен MediaBridge",
+        di_sys_output_tip = "Показывает устройство, когда Windows\nпереключает звук. Нужен MediaBridge",
         di_sys_mute = "Звук вкл/выкл",
-        di_sys_mute_tip = "Показывает, когда звук Windows выключают или включают. Нужен MediaBridge",
+        di_sys_mute_tip = "Показывает, когда звук Windows\nвыключают или включают. Нужен MediaBridge",
         di_sys_battery = "Батарея",
-        di_sys_battery_tip = "Только для ноутбуков: зарядка и низкий заряд. Нужен MediaBridge",
+        di_sys_battery_tip = "Только для ноутбуков: зарядка\nи низкий заряд. Нужен MediaBridge",
         di_sys_headphones = "Наушники",
         di_sys_speakers = "Динамики",
         di_sys_display = "Монитор",
@@ -1334,17 +1423,29 @@ local localization = qLocalization.new({
         di_tab_media = "Медиа",
         di_tab_haptics = "Тактильный отклик",
         di_main_enabled = "Включить Island",
+        di_main_enabled_tip = "Включает и выключает весь островок.\nОстальное в шестеренке",
         di_main_only_in_game = "Только в игре",
+        di_main_only_in_game_tip = "Прятать островок в главном меню,\nпоказывать только в матче",
         di_main_preset = "Пресет позиции",
+        di_main_preset_tip = "Где стоит островок.\nCtrl и перетаскивание ставят его куда угодно",
         di_main_offset_y = "Смещение (Y)",
+        di_main_offset_y_tip = "Отступ от верха экрана",
         di_main_offset_x = "Смещение (X)",
+        di_main_offset_x_tip = "Сдвиг влево или вправо от пресета",
         di_main_scale = "Масштаб",
+        di_main_scale_tip = "Размер островка и всего внутри",
         di_main_custom_label = "Тег героя",
+        di_main_custom_label_tip = "Показывается вместо имени героя\nв виджете Герой",
         di_main_bg_color = "Цвет фона островка",
+        di_main_bg_color_tip = "Цвет островка. На светлом\nтекст становится темным",
         di_main_pure_glass = "Режим стекла",
+        di_main_pure_glass_tip = "Прозрачный стеклянный островок\nвместо сплошного",
         di_main_border_thickness = "Толщина обводки",
+        di_main_border_thickness_tip = "Тонкая обводка вокруг островка,\n0 выключает ее",
         di_main_widget_editor = "Редактор виджетов (ПКМ)",
+        di_main_widget_editor_tip = "Выбор и порядок виджетов в островке.\nПКМ по островку тоже открывает",
         di_main_reset_pos = "Сбросить позицию",
+        di_main_reset_pos_tip = "Возвращает островок\nнаверх по центру",
         di_preset_top_center = "Сверху по центру",
         di_preset_custom = "Своя (Ctrl + ЛКМ)",
         di_preset_top_left = "Сверху слева",
@@ -1352,36 +1453,65 @@ local localization = qLocalization.new({
         di_preset_screen_center = "По центру экрана",
         di_preset_bottom_center = "Снизу по центру",
         di_combat_fight_hud = "Радар боя (Fight HUD)",
+        di_combat_fight_hud_tip = "Живой радар драки\nс героями обеих команд",
         di_combat_fight_scope = "Область боя",
+        di_combat_fight_scope_tip = "Только драки рядом с твоим героем\nили любые на карте",
         di_combat_scope_local = "Только вокруг своего героя",
         di_combat_scope_any = "Любой бой на карте",
         di_combat_min_heroes = "Мин. героев для драки",
+        di_combat_min_heroes_tip = "Сколько героев должно драться,\nчтобы появился радар",
         di_combat_fight_radius = "Радиус захвата драки",
+        di_combat_fight_radius_tip = "Насколько близко должны быть герои,\nчтобы считаться одной дракой",
         di_combat_radar_zoom = "Масштаб радара",
+        di_combat_radar_zoom_tip = "Какую часть карты\nпоказывает радар",
         di_combat_fight_timeout = "Задержка закрытия после драки",
+        di_combat_fight_timeout_tip = "Сколько радар висит\nпосле конца драки",
         di_combat_fight_large_w = "Ширина карточки боя",
+        di_combat_fight_large_w_tip = "Ширина раскрытого радара",
         di_combat_fight_large_h = "Высота карточки боя",
+        di_combat_fight_large_h_tip = "Высота раскрытого радара",
         di_combat_kills = "Серии убийств",
+        di_combat_kills_tip = "Серии убийств твоего героя:\nдабл, трипл, ультра, рампага",
         di_combat_invis = "Невидимость и Smoke врага",
+        di_combat_invis_tip = "Враг ушел в невидимость\nили под Smoke",
         di_combat_teleports = "Телепорты врагов",
+        di_combat_teleports_tip = "Вражеский герой начал телепорт",
         di_combat_key_enemy_items = "Важные предметы врага",
+        di_combat_key_enemy_items_tip = "У врага появился Blink, BKB, Hex\nили другой важный предмет",
         di_combat_couriers = "Атака курьера",
+        di_combat_couriers_tip = "Твоего курьера бьют",
         di_combat_towers = "Атака вышек",
+        di_combat_towers_tip = "Твою вышку бьют",
         di_combat_buybacks = "Выкупы игроков",
+        di_combat_buybacks_tip = "Игрок выкупился",
         di_combat_low_hp = "Добивание Low HP",
+        di_combat_low_hp_tip = "У вражеского героя 350 HP или меньше,\nпора добивать",
         di_combat_level_up = "Повышение уровня",
+        di_combat_level_up_tip = "Твой герой получил уровень",
         di_combat_courier_delivery = "Активность доставки курьера",
+        di_combat_courier_delivery_tip = "Живая активность, пока курьер\nнесет твои предметы",
         di_combat_pause_alert = "Оповещение паузы игры",
+        di_combat_pause_alert_tip = "Показывает, когда игра на паузе",
         di_runes_active_runes = "Активные руны (Power)",
+        di_runes_active_runes_tip = "Напоминание перед появлением силовых рун",
         di_runes_water_runes = "Водные руны",
+        di_runes_water_runes_tip = "Напоминание перед водными рунами\nв первые минуты",
         di_runes_bounty_runes = "Руны богатства (Bounty)",
+        di_runes_bounty_runes_tip = "Напоминание перед рунами богатства",
         di_runes_wisdom_runes = "Руны мудрости (Wisdom)",
+        di_runes_wisdom_runes_tip = "Напоминание перед рунами мудрости",
         di_runes_rune_pickups = "Подбор рун союзником",
+        di_runes_rune_pickups_tip = "Какой герой подобрал руну",
         di_runes_rune_world_spawn = "Появление рун на карте",
+        di_runes_rune_world_spawn_tip = "На карте появилась руна",
         di_runes_lotus = "Пруды лотосов",
+        di_runes_lotus_tip = "Напоминание о прудах лотосов",
         di_runes_tormentor = "Терзатель",
+        di_runes_tormentor_tip = "Появление и убийство Терзателя",
         di_runes_roshan = "Рошан и Эгида",
+        di_runes_roshan_tip = "Убийство Рошана, Эгида\nи атака на Рошана",
         di_runes_stacks = "Напоминание о стаке кемпов",
+        di_runes_stacks_tip = "Напоминание застакать кемпы\nперед началом минуты",
         di_timings_toast_duration = "Длительность уведомлений",
         di_timings_stack_time = "Пре-таймер стака (агр на :53)",
         di_timings_power_rune_time = "Пре-таймер: Power руны",
@@ -1392,22 +1522,35 @@ local localization = qLocalization.new({
         di_timings_tormentor1_time = "1-е опов. Терзателя",
         di_timings_tormentor2_time = "2-е опов. Терзателя",
         di_media_enabled = "Медиа плеер",
+        di_media_enabled_tip = "Музыкальный плеер в островке.\nНужен MediaBridge",
         di_media_spotify_like = "Лайк трека Spotify",
+        di_media_spotify_like_tip = "Сердечко ставит лайк треку в Spotify.\nНужен MediaBridge",
         di_media_volume_wheel = "Громкость колесиком мыши",
+        di_media_volume_wheel_tip = "Колесико над островком меняет\nгромкость плеера",
         di_media_lyrics = "Текст песен",
-        di_media_lyrics_tip = "Показывает текст песни в такт музыке в раскрытом плеере. Текст берется с lrclib.net через мост. Кнопка с кавычками открывает его, клик по строке перематывает на нее",
+        di_media_lyrics_tip = "Текст песни в такт музыке, с lrclib.net.\nКавычки открывают его, клик по строке перематывает",
         di_media_marquee_speed = "Скорость бегущей строки",
+        di_media_marquee_speed_tip = "Как быстро прокручиваются длинные названия",
         di_media_compact_title = "Название трека в маленьком островке",
+        di_media_compact_title_tip = "Название трека в маленьком островке,\nа не только обложка и волна",
         di_media_artwork_tint = "Цвет волны из обложки",
+        di_media_artwork_tint_tip = "Волна музыки берет\nцвет обложки",
         di_media_secondary_bubble = "Второй островок/баббл",
+        di_media_secondary_bubble_tip = "Мелкие оповещения уходят в кружок сбоку,\nа не закрывают плеер",
         di_media_in_menu = "Показывать в главном меню",
-        di_media_in_menu_tip = "Показывать, что играет, и в главном меню, а не только в матче",
+        di_media_in_menu_tip = "Показывать, что играет, и в главном меню,\nа не только в матче",
         di_media_shadow = "Мягкие тени",
+        di_media_shadow_tip = "Мягкая тень под островком\nи кружками",
         di_media_blur = "Размытие фона (Blur)",
+        di_media_blur_tip = "Размывает игру под островком",
         di_media_hints = "Подсказки управления",
+        di_media_hints_tip = "Подсказки управления под островком,\nпока открыто меню Umbrella",
         di_media_accent_color = "Основной цвет темы",
+        di_media_accent_color_tip = "Цвет волны музыки, когда\nцвет из обложки выключен",
         di_media_export_cfg = "Экспорт всех настроек в файл",
+        di_media_export_cfg_tip = "Сохраняет все настройки\nв файл настроек островка",
         di_media_import_cfg = "Импорт всех настроек из файла",
+        di_media_import_cfg_tip = "Загружает все настройки\nиз файла настроек островка",
         di_courier_delivering = "Доставка вещей",
         di_courier_delivered = "Доставлено",
         di_courier_eta = "Через",
@@ -1423,24 +1566,43 @@ local localization = qLocalization.new({
         di_island_ping = "Пинг",
         di_island_paused = "Пауза",
         di_haptics_enabled = "Включить тактильный движок",
+        di_haptics_enabled_tip = "Сжатие, свечение и щелчки,\nкогда островок откликается",
         di_haptics_visual = "Визуальная тактильность (Сквиш)",
+        di_haptics_visual_tip = "Островок сжимается и светится\nпри нажатиях и оповещениях",
         di_haptics_audio = "Звуки интерфейса",
+        di_haptics_audio_tip = "Тихие щелчки при нажатиях,\nпрокрутке и раскрытии",
         di_haptics_volume = "Громкость интерфейса",
+        di_haptics_volume_tip = "Громкость щелчков интерфейса",
         di_alert_sounds = "Звуки оповещений",
-        di_alert_sounds_tip = "Звуки оповещений, курьера, паузы и найденного матча. Щелчки интерфейса в Extra, Отклик",
+        di_alert_sounds_tip = "Звуки оповещений, курьера, паузы и матча.\nЩелчки интерфейса в Extra, Тактильный отклик",
         di_alert_volume = "Громкость оповещений",
+        di_alert_volume_tip = "Громкость звуков оповещений",
         di_alert_sound = "Звук",
-        di_alert_sound_tip = "Проигрывать звук, когда появляется это оповещение",
+        di_alert_sound_tip = "Проигрывать звук,\nкогда появляется это оповещение",
+        di_sdk_slot_tip = "Разрешает скрипту показывать уведомления,\nактивности и виджеты",
+        di_rem_time_tip = "Время игры для напоминания",
+        di_rem_on_tip = "Свое напоминание на время игры.\nТекст и время в шестеренке",
+        di_lead_tip = "За сколько секунд\nнапомнить",
         di_haptics_intensity = "Сила кинетического импульса",
+        di_haptics_intensity_tip = "Насколько сильное сжатие",
         di_haptics_combat_filter = "Умный фильтр в драках",
+        di_haptics_combat_filter_tip = "Пропускает легкие отклики в драке,\nчтобы ничего не отвлекало",
         di_haptics_audio_ducking = "Затихание остальных звуков",
+        di_haptics_audio_ducking_tip = "Остальные звуки тише, пока островок\nиграет свой. Нужен MediaBridge",
         di_haptics_ducking_amount = "Сила затихания",
+        di_haptics_ducking_amount_tip = "Насколько тише становится остальное",
         di_haptics_ducking_alerts = "Затихание: Важные алерты",
+        di_haptics_ducking_alerts_tip = "Затихать на важных оповещениях",
         di_haptics_ducking_courier = "Затихание: Курьер",
+        di_haptics_ducking_courier_tip = "Затихать при доставке курьера",
         di_haptics_ducking_notifs = "Затихание: Уведомления",
+        di_haptics_ducking_notifs_tip = "Затихать на обычных уведомлениях",
         di_haptics_ducking_motion = "Затихание: Движение острова",
+        di_haptics_ducking_motion_tip = "Затихать на звуках раскрытия и сворачивания",
         di_haptics_ducking_taptics = "Затихание: Клики и кнопки",
+        di_haptics_ducking_taptics_tip = "Затихать на щелчках и кнопках",
         di_haptics_test_ducking = "Проверить звук",
+        di_haptics_test_ducking_tip = "Проигрывает звук, чтобы услышать,\nнасколько затихает остальное",
         di_priority_roshan_kill = "Убийство Рошана",
         di_priority_aegis = "Подбор Эгиды",
         di_priority_roshan_attack = "Атака на Рошана",
@@ -3203,34 +3365,44 @@ function Impl.InitMenu()
     local function lead(gear, key, lo, hi, def)
         local w = gear:Slider(key, lo, hi, def, "%d s")
         w:Icon("\u{f017}")
+        w:ToolTip("di_lead_tip")
         return w
     end
 
     M.Enabled = gIsland:Switch("di_main_enabled", true, "\u{f0eb}")
+    M.Enabled:ToolTip("di_main_enabled_tip")
     local gMore = M.Enabled:Gear("di_gear_more")
     M.OnlyInGame = gMore:Switch("di_main_only_in_game", false, "\u{f108}")
+    M.OnlyInGame:ToolTip("di_main_only_in_game_tip")
     M.ExpandMode = gMore:Combo("di_main_expand", { "di_main_expand_hover", "di_main_expand_hold" }, 0)
     M.ExpandMode:Icon("\u{f065}")
     M.ExpandMode:ToolTip("di_main_expand_tip")
     M.Demo = gMore:Button("di_main_demo", function() Demo.Start() end)
+    M.Demo:ToolTip("di_main_demo_tip")
     M.Hello = gMore:Switch("di_main_hello", true, "\u{f256}")
+    M.Hello:ToolTip("di_main_hello_tip")
     M.SetupAgain = gMore:Button("di_main_setup", function()
         if not (Engine.IsInGame and Engine.IsInGame()) then Hello.Start(true) end
     end)
+    M.SetupAgain:ToolTip("di_main_setup_tip")
     M.SdkReset = gMore:Button("di_main_sdk_reset", function() Sdk.Reset() end)
+    M.SdkReset:ToolTip("di_main_sdk_reset_tip")
     M.Debug = gMore:Switch("di_main_debug", false, "\u{f188}")
     M.Debug:ToolTip("di_main_debug_tip")
     M.Debug:SetCallback(function(w)
         if w:Get() then Dbg.Start("switched on") else Dbg.Stop() end
     end)
     M.DebugOpen = gMore:Button("di_main_debug_open", function() Dbg.Reveal() end)
+    M.DebugOpen:ToolTip("di_main_debug_open_tip")
     T.ToastDuration = gAll:Slider("di_timings_toast_duration", 1, 10, 4, "%d s")
     T.ToastDuration:Icon("\u{f254}")
     T.ToastDuration:ToolTip("di_toast_duration_tip")
     H.AlertSounds = gAll:Switch("di_alert_sounds", true, "\u{f0f3}")
     H.AlertSounds:ToolTip("di_alert_sounds_tip")
     H.AlertVolume = H.AlertSounds:Gear("di_gear_audio"):Slider("di_alert_volume", 0, 100, 50, "%d%%")
+    H.AlertVolume:ToolTip("di_alert_volume_tip")
     M.CustomLabel = gMore:Input("di_main_custom_label", "", "\u{f02b}")
+    M.CustomLabel:ToolTip("di_main_custom_label_tip")
     M.ResetPos = gMore:Button("di_main_reset_pos", function()
         DragState.CustomX = -1
         DragState.CustomY = -1
@@ -3239,21 +3411,28 @@ function Impl.InitMenu()
         UI.Main.OffsetX:Set(0)
         SaveAllConfig()
     end)
+    M.ResetPos:ToolTip("di_main_reset_pos_tip")
     M.ExportCfg = gMore:Button("di_media_export_cfg", function()
         SaveAllConfig()
     end)
+    M.ExportCfg:ToolTip("di_media_export_cfg_tip")
     M.ImportCfg = gMore:Button("di_media_import_cfg", function()
         Impl.LoadAllConfig()
     end)
+    M.ImportCfg:ToolTip("di_media_import_cfg_tip")
 
     M.Preset = gIsland:Combo("di_main_preset", { "di_preset_top_center", "di_preset_custom", "di_preset_top_left", "di_preset_top_right", "di_preset_screen_center", "di_preset_bottom_center" }, 0)
+    M.Preset:ToolTip("di_main_preset_tip")
     M.Preset:Icon("\u{f3c5}")
     local gPos = M.Preset:Gear("di_gear_position")
     M.OffsetY = gPos:Slider("di_main_offset_y", 0, 1000, 20, "%d px")
+    M.OffsetY:ToolTip("di_main_offset_y_tip")
     M.OffsetY:Icon("\u{f338}")
     M.OffsetX = gPos:Slider("di_main_offset_x", -960, 960, 0, "%d px")
+    M.OffsetX:ToolTip("di_main_offset_x_tip")
     M.OffsetX:Icon("\u{f337}")
     M.Scale = gPos:Slider("di_main_scale", 60, 180, 100, "%d%%")
+    M.Scale:ToolTip("di_main_scale_tip")
     M.Scale:Icon("\u{f065}")
 
     M.ToggleHUDMode = gLook:Button("di_main_widget_editor", function()
@@ -3261,37 +3440,54 @@ function Impl.InitMenu()
         HUDCustomizer.InspectedChip = nil
         HUDCustomizer.ColorPickerOpen = false
     end)
+    M.ToggleHUDMode:ToolTip("di_main_widget_editor_tip")
 
     M.PureGlass = gLookGear:Switch("di_main_pure_glass", false, "\u{f06e}")
+    M.PureGlass:ToolTip("di_main_pure_glass_tip")
     Md.Blur = gLookGear:Switch("di_media_blur", true, "\u{f042}")
+    Md.Blur:ToolTip("di_media_blur_tip")
     Md.Shadow = gLookGear:Switch("di_media_shadow", true, "\u{f0c8}")
+    Md.Shadow:ToolTip("di_media_shadow_tip")
     M.IslandBgColor = gLookGear:ColorPicker("di_main_bg_color", Color(0, 0, 0, 245), "\u{f53f}")
+    M.IslandBgColor:ToolTip("di_main_bg_color_tip")
     Md.AccentColor = gLookGear:ColorPicker("di_media_accent_color", Config.Colors.Accent, "\u{f53f}")
+    Md.AccentColor:ToolTip("di_media_accent_color_tip")
     Md.ArtworkTint = gLookGear:Switch("di_media_artwork_tint", true, "\u{f1fc}")
+    Md.ArtworkTint:ToolTip("di_media_artwork_tint_tip")
     M.BorderThickness = gLookGear:Slider("di_main_border_thickness", 0.0, 3.0, 1.0, "%.1f px")
+    M.BorderThickness:ToolTip("di_main_border_thickness_tip")
     M.BorderThickness:Icon("\u{f065}")
 
     C.FightHUD = gLive:Switch("di_combat_fight_hud", true, "\u{f140}")
+    C.FightHUD:ToolTip("di_combat_fight_hud_tip")
     local gRadar = C.FightHUD:Gear("di_gear_radar")
     C.FightScope = gRadar:Combo("di_combat_fight_scope", { "di_combat_scope_local", "di_combat_scope_any" }, 0)
+    C.FightScope:ToolTip("di_combat_fight_scope_tip")
     C.FightScope:Icon("\u{f05b}")
     C.MinHeroes = gRadar:Slider("di_combat_min_heroes", 1, 10, 2, "%d")
+    C.MinHeroes:ToolTip("di_combat_min_heroes_tip")
     C.MinHeroes:Icon("\u{f0c0}")
     C.FightRadius = gRadar:Slider("di_combat_fight_radius", 1000, 3000, 1600, "%d px")
+    C.FightRadius:ToolTip("di_combat_fight_radius_tip")
     C.FightRadius:Icon("\u{f1ce}")
     C.RadarZoom = gRadar:Slider("di_combat_radar_zoom", 1000, 3500, 2000, "%d px")
+    C.RadarZoom:ToolTip("di_combat_radar_zoom_tip")
     C.RadarZoom:Icon("\u{f00e}")
     C.FightTimeout = gRadar:Slider("di_combat_fight_timeout", 2, 10, 4, "%d s")
+    C.FightTimeout:ToolTip("di_combat_fight_timeout_tip")
     C.FightTimeout:Icon("\u{f017}")
     C.FightLargeW = gRadar:Slider("di_combat_fight_large_w", 300, 520, 365, "%d px")
+    C.FightLargeW:ToolTip("di_combat_fight_large_w_tip")
     C.FightLargeW:Icon("\u{f337}")
     C.FightLargeH = gRadar:Slider("di_combat_fight_large_h", 110, 220, 148, "%d px")
+    C.FightLargeH:ToolTip("di_combat_fight_large_h_tip")
     C.FightLargeH:Icon("\u{f338}")
     P.FightSummary = prio(gRadar, "di_priority_fight_summary", 3)
     D.FightSummary = dur(gRadar)
     snd(gRadar, "FightSummary")
 
     C.Kills = gCombat:Switch("di_combat_kills", true, "\u{f0e7}")
+    C.Kills:ToolTip("di_combat_kills_tip")
     local gKill = C.Kills:Gear("di_gear_alert")
     P.Kill = prio(gKill, "di_alert_priority", 3)
     D.Kill = dur(gKill)
@@ -3299,47 +3495,57 @@ function Impl.InitMenu()
     C.RampageTimer = gKill:Switch("di_rampage_timer", true, "\u{f2f2}")
     C.RampageTimer:ToolTip("di_rampage_timer_tip")
     C.Invis = gCombat:Switch("di_combat_invis", true, "\u{f070}")
+    C.Invis:ToolTip("di_combat_invis_tip")
     local gInvis = C.Invis:Gear("di_gear_alert")
     P.Invis = prio(gInvis, "di_alert_priority", 4)
     D.Invis = dur(gInvis)
     snd(gInvis, "Invis")
     C.Teleports = gCombat:Switch("di_combat_teleports", true, "\u{f3c5}")
+    C.Teleports:ToolTip("di_combat_teleports_tip")
     local gTeleport = C.Teleports:Gear("di_gear_alert")
     P.Teleport = prio(gTeleport, "di_alert_priority", 4)
     D.Teleport = dur(gTeleport)
     snd(gTeleport, "Teleport")
     C.KeyEnemyItems = gCombat:Switch("di_combat_key_enemy_items", true, "\u{f290}")
+    C.KeyEnemyItems:ToolTip("di_combat_key_enemy_items_tip")
     local gEnemyItem = C.KeyEnemyItems:Gear("di_gear_alert")
     P.EnemyItem = prio(gEnemyItem, "di_alert_priority", 3)
     D.EnemyItem = dur(gEnemyItem)
     snd(gEnemyItem, "EnemyItem")
     C.Towers = gCombat:Switch("di_combat_towers", true, "\u{f447}")
+    C.Towers:ToolTip("di_combat_towers_tip")
     local gTower = C.Towers:Gear("di_gear_alert")
     P.Tower = prio(gTower, "di_alert_priority", 4)
     D.Tower = dur(gTower)
     snd(gTower, "Tower")
     C.Couriers = gCombat:Switch("di_combat_couriers", true, "\u{f48b}")
+    C.Couriers:ToolTip("di_combat_couriers_tip")
     local gCourier = C.Couriers:Gear("di_gear_alert")
     P.Courier = prio(gCourier, "di_alert_priority", 3)
     D.Courier = dur(gCourier)
     snd(gCourier, "Courier")
     C.Buybacks = gCombat:Switch("di_combat_buybacks", true, "\u{f2f9}")
+    C.Buybacks:ToolTip("di_combat_buybacks_tip")
     local gBuyback = C.Buybacks:Gear("di_gear_alert")
     P.Buyback = prio(gBuyback, "di_alert_priority", 5)
     D.Buyback = dur(gBuyback)
     snd(gBuyback, "Buyback")
     C.LowHP = gCombat:Switch("di_combat_low_hp", true, "\u{f004}")
+    C.LowHP:ToolTip("di_combat_low_hp_tip")
     local gLowHp = C.LowHP:Gear("di_gear_alert")
     P.LowHp = prio(gLowHp, "di_alert_priority", 5)
     D.LowHp = dur(gLowHp)
     snd(gLowHp, "LowHp")
     C.LevelUp = gCombat:Switch("di_combat_level_up", true, "\u{f201}")
+    C.LevelUp:ToolTip("di_combat_level_up_tip")
     local gLevel = C.LevelUp:Gear("di_gear_alert")
     P.Level = prio(gLevel, "di_alert_priority", 1)
     D.Level = dur(gLevel)
     snd(gLevel, "Level")
     C.CourierDelivery = gLive:Switch("di_combat_courier_delivery", true, "\u{f48b}")
+    C.CourierDelivery:ToolTip("di_combat_courier_delivery_tip")
     C.PauseAlert = gLive:Switch("di_combat_pause_alert", true, "\u{f04c}")
+    C.PauseAlert:ToolTip("di_combat_pause_alert_tip")
     UI.System.Output = gSystem:Switch("di_sys_output", true, "\u{f025}")
     UI.System.Output:ToolTip("di_sys_output_tip")
     UI.System.Mute = gSystem:Switch("di_sys_mute", true, "\u{f6a9}")
@@ -3348,57 +3554,67 @@ function Impl.InitMenu()
     UI.System.Battery:ToolTip("di_sys_battery_tip")
 
     R.ActiveRunes = gMap:Switch("di_runes_active_runes", true, "\u{f0e7}")
+    R.ActiveRunes:ToolTip("di_runes_active_runes_tip")
     local gPower = R.ActiveRunes:Gear("di_gear_alert")
     T.PowerRuneTime = lead(gPower, "di_timings_power_rune_time", 5, 60, 20)
     P.PowerRuneCycle = prio(gPower, "di_priority_power_rune_cycle", 2)
     D.Rune = dur(gPower)
     snd(gPower, "Rune")
     R.WaterRunes = gMap:Switch("di_runes_water_runes", true, "\u{f043}")
+    R.WaterRunes:ToolTip("di_runes_water_runes_tip")
     local gWaterRunes = R.WaterRunes:Gear("di_gear_alert")
     T.WaterRuneTime = lead(gWaterRunes, "di_timings_water_rune_time", 5, 60, 20)
     P.WaterRunes = prio(gWaterRunes, "di_alert_priority", 2)
     D.WaterRunes = dur(gWaterRunes)
     snd(gWaterRunes, "WaterRunes")
     R.BountyRunes = gMap:Switch("di_runes_bounty_runes", true, "\u{f155}")
+    R.BountyRunes:ToolTip("di_runes_bounty_runes_tip")
     local gBountyRunes = R.BountyRunes:Gear("di_gear_alert")
     T.BountyRuneTime = lead(gBountyRunes, "di_timings_bounty_rune_time", 5, 45, 10)
     P.BountyRunes = prio(gBountyRunes, "di_alert_priority", 2)
     D.BountyRunes = dur(gBountyRunes)
     snd(gBountyRunes, "BountyRunes")
     R.WisdomRunes = gMap:Switch("di_runes_wisdom_runes", true, "\u{f19d}")
+    R.WisdomRunes:ToolTip("di_runes_wisdom_runes_tip")
     local gWisdomRunes = R.WisdomRunes:Gear("di_gear_alert")
     T.WisdomRuneTime = lead(gWisdomRunes, "di_timings_wisdom_rune_time", 5, 60, 20)
     P.WisdomRunes = prio(gWisdomRunes, "di_alert_priority", 2)
     D.WisdomRunes = dur(gWisdomRunes)
     snd(gWisdomRunes, "WisdomRunes")
     R.RunePickups = gMap:Switch("di_runes_rune_pickups", true, "\u{f21b}")
+    R.RunePickups:ToolTip("di_runes_rune_pickups_tip")
     local gRunePickup = R.RunePickups:Gear("di_gear_alert")
     P.RunePickup = prio(gRunePickup, "di_alert_priority", 2)
     D.RunePickup = dur(gRunePickup)
     snd(gRunePickup, "RunePickup")
     R.RuneWorldSpawn = gMap:Switch("di_runes_rune_world_spawn", true, "\u{f279}")
+    R.RuneWorldSpawn:ToolTip("di_runes_rune_world_spawn_tip")
     local gRuneWorld = R.RuneWorldSpawn:Gear("di_gear_alert")
     P.RuneWorld = prio(gRuneWorld, "di_alert_priority", 2)
     D.RuneWorld = dur(gRuneWorld)
     snd(gRuneWorld, "RuneWorld")
     R.Stacks = gMap:Switch("di_runes_stacks", false, "\u{f5fd}")
+    R.Stacks:ToolTip("di_runes_stacks_tip")
     local gStack = R.Stacks:Gear("di_gear_alert")
     T.StackTime = lead(gStack, "di_timings_stack_time", 3, 20, 8)
     P.Stack = prio(gStack, "di_alert_priority", 2)
     D.Stack = dur(gStack)
     snd(gStack, "Stack")
     R.Lotus = gMap:Switch("di_runes_lotus", true, "\u{f06c}")
+    R.Lotus:ToolTip("di_runes_lotus_tip")
     local gLotus = R.Lotus:Gear("di_gear_alert")
     T.LotusTime = lead(gLotus, "di_timings_lotus_time", 5, 60, 20)
     P.Lotus = prio(gLotus, "di_alert_priority", 2)
     D.Lotus = dur(gLotus)
     snd(gLotus, "Lotus")
     R.Neutrals = gMap:Switch("di_runes_neutrals", true, "\u{f466}")
+    R.Neutrals:ToolTip("di_runes_neutrals_tip")
     local gNeutral = R.Neutrals:Gear("di_gear_alert")
     P.Neutral = prio(gNeutral, "di_alert_priority", 2)
     D.Neutral = dur(gNeutral)
     snd(gNeutral, "Neutral")
     R.Tormentor = gMap:Switch("di_runes_tormentor", true, "\u{f005}")
+    R.Tormentor:ToolTip("di_runes_tormentor_tip")
     local gTorm = R.Tormentor:Gear("di_gear_alert")
     T.Tormentor1Time = lead(gTorm, "di_timings_tormentor1_time", 30, 180, 120)
     T.Tormentor2Time = lead(gTorm, "di_timings_tormentor2_time", 5, 60, 20)
@@ -3406,6 +3622,7 @@ function Impl.InitMenu()
     D.Tormentor = dur(gTorm)
     snd(gTorm, "Tormentor")
     R.Roshan = gMap:Switch("di_runes_roshan", true, "\u{f6e3}")
+    R.Roshan:ToolTip("di_runes_roshan_tip")
     local gRosh = R.Roshan:Gear("di_gear_alert")
     P.RoshanKill = prio(gRosh, "di_priority_roshan_kill", 5)
     P.Aegis = prio(gRosh, "di_priority_aegis", 5)
@@ -3414,43 +3631,63 @@ function Impl.InitMenu()
     snd(gRosh, "Roshan")
 
     Md.Enabled = gMedia:Switch("di_media_enabled", true, "\u{f001}")
+    Md.Enabled:ToolTip("di_media_enabled_tip")
     local gPlayer = Md.Enabled:Gear("di_gear_media")
     P.Media = gPlayer:Slider("di_alert_priority", 1, 5, 5, "%d")
     P.Media:Icon("\u{f160}")
     P.Media:ToolTip("di_media_priority_tip")
     Md.CompactTitle = gPlayer:Switch("di_media_compact_title", true, "\u{f031}")
+    Md.CompactTitle:ToolTip("di_media_compact_title_tip")
     Md.MarqueeSpeed = gPlayer:Slider("di_media_marquee_speed", 20, 100, 45, "%d px/s")
+    Md.MarqueeSpeed:ToolTip("di_media_marquee_speed_tip")
     Md.MarqueeSpeed:Icon("\u{f337}")
     Md.SpotifyLike = gMedia:Switch("di_media_spotify_like", true, "\u{f004}")
+    Md.SpotifyLike:ToolTip("di_media_spotify_like_tip")
     local gSpotifyLike = Md.SpotifyLike:Gear("di_gear_alert")
     P.SpotifyLike = prio(gSpotifyLike, "di_alert_priority", 1)
     D.SpotifyLike = dur(gSpotifyLike)
     snd(gSpotifyLike, "SpotifyLike")
     Md.VolumeWheel = gMedia:Switch("di_media_volume_wheel", true, "\u{f028}")
+    Md.VolumeWheel:ToolTip("di_media_volume_wheel_tip")
     Md.Lyrics = gMedia:Switch("di_media_lyrics", true, "\u{f10d}")
     Md.Lyrics:ToolTip("di_media_lyrics_tip")
     Md.SecondaryBubble = gMedia:Switch("di_media_secondary_bubble", true, "\u{f111}")
+    Md.SecondaryBubble:ToolTip("di_media_secondary_bubble_tip")
     Md.InMenu = gMedia:Switch("di_media_in_menu", false, "\u{f015}")
     Md.InMenu:ToolTip("di_media_in_menu_tip")
     Md.Hints = gMedia:Switch("di_media_hints", true, "\u{f05a}")
+    Md.Hints:ToolTip("di_media_hints_tip")
 
     H.Enabled = gHaptics:Switch("di_haptics_enabled", true, "\u{f011}")
+    H.Enabled:ToolTip("di_haptics_enabled_tip")
     H.VisualFeedback = gHaptics:Switch("di_haptics_visual", true, "\u{f06e}")
+    H.VisualFeedback:ToolTip("di_haptics_visual_tip")
     H.Intensity = H.VisualFeedback:Gear("di_gear_visual"):Slider("di_haptics_intensity", 50, 150, 100, "%d%%")
+    H.Intensity:ToolTip("di_haptics_intensity_tip")
     H.Intensity:Icon("\u{f065}")
     H.AudioFeedback = gHaptics:Switch("di_haptics_audio", true, "\u{f028}")
+    H.AudioFeedback:ToolTip("di_haptics_audio_tip")
     H.Volume = H.AudioFeedback:Gear("di_gear_audio"):Slider("di_haptics_volume", 0, 100, 50, "%d%%")
+    H.Volume:ToolTip("di_haptics_volume_tip")
     H.Volume:Icon("\u{f028}")
     H.CombatFilter = gHaptics:Switch("di_haptics_combat_filter", true, "\u{f0e7}")
+    H.CombatFilter:ToolTip("di_haptics_combat_filter_tip")
     H.AudioDucking = gDuck:Switch("di_haptics_audio_ducking", true, "\u{f026}")
+    H.AudioDucking:ToolTip("di_haptics_audio_ducking_tip")
     local gDuckGear = H.AudioDucking:Gear("di_gear_ducking")
     H.DuckingAmount = gDuckGear:Slider("di_haptics_ducking_amount", 0, 100, 50, "%d%%")
+    H.DuckingAmount:ToolTip("di_haptics_ducking_amount_tip")
     H.DuckingAmount:Icon("\u{f027}")
     H.DuckingAlerts = gDuckGear:Switch("di_haptics_ducking_alerts", true, "\u{f0f3}")
+    H.DuckingAlerts:ToolTip("di_haptics_ducking_alerts_tip")
     H.DuckingCourier = gDuckGear:Switch("di_haptics_ducking_courier", true, "\u{f48b}")
+    H.DuckingCourier:ToolTip("di_haptics_ducking_courier_tip")
     H.DuckingNotifs = gDuckGear:Switch("di_haptics_ducking_notifs", true, "\u{f05a}")
+    H.DuckingNotifs:ToolTip("di_haptics_ducking_notifs_tip")
     H.DuckingMotion = gDuckGear:Switch("di_haptics_ducking_motion", false, "\u{f065}")
+    H.DuckingMotion:ToolTip("di_haptics_ducking_motion_tip")
     H.DuckingTaptics = gDuckGear:Switch("di_haptics_ducking_taptics", false, "\u{f0a7}")
+    H.DuckingTaptics:ToolTip("di_haptics_ducking_taptics_tip")
     H.TestDucking = gDuckGear:Button("di_haptics_test_ducking", function()
         if HTTP and HTTP.Request then
             local userVol = (UI and UI.Haptics and UI.Haptics.Volume) and (UI.Haptics.Volume:Get() / 100.0) or 0.5
@@ -3459,11 +3696,13 @@ function Impl.InitMenu()
             pcall(HTTP.Request, "GET", "http://127.0.0.1:45455/sound?name=courier_delivered&vol=" .. string.format("%.2f", userVol) .. "&force=1&duck=" .. finalDuck, {}, function() end)
         end
     end)
+    H.TestDucking:ToolTip("di_haptics_test_ducking_tip")
 
     UI.Focus.Key = gFocus:Bind("di_focus_key", Enum.ButtonCode.KEY_NONE, "\u{f186}")
     UI.Focus.Key:ToolTip("di_focus_key_tip")
     UI.Focus.Key:Properties(L("di_focus_name"))
     UI.Focus.Until = gFocus:Combo("di_focus_until", { "di_focus_until_off", "di_focus_until_10", "di_focus_until_20", "di_focus_until_match" }, 0)
+    UI.Focus.Until:ToolTip("di_focus_until_tip")
     UI.Focus.Until:Icon("\u{f017}")
     UI.Focus.Urgent = gFocus:Switch("di_focus_urgent", true, "\u{f0f3}")
     UI.Focus.Urgent:ToolTip("di_focus_urgent_tip")
@@ -3473,14 +3712,17 @@ function Impl.InitMenu()
     local RM = UI.Reminders
     for i, key in ipairs({ "di_rem_1", "di_rem_2", "di_rem_3", "di_rem_4" }) do
         local sw = gRem:Switch(key, false, "\u{f0f3}")
+        sw:ToolTip("di_rem_on_tip")
         local g = sw:Gear(({ "di_rem_gear_1", "di_rem_gear_2", "di_rem_gear_3", "di_rem_gear_4" })[i])
         RM["On" .. i] = sw
         RM["Text" .. i] = g:Input(({ "di_rem1_text", "di_rem2_text", "di_rem3_text", "di_rem4_text" })[i], "", "\u{f036}")
         RM["Text" .. i]:ToolTip("di_rem_text_tip")
         RM["Min" .. i] = g:Slider(({ "di_rem1_min", "di_rem2_min", "di_rem3_min", "di_rem4_min" })[i], 0, 90, 10 * i, "%d")
         RM["Min" .. i]:Icon("\u{f017}")
+        RM["Min" .. i]:ToolTip("di_rem_time_tip")
         RM["Sec" .. i] = g:Slider(({ "di_rem1_sec", "di_rem2_sec", "di_rem3_sec", "di_rem4_sec" })[i], 0, 59, 0, "%d")
         RM["Sec" .. i]:Icon("\u{f017}")
+        RM["Sec" .. i]:ToolTip("di_rem_time_tip")
         RM["Every" .. i] = g:Slider(({ "di_rem1_every", "di_rem2_every", "di_rem3_every", "di_rem4_every" })[i], 0, 30, 0, "%d")
         RM["Every" .. i]:Icon("\u{f01e}")
         RM["Every" .. i]:ToolTip("di_rem_every_tip")
@@ -10501,6 +10743,12 @@ function Impl.RenderMediaSharedTransition(fromState, toState, layout, progress)
         end
     end
 
+    if lyOpen > 0 and #Impl.Ly.Lines > 0 and artT > 0.5 then
+        local slide = math.floor((1.0 - artT) * 10 * scale)
+        local lyA = math.max(0, math.min(1, (artT - 0.5) / 0.5))
+        Impl.LyDraw(lL.x + pad, math.floor(lThumbY + lThumbSize + 12 * scale) + slide, lL.w - pad * 2, math.floor(lyOpen * scale - 8 * scale), scale, lyA * lyA)
+    end
+
     if secAlpha > 0.01 then
         local progressY = math.floor(lThumbY + lThumbSize + 14 * scale + lyOpen * scale)
         local progressW = math.floor(lL.w - pad * 2)
@@ -10568,6 +10816,16 @@ function Impl.RenderMediaSharedTransition(fromState, toState, layout, progress)
 
         local likeTargetX = math.floor(lL.x + lL.w - pad - 8 * scale)
         local likeY = math.floor(curThumbY + curThumbSize - 10 * scale)
+        local lyB = Impl.Ly.Btn
+        if lyB > 0.01 then
+            local icon = GetVectorIcon("lyrics")
+            if icon then
+                local lyX = math.floor(likeTargetX - (UI.Media.SpotifyLike:Get() and 28 * scale or 0))
+                local sz = 16 * scale * elemScale
+                local col = Impl.Ly.Open and Config.Colors.TextPrimary or Config.Colors.TextSecondary
+                Render.Image(icon, Vec2(lyX - sz / 2, likeY - sz / 2), Vec2(sz, sz), FadeColor(col, secAlpha * lyB), 0)
+            end
+        end
         local likeScale = ButtonSprings.MediaLike.scale * elemScale
         local curLikeX = likeTargetX
         local isLiked = (MediaData.IsLiked == true) or (MediaData.LikedTracks[MediaData.LastTrackKey] == true)
@@ -11714,6 +11972,9 @@ function Sdk.InitMenu(page)
         slot.gear = slot.sw:Gear("sdk_gear_" .. i)
         slot.focus = slot.gear:Switch("sdk_focus_" .. i, false, "\u{f186}")
         slot.sound = slot.gear:Switch("sdk_sound_" .. i, true, "\u{f028}")
+        slot.sw:ToolTip("di_sdk_slot_tip")
+        slot.focus:ToolTip("di_sdk_focus_tip")
+        slot.sound:ToolTip("di_alert_sound_tip")
         slot.sound:SetCallback(function(w)
             if Sdk.Syncing or not slot.app then return end
             if w:Get() == true then
