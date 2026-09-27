@@ -19,6 +19,42 @@ public static partial class Lyrics
     [GeneratedRegex(@"\s*[\(\[][^\)\]]*[\)\]]|\s+-\s+.*$")]
     private static partial Regex NoiseRegex();
 
+    [GeneratedRegex(@"<(\d+):(\d+)(?:[.:](\d+))?>")]
+    private static partial Regex WordRegex();
+
+    private static long Ms(Match m)
+    {
+        long min = long.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
+        long sec = long.Parse(m.Groups[2].Value, CultureInfo.InvariantCulture);
+        string f = m.Groups[3].Value;
+        long frac = f == "" ? 0 : long.Parse(f.Length > 3 ? f[..3] : f.PadRight(3, '0'), CultureInfo.InvariantCulture);
+        return min * 60000 + sec * 1000 + frac;
+    }
+
+    private static (string text, string words) Words(string raw)
+    {
+        var tags = WordRegex().Matches(raw);
+        if (tags.Count == 0) return (raw.Trim(), "");
+        var clean = new StringBuilder();
+        var marks = new List<string>();
+        int at = 0;
+        foreach (Match m in tags)
+        {
+            clean.Append(raw, at, m.Index - at);
+            at = m.Index + m.Length;
+            string prefix = clean.ToString();
+            int count = prefix.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Length;
+            bool inWord = prefix.Length > 0 && !char.IsWhiteSpace(prefix[^1]);
+            int idx = inWord ? Math.Max(0, count - 1) : count;
+            marks.Add(idx.ToString(CultureInfo.InvariantCulture) + ":" + Ms(m).ToString(CultureInfo.InvariantCulture));
+        }
+        clean.Append(raw, at, raw.Length - at);
+        string text = clean.ToString();
+        int lead = text.Length - text.TrimStart().Length;
+        if (lead > 0) text = text.TrimStart();
+        return (text.Trim(), string.Join(",", marks));
+    }
+
     private static HttpClient CreateClient()
     {
         var http = new HttpClient { Timeout = TimeSpan.FromSeconds(8) };
@@ -127,27 +163,32 @@ public static partial class Lyrics
 
     private static string Parse(string lrc)
     {
-        var list = new List<(long ms, string text)>();
+        var list = new List<(long ms, string text, string words)>();
         foreach (string raw in lrc.Split('\n'))
         {
             string line = raw.TrimEnd('\r');
             var stamps = StampRegex().Matches(line);
             if (stamps.Count == 0) continue;
-            var last = stamps[stamps.Count - 1];
-            string text = line[(last.Index + last.Length)..].Trim().Replace('\t', ' ');
+            int end = 0;
+            var lead = new List<Match>();
             foreach (Match m in stamps)
             {
-                if (m.Index > last.Index + last.Length) break;
-                long min = long.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
-                long sec = long.Parse(m.Groups[2].Value, CultureInfo.InvariantCulture);
-                string f = m.Groups[3].Value;
-                long frac = f == "" ? 0 : long.Parse(f.Length > 3 ? f[..3] : f.PadRight(3, '0'), CultureInfo.InvariantCulture);
-                list.Add((min * 60000 + sec * 1000 + frac, text));
+                if (m.Index != end) break;
+                lead.Add(m);
+                end = m.Index + m.Length;
             }
+            if (lead.Count == 0) continue;
+            var (text, words) = Words(line[end..].Replace('\t', ' '));
+            foreach (Match m in lead) list.Add((Ms(m), text, words));
         }
         list.Sort((a, b) => a.ms.CompareTo(b.ms));
         var sb = new StringBuilder();
-        foreach (var (ms, text) in list) sb.Append(ms.ToString(CultureInfo.InvariantCulture)).Append('\t').Append(text).Append('\n');
+        foreach (var (ms, text, words) in list)
+        {
+            sb.Append(ms.ToString(CultureInfo.InvariantCulture)).Append('\t').Append(text);
+            if (words != "") sb.Append('\t').Append(words);
+            sb.Append('\n');
+        }
         return sb.ToString();
     }
 }
