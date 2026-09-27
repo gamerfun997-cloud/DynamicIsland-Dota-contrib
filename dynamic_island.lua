@@ -7812,7 +7812,7 @@ function Marquee.Layout(font, size, text)
     return g
 end
 
-local function RenderMarqueeText(font, size, text, boxX, boxY, boxW, color, scale)
+local function RenderMarqueeText(font, size, text, boxX, boxY, boxW, color, scale, holdArg, once, key)
     local fullSize = Render.TextSize(font, size, text)
     local ix = math.floor(boxX)
     local iy = math.floor(boxY)
@@ -7824,29 +7824,37 @@ local function RenderMarqueeText(font, size, text, boxX, boxY, boxW, color, scal
     end
 
     local now = os.clock()
-    local run = Marquee.Runs[text]
+    local runKey = key or text
+    local run = Marquee.Runs[runKey]
     if not run or now - run.seen > 0.5 then
         run = { t0 = now }
-        Marquee.Runs[text] = run
+        Marquee.Runs[runKey] = run
     end
     run.seen = now
 
     local speed = (UI and UI.Media and UI.Media.MarqueeSpeed) and UI.Media.MarqueeSpeed:Get() or 45
     local gap = math.floor(math.max(28 * scale, iw * 0.2))
     local totalCycle = fullSize.x + gap
-    local hold = 2.2
-    local phase = (now - run.t0) % (hold + totalCycle / speed)
-    local offset = phase < hold and 0 or math.floor((phase - hold) * speed)
+    local hold = holdArg or 2.2
+    local offset, atEnd
+    if once then
+        local travel = fullSize.x - iw
+        offset = math.floor(math.max(0, math.min(travel, (now - run.t0 - hold) * speed)))
+        atEnd = offset >= travel
+    else
+        local phase = (now - run.t0) % (hold + totalCycle / speed)
+        offset = phase < hold and 0 or math.floor((phase - hold) * speed)
+    end
 
     local fadeW = math.floor(14 * scale)
     local leftFade = math.min(1, offset / math.max(1, fadeW))
-    if offset > totalCycle - fadeW then leftFade = math.max(0, (totalCycle - offset) / math.max(1, fadeW)) end
+    if not once and offset > totalCycle - fadeW then leftFade = math.max(0, (totalCycle - offset) / math.max(1, fadeW)) end
     local glyphs = Marquee.Layout(font, size, text)
     local baseA = color.a or 255
     local right = ix + iw
 
     Render.PushClip(Vec2(ix, iy - 2), Vec2(right, iy + fullSize.y + 4))
-    for copy = 0, 1 do
+    for copy = 0, once and 0 or 1 do
         local ox = ix - offset + copy * totalCycle
         if ox < right and ox + fullSize.x > ix then
             for _, gl in ipairs(glyphs) do
@@ -7854,7 +7862,7 @@ local function RenderMarqueeText(font, size, text, boxX, boxY, boxW, color, scal
                 if gx1 > ix and gx0 < right then
                     local mid = (gx0 + gx1) / 2
                     local a = 1
-                    if mid > right - fadeW then a = math.max(0, (right - mid) / fadeW) end
+                    if mid > right - fadeW and not atEnd then a = math.max(0, (right - mid) / fadeW) end
                     if mid < ix + fadeW then a = math.min(a, 1 - leftFade * (1 - math.max(0, (mid - ix) / fadeW))) end
                     if a > 0.01 then
                         Render.Text(font, size, gl.ch, Vec2(math.floor(gx0), iy), Color(color.r, color.g, color.b, math.floor(baseA * a)))
@@ -10289,7 +10297,7 @@ function Impl.LyCompactLine(key, title, x, y, w, font, size, aMul, scale, done)
     if not ln then return end
     local text = ln.x
     if Render.TextSize(font, size, text).x > w then
-        RenderMarqueeText(font, size, text, x, y, w, FadeColor(col, aMul), scale)
+        RenderMarqueeText(font, size, text, x, y, w, FadeColor(col, aMul), scale, 0.3, true, "ly" .. key)
         return
     end
     local frac = 1
