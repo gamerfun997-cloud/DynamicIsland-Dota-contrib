@@ -10197,7 +10197,6 @@ function Impl.LyFrac(i, pos)
     local n = math.max(1, ln.len or 1)
     local nxt = Ly.Lines[i + 1]
     local span = nxt and math.max(0.3, nxt.t - ln.t) or 6
-    local rate = 0.075
     local c
     local K = ln.knots
     if K and #K > 0 then
@@ -10215,13 +10214,13 @@ function Impl.LyFrac(i, pos)
             if not c then
                 local last = K[#K]
                 local left = n - last.c
-                local dur = math.max(0.2, math.min((ln.t + span * 0.95) - last.t, left * rate * 1.6 + 0.2))
+                local dur = math.max(0.2, math.min((ln.t + span - math.min(0.35, span * 0.12)) - last.t, left * 0.16 + 0.3))
                 c = last.c + left * math.min(1, (pos - last.t) / dur)
             end
         end
         return math.max(0, math.min(1, c / n))
     end
-    local sing = math.max(0.6, math.min(span * 0.92, 0.35 + n * rate))
+    local sing = math.max(0.6, math.min(span - math.min(0.35, span * 0.12), 1.0 + n * 0.16))
     return math.max(0, math.min(1, (pos - ln.t) / sing))
 end
 
@@ -10269,22 +10268,60 @@ function Impl.LyCompactLine(i, title, x, y, w, font, size, aMul, scale, done)
         RenderMarqueeText(font, size, title, x, y, w, FadeColor(col, aMul), scale)
         return
     end
-    local ln = Impl.Ly.Lines[i]
+    local Ly = Impl.Ly
+    local ln = Ly.Lines[i]
     if not ln then return end
     local text = ln.x
-    local tw = Render.TextSize(font, size, text).x
-    local karaoke = Impl.LyKaraokeOn()
+    local glyphs = Marquee.Layout(font, size, text)
+    local tw = #glyphs > 0 and glyphs[#glyphs].x1 or 0
     local frac = done and 1 or Impl.LyFrac(i, (MediaData.PosSmooth or 0) + 0.1)
-    local off = 0
-    if tw > w then
-        local fill = Impl.LyPrefixW(font, size, text, frac * Impl.LyLen(text))
-        off = math.max(0, math.min(tw - w, fill - w * 0.6))
-    end
-    local rowH = Render.TextSize(font, size, "Ag").y
-    if karaoke and not done then
-        Impl.LyKaraoke(font, size, { text }, math.floor(x - off), y, rowH, frac, FadeColor(col, aMul * 0.4), FadeColor(col, aMul))
+    local off
+    if done then
+        off = Ly.CPrevOff or 0
     else
-        Render.Text(font, size, text, Vec2(math.floor(x - off), math.floor(y)), FadeColor(col, aMul))
+        local now = os.clock()
+        if Ly.CXLine ~= i then
+            Ly.CPrevOff = Ly.CX or 0
+            Ly.CXLine, Ly.CX, Ly.CXV, Ly.CXAt = i, 0, 0, now
+        end
+        local dt = math.min(0.05, math.max(0.001, now - (Ly.CXAt or now))) / AnimScale()
+        Ly.CXAt = now
+        local k = math.max(0, math.min(1, (frac - 0.15) / 0.7))
+        local target = math.max(0, tw - w) * (k * k * (3 - 2 * k))
+        Ly.CX, Ly.CXV = MotionEngine.Step(Ly.CX or 0, Ly.CXV or 0, target, dt, "SMOOTH")
+        off = Ly.CX
+    end
+    local karaoke = Impl.LyKaraokeOn() and not done
+    local n = #glyphs
+    local kf = frac * n
+    local ki = math.min(n, math.floor(kf))
+    local fillPx = 0
+    if ki >= n then
+        fillPx = tw
+    elseif n > 0 then
+        local gl = glyphs[ki + 1]
+        fillPx = gl.x0 + (gl.x1 - gl.x0) * (kf - ki)
+    end
+    local edge = size * 0.8
+    local fadeW = 14 * scale
+    local ox = x - off
+    local right = x + w
+    local baseA = (col.a or 255) * aMul
+    for _, gl in ipairs(glyphs) do
+        local gx0, gx1 = ox + gl.x0, ox + gl.x1
+        if gx1 > x and gx0 < right then
+            local mid = (gx0 + gx1) / 2
+            local a = 1
+            if mid > right - fadeW and off < tw - w - 0.5 then a = math.max(0, (right - mid) / fadeW) end
+            if mid < x + fadeW and off > 0.5 then a = math.min(a, math.max(0, (mid - x) / fadeW)) end
+            if karaoke then
+                local lit = math.max(0, math.min(1, (fillPx - gl.x0) / edge + 0.5))
+                a = a * (0.4 + 0.6 * lit)
+            end
+            if a > 0.01 then
+                Render.Text(font, size, gl.ch, Vec2(math.floor(gx0), math.floor(y)), Color(col.r, col.g, col.b, math.floor(baseA * a)))
+            end
+        end
     end
 end
 
