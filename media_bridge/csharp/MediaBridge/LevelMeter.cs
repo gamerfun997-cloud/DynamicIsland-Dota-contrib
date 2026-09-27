@@ -44,6 +44,24 @@ internal static class RawAudio
         return AppAudioControl.GetProcessName(pid);
     }
 
+    public static IntPtr EndpointMeter()
+    {
+        CoInitializeEx(IntPtr.Zero, 0);
+        IntPtr en = IntPtr.Zero, dev = IntPtr.Zero;
+        try
+        {
+            if (CoCreateInstance(ref ClsidEnumerator, IntPtr.Zero, 1, ref IidEnumerator, out en) != 0 || en == IntPtr.Zero) return IntPtr.Zero;
+            if (Fn<GetDefaultEndpointFn>(en, 4)(en, 0, 1, out dev) != 0 || dev == IntPtr.Zero) return IntPtr.Zero;
+            if (Fn<ActivateFn>(dev, 3)(dev, ref IidMeter, 1, IntPtr.Zero, out IntPtr meter) != 0) return IntPtr.Zero;
+            return meter;
+        }
+        finally
+        {
+            if (dev != IntPtr.Zero) Marshal.Release(dev);
+            if (en != IntPtr.Zero) Marshal.Release(en);
+        }
+    }
+
     public delegate void SessionVisitor(IntPtr session, int index, uint pid, string display, string icon, int state);
 
     public static void ForEachSession(SessionVisitor visit)

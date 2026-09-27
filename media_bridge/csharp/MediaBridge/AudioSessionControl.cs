@@ -4,33 +4,6 @@ using System.Text;
 
 namespace MediaBridge;
 
-[ComImport, Guid("BCDE0395-E52F-467C-8E3D-C4579291692E")]
-internal class MMDeviceEnumeratorComObject { }
-
-[Guid("A95664D2-9614-4F35-A746-DE8DB63617E6"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-internal interface IMMDeviceEnumerator
-{
-    int NotImpl1();
-    [PreserveSig]
-    int GetDefaultAudioEndpoint(int dataFlow, int role, out IMMDevice ppDevice);
-}
-
-[Guid("D666063F-1587-4E43-81F1-B948E807363F"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-internal interface IMMDevice
-{
-    [PreserveSig]
-    int Activate(ref Guid iid, int dwClsCtx, IntPtr pActivationParams, [MarshalAs(UnmanagedType.IUnknown)] out object ppInterface);
-}
-
-[Guid("C02216F6-8C67-4B5B-9D00-D008E73E0064"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-internal interface IAudioMeterInformation
-{
-    [PreserveSig]
-    int GetPeakValue(out float pfPeak);
-    [PreserveSig]
-    int GetMeteringChannelCount(out int pnChannelCount);
-}
-
 public sealed class SessionEntry
 {
     public int Index;
@@ -531,45 +504,54 @@ public static class AppAudioControl
 
 public static class Meter
 {
-    private static IAudioMeterInformation? _meter;
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    private delegate int GetPeakDelegate(IntPtr self, out float peak);
 
-    [DllImport("ole32.dll")]
-    private static extern int CoInitializeEx(IntPtr pvReserved, uint dwCoInit);
+    private static readonly object Sync = new();
+    private static IntPtr _meter;
+    private static GetPeakDelegate? _get;
+    private static long _retryAt;
 
-    private static void Init()
-    {
-        if (_meter == null)
-        {
-            CoInitializeEx(IntPtr.Zero, 0);
-            var enumerator = (IMMDeviceEnumerator)new MMDeviceEnumeratorComObject();
-            enumerator.GetDefaultAudioEndpoint(0, 1, out IMMDevice dev);
-            var iid = typeof(IAudioMeterInformation).GUID;
-            dev.Activate(ref iid, 1, IntPtr.Zero, out object o);
-            _meter = (IAudioMeterInformation)o;
-        }
-    }
+    private static float[] Zero() => new float[] { 0f, 0f, 0f, 0f, 0f };
 
     public static float[] GetBars()
     {
-        try
+        lock (Sync)
         {
-            Init();
-            if (_meter == null) return new float[] { 0f, 0f, 0f, 0f, 0f };
-            _meter.GetPeakValue(out float peak);
-            if (peak <= 0.001f) return new float[] { 0f, 0f, 0f, 0f, 0f };
-            float p = Math.Min(1.0f, Math.Max(0.0f, peak));
-            return new float[]
+            try
             {
-                (float)Math.Round(p * 0.7f, 2),
-                (float)Math.Round(p * 0.85f, 2),
-                (float)Math.Round(p, 2),
-                (float)Math.Round(p * 0.85f, 2),
-                (float)Math.Round(p * 0.7f, 2)
-            };
-        }
-        catch
-        {
-            return new float[] { 0f, 0f, 0f, 0f, 0f };
+                if (_meter == IntPtr.Zero)
+                {
+                    if (Environment.TickCount64 < _retryAt) return Zero();
+                    _meter = RawAudio.EndpointMeter();
+                    if (_meter == IntPtr.Zero)
+                    {
+                        _retryAt = Environment.TickCount64 + 2000;
+                        return Zero();
+                    }
+                    _get = Marshal.GetDelegateForFunctionPointer<GetPeakDelegate>(Marshal.ReadIntPtr(Marshal.ReadIntPtr(_meter), 3 * IntPtr.Size));
+                }
+                if (_get == null || _get(_meter, out float peak) != 0)
+                {
+                    Marshal.Release(_meter);
+                    _meter = IntPtr.Zero;
+                    return Zero();
+                }
+                if (peak <= 0.001f) return Zero();
+                float p = Math.Min(1.0f, Math.Max(0.0f, peak));
+                return new float[]
+                {
+                    (float)Math.Round(p * 0.7f, 2),
+                    (float)Math.Round(p * 0.85f, 2),
+                    (float)Math.Round(p, 2),
+                    (float)Math.Round(p * 0.85f, 2),
+                    (float)Math.Round(p * 0.7f, 2)
+                };
+            }
+            catch
+            {
+                return Zero();
+            }
         }
     }
 }

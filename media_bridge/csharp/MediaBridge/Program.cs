@@ -265,6 +265,16 @@ internal static class Program
             {
                 await WriteJsonAsync(response, new LevelResponse(LevelMeter.Snapshot(), LevelMeter.Source, LevelMeter.Sessions, Math.Round(LevelMeter.Peak, 3)), AppJson.Context.LevelResponse);
             }
+            else if (path == "/lyrics")
+            {
+                double.TryParse(request.QueryString["dur"], NumberStyles.Float, CultureInfo.InvariantCulture, out double dur);
+                string text = await Lyrics.GetAsync(request.QueryString["artist"] ?? "", request.QueryString["title"] ?? "", request.QueryString["album"] ?? "", dur);
+                byte[] buffer = Encoding.UTF8.GetBytes(text);
+                response.ContentType = "text/plain; charset=utf-8";
+                response.ContentLength64 = buffer.Length;
+                await response.OutputStream.WriteAsync(buffer);
+                response.OutputStream.Close();
+            }
             else if (path == "/diag/audio")
             {
                 await WriteJsonAsync(response, new AudioDiag("ok", MediaSessionService.CurrentAppId, MediaSessionService.CurrentFamily, AppAudioControl.DescribeSessions()), AppJson.Context.AudioDiag);
