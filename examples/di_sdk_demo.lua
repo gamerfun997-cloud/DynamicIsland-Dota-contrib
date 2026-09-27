@@ -44,6 +44,7 @@ local Delivery = { start = 0, len = 8 }
 local Rune = { start = 0, len = 20 }
 local Gallery = { tint = 0, glyph = 0, sound = 0, toggle = false }
 local Check = { restoreAt = nil }
+local Widgets = { clock = nil, counter = nil, count = 0, at = 0 }
 
 local Tints = { "red", "orange", "yellow", "green", "mint", "teal", "cyan", "blue", "indigo", "purple", "pink", "brown", "gray", "#FF2D55", "5AC8FA" }
 local Glyphs = { "bell", "bolt", "check", "close", "clock", "stack", "swords", "moon", "music", "search", "home", "plus", "flame", "gold", "courier", "heart_fill", "volume", "headphones", "display" }
@@ -112,6 +113,36 @@ local gN = page:Create("Notifications", Enum.GroupSide.Left)
 local gG = page:Create("Gallery", Enum.GroupSide.Left)
 local gA = page:Create("Live Activities", Enum.GroupSide.Right)
 local gX = page:Create("Chaos", Enum.GroupSide.Right)
+local gW = page:Create("Widgets", Enum.GroupSide.Left)
+
+local function RegisterWidgets()
+    local di = Island()
+    if not di or not di.Widget then
+        Say("this island has no widgets")
+        return
+    end
+    Widgets.clock = di.Widget.Register({ app = APP, id = "uptime", title = "Demo Uptime", icon = "clock", tint = "teal", text = "0:00" })
+    Widgets.counter = di.Widget.Register({ app = APP_B, id = "counter", title = "Demo Counter", icon = "plus", tint = "pink", text = "0" })
+    Say("widgets registered, add them in the widget editor")
+end
+
+gW:Button("Register widgets", RegisterWidgets)
+gW:Button("Count +1", function()
+    if not Widgets.counter then return end
+    Widgets.count = Widgets.count + 1
+    Widgets.counter:Set(tostring(Widgets.count))
+end)
+gW:Button("Change counter look", function()
+    if not Widgets.counter then return end
+    Gallery.tint = Gallery.tint % #Tints + 1
+    Gallery.glyph = Gallery.glyph % #Glyphs + 1
+    Widgets.counter:Update({ tint = Tints[Gallery.tint], icon = Glyphs[Gallery.glyph] })
+end)
+gW:Button("Remove widgets", function()
+    if Widgets.clock then Widgets.clock:Remove() end
+    if Widgets.counter then Widgets.counter:Remove() end
+    Widgets.clock, Widgets.counter = nil, nil
+end)
 
 gN:Button("Send notification", function()
     Notify({ title = "Stack the ancients in 0:10", icon = "stack", tint = "green", onTap = function() Say("notification tapped") end })
@@ -294,6 +325,11 @@ end)
 
 local function Tick()
     local now = os.clock()
+    if Widgets.clock and now - Widgets.at >= 1 then
+        Widgets.at = now
+        local s = math.floor(now)
+        Widgets.clock:Set(string.format("%d:%02d", math.floor(s / 60), s % 60))
+    end
     if Check.restoreAt and now >= Check.restoreAt then
         Check.restoreAt = nil
         local di = DynamicIsland

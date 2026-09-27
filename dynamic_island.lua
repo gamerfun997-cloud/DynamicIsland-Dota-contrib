@@ -2293,6 +2293,11 @@ function Impl.HexToColor(hex)
 end
 
 local function GetDefaultWidgetColor(chipId)
+    local wg = Impl.Wg and Impl.Wg.ById[chipId]
+    if wg then
+        local c = wg.tint
+        return Color(c.r, c.g, c.b, 255), string.format("%02X%02X%02X", c.r, c.g, c.b)
+    end
     if chipId == "gold" then return Color(255, 214, 10, 255), "FFD60A"
     elseif chipId == "kda" then return Color(48, 209, 88, 255), "30D158"
     elseif chipId == "clock" then return Color(255, 159, 10, 255), "FF9F0A"
@@ -2368,7 +2373,7 @@ local function SaveAllConfig()
     for _, path in ipairs(paths) do
         local f = Impl.OpenFile(path, "w")
         if f then
-            local activeStr = table.concat(HUDCustomizer.ActiveChips, ",")
+            local activeStr = table.concat(Impl.WgActiveList(), ",")
             f:write("active=" .. activeStr .. "\n")
             f:write(string.format("drag_center=%d,%d\n", math.floor(DragState.CustomX or -1), math.floor(DragState.CustomY or -1)))
             if Sheet.SeenVer then f:write("seen_ver=" .. Sheet.SeenVer .. "\n") end
@@ -2549,6 +2554,9 @@ function Impl.LoadAllConfig()
             DragState.CustomY = tonumber(dragMatchY) or -1
         else
             local id, boldStr, colStr, fmtStr, iconStr, hexStr = string.match(line, "^cfg_([%w_]+)=(%d),(%d),(%d),?(%d?),?([%w]*)")
+            if id and not HUDCustomizer.WidgetConfigs[id] and string.sub(id, 1, 4) == "sdk_" then
+                HUDCustomizer.WidgetConfigs[id] = { bold = false, colorMode = 1, format = 1, showIcon = true }
+            end
             if id and HUDCustomizer.WidgetConfigs[id] then
                 HUDCustomizer.WidgetConfigs[id].bold = (boldStr == "1")
                 HUDCustomizer.WidgetConfigs[id].colorMode = tonumber(colStr) or 1
@@ -5663,6 +5671,11 @@ local function GetChipContent(chipId)
         end
     end
 
+    local wg = Impl.Wg.ById[chipId]
+    if wg then
+        return { isClock = false, svgKey = (cfg.showIcon ~= false) and wg.glyph or nil, text = wg.text, font = font, color = col }
+    end
+
     local svgKey = (cfg.showIcon ~= false) and chipId or nil
 
     if chipId == "clock" then
@@ -5830,6 +5843,7 @@ function Impl.ToggleChipInActiveList(chipId)
             break
         end
     end
+    Impl.Wg.Fallback = false
     if foundIdx then
         if #HUDCustomizer.ActiveChips > 1 then
             table.remove(HUDCustomizer.ActiveChips, foundIdx)
@@ -8246,6 +8260,8 @@ Impl.SWATCHES = {
 }
 
 function Impl.ChipLabel(id)
+    local wg = Impl.Wg.ById[id]
+    if wg then return wg.title end
     for _, c in ipairs(HUDCustomizer.AvailableChips) do
         if c.id == id then return L(c.label) end
     end
@@ -8273,10 +8289,11 @@ function Impl.EdMove(P, x, y, s, a, dt)
 end
 
 function Impl.EdIcon(id, x, y, sz, a)
-    local tint = Config.Colors[Impl.CHIP_TINT[id] or "Gray"] or Config.Colors.Gray
+    local wg = Impl.Wg.ById[id]
+    local tint = wg and wg.tint or Config.Colors[Impl.CHIP_TINT[id] or "Gray"] or Config.Colors.Gray
     Render.FilledRect(Vec2(x, y), Vec2(x + sz, y + sz), FadeColor(tint, a), sz * 0.24)
     local gc = id == "gold" and Color(0, 0, 0, 215) or Color(255, 255, 255, 255)
-    Glyph(id, x + sz / 2, y + sz / 2, math.floor(sz * 0.6), FadeColor(gc, a))
+    Glyph(wg and wg.glyph or id, x + sz / 2, y + sz / 2, math.floor(sz * 0.6), FadeColor(gc, a))
 end
 
 function Impl.EdDone(x0, py, cardW, s, a, bounds)
@@ -8495,7 +8512,7 @@ function Impl.RenderEditorList(cx, py, cardW, s, a, dt, offX, live)
 end
 
 function Impl.EditorDetailH(s)
-    return 304 * s
+    return (Impl.Wg.ById[HUDCustomizer.InspectedChip or ""] and 268 or 304) * s
 end
 
 function Impl.RenderEditorDetail(cx, py, cardW, s, a, dt, offX, id, live, pb)
@@ -8560,15 +8577,18 @@ function Impl.RenderEditorDetail(cx, py, cardW, s, a, dt, offX, id, live, pb)
 
     local segH = 26 * s
     local top2 = 136 * s
-    Group(top2, 2)
+    local isSdk = Impl.Wg.ById[id] ~= nil
+    Group(top2, isSdk and 1 or 2)
     Label(L("di_ui_weight"), top2)
     local segW1 = 150 * s
     local segY1 = py + top2 + (rowH - segH) / 2
     Impl.RenderSegmented(gr - 8 * s - segW1, segY1, segW1, segH, Impl.SEG_WEIGHT, cfg.bold and 1 or 2, anim.SegWeight, dt, s, a, "set_bold")
-    Label(L("di_ui_format"), top2 + rowH)
-    local segW2 = 176 * s
-    local segY2 = py + top2 + rowH + (rowH - segH) / 2
-    Impl.RenderSegmented(gr - 8 * s - segW2, segY2, segW2, segH, Impl.SEG_FORMAT, cfg.format or 1, anim.SegFormat, dt, s, a, "set_format")
+    if not isSdk then
+        Label(L("di_ui_format"), top2 + rowH)
+        local segW2 = 176 * s
+        local segY2 = py + top2 + rowH + (rowH - segH) / 2
+        Impl.RenderSegmented(gr - 8 * s - segW2, segY2, segW2, segH, Impl.SEG_FORMAT, cfg.format or 1, anim.SegFormat, dt, s, a, "set_format")
+    end
     if not bounds then
         local B = HUDCustomizer.InspectorBounds
         for k = #B, 1, -1 do
@@ -8576,7 +8596,7 @@ function Impl.RenderEditorDetail(cx, py, cardW, s, a, dt, offX, id, live, pb)
         end
     end
 
-    local top3 = 222 * s
+    local top3 = (isSdk and 186 or 222) * s
     Group(top3, 1, 70 * s)
     local hy = py + top3 + 16 * s
     local cl = L("di_ui_color")
@@ -11270,7 +11290,7 @@ Sdk.LogBudget = 40
 Sdk.Images = {}
 Sdk.ImageCount = 0
 Sdk.Hook = debug and debug.sethook and debug.gethook and { set = debug.sethook, get = debug.gethook } or nil
-Sdk.Features = { notify = true, activity = true, queue = true, levels = true, sounds = true, body = true, actions = true, trailing = true, onEnd = true, staleAfter = true, endAfter = true, playSound = true, focus = true }
+Sdk.Features = { notify = true, activity = true, queue = true, levels = true, sounds = true, body = true, actions = true, trailing = true, onEnd = true, staleAfter = true, endAfter = true, playSound = true, focus = true, widgets = true }
 Sdk.SoundFiles = { notification_toast = true, timer_chime = true, courier_delivered = true, courier_death_or_fail = true, button_press = true, button_dismiss = true, wheel_notch = true, wheel_boundary_bump = true, island_expand = true, island_collapse = true, island_hover = true, toast_dismiss = true }
 Sdk.Levels = { passive = 1, active = 3, ["time-sensitive"] = 5 }
 Sdk.Sounds = { default = "notification_toast", chime = "timer_chime", success = "courier_delivered", failure = "courier_death_or_fail" }
@@ -12067,7 +12087,165 @@ function Sdk.Drain()
     end
 end
 
+Impl.Wg = { List = {}, ById = {}, Vis = {}, Hold = {}, Sig = nil, Fallback = false }
+
+function Impl.WgCid(app, key)
+    local function clean(v, n)
+        v = string.gsub(string.lower(v), "[^%w]", "")
+        return string.sub(v, 1, n)
+    end
+    local base = "sdk_" .. clean(app, 14) .. "_" .. clean(key, 14)
+    return base
+end
+
+function Impl.WgActiveList()
+    local W = Impl.Wg
+    local out = {}
+    for _, id in ipairs(HUDCustomizer.ActiveChips) do
+        if not (W.Fallback and id == "clock") then out[#out + 1] = id end
+    end
+    for _, h in ipairs(W.Hold) do
+        table.insert(out, math.min(h.at, #out + 1), h.id)
+    end
+    if #out == 0 then out[1] = "clock" end
+    return out
+end
+
+function Impl.WgSync()
+    local W = Impl.Wg
+    local vis, sig = {}, {}
+    for _, e in ipairs(W.List) do
+        if Sdk.Apps[e.app] ~= false and not Sdk.Muted[e.app] then
+            vis[e.cid] = e
+            sig[#sig + 1] = e.cid
+        end
+    end
+    W.Vis = vis
+    local s = table.concat(sig, ",")
+    if s ~= W.Sig then
+        W.Sig = s
+        local av = HUDCustomizer.AvailableChips
+        for i = #av, 1, -1 do
+            if av[i].sdk then table.remove(av, i) end
+        end
+        for _, e in ipairs(W.List) do
+            if vis[e.cid] then av[#av + 1] = { id = e.cid, sdk = e } end
+        end
+        if HUDCustomizer.InspectedChip and string.sub(HUDCustomizer.InspectedChip, 1, 4) == "sdk_" and not vis[HUDCustomizer.InspectedChip] then
+            HUDCustomizer.InspectedChip = nil
+        end
+    end
+    local act = HUDCustomizer.ActiveChips
+    for i = #act, 1, -1 do
+        local id = act[i]
+        if string.sub(id, 1, 4) == "sdk_" and not vis[id] then
+            table.remove(act, i)
+            table.insert(W.Hold, { id = id, at = i })
+        end
+    end
+    if #W.Hold > 0 then
+        table.sort(W.Hold, function(a, b) return a.at < b.at end)
+        for k = #W.Hold, 1, -1 do
+            local h = W.Hold[k]
+            if vis[h.id] then
+                table.remove(W.Hold, k)
+                if W.Fallback then
+                    for i = #act, 1, -1 do
+                        if act[i] == "clock" then table.remove(act, i) end
+                    end
+                    W.Fallback = false
+                end
+                table.insert(act, math.min(h.at, #act + 1), h.id)
+            end
+        end
+    end
+    if #act == 0 then
+        act[1] = "clock"
+        W.Fallback = true
+    end
+end
+
+function Impl.WgApply(e, o)
+    if o.text ~= nil then e.text = Sdk.Str(o.text, 16) or "" end
+    if o.title ~= nil then e.title = Sdk.Text(o.title, 24) or e.title end
+    if o.icon ~= nil then e.glyph = (Sdk.Icon(o.icon)) end
+    if o.tint ~= nil then e.tint = Sdk.Tint(o.tint, e.app) end
+end
+
+function Impl.WgRemove(e)
+    local W = Impl.Wg
+    if e.removed then return end
+    e.removed = true
+    for i = #W.List, 1, -1 do
+        if W.List[i] == e then table.remove(W.List, i) end
+    end
+    if W.ById[e.cid] == e then W.ById[e.cid] = nil end
+    if Dbg.On then Dbg.Log("sdk", e.app .. " widget removed \"" .. e.title .. "\"") end
+end
+
+function Impl.WgRegister(o)
+    if type(o) ~= "table" then return nil, "Widget.Register expects a table" end
+    local app = Sdk.AppName(o.app)
+    if not app then
+        Sdk.Warn(nil, "Widget.Register needs an app name")
+        return nil, "app required"
+    end
+    if Sdk.Muted[app] then return nil, "muted" end
+    if Sdk.Apps[app] == false then return nil, "not allowed" end
+    if not Sdk.Known(app) then return nil, "too many apps" end
+    local key = type(o.id) == "string" and o.id or (type(o.title) == "string" and o.title or nil)
+    if not key or string.gsub(key, "[^%w]", "") == "" then
+        Sdk.Warn(app, "Widget.Register needs an id")
+        return nil, "id required"
+    end
+    local W = Impl.Wg
+    local cid = Impl.WgCid(app, key)
+    local old = W.ById[cid]
+    if old then Impl.WgRemove(old) end
+    local mine = 0
+    for _, e in ipairs(W.List) do
+        if e.app == app then mine = mine + 1 end
+    end
+    if mine >= 4 then
+        Sdk.Warn(app, "only 4 widgets per script")
+        return nil, "too many widgets"
+    end
+    if #W.List >= 12 then
+        Sdk.Warn(app, "only 12 widgets from scripts at once")
+        return nil, "too many widgets"
+    end
+    local e = { cid = cid, app = app, title = Sdk.Text(o.title, 24) or app, text = "", glyph = "bell", tint = Sdk.AppTint(app) }
+    Impl.WgApply(e, o)
+    W.List[#W.List + 1] = e
+    W.ById[cid] = e
+    if not HUDCustomizer.WidgetConfigs[cid] then
+        HUDCustomizer.WidgetConfigs[cid] = { bold = false, colorMode = 1, format = 1, showIcon = true }
+    end
+    if Dbg.On then Dbg.Log("sdk", app .. " widget registered \"" .. e.title .. "\"") end
+    local h = {}
+    h.Set = function(p1, p2)
+        local v = p1 == h and p2 or p1
+        if e.removed then return false end
+        e.text = Sdk.Str(v, 16) or ""
+        return true
+    end
+    h.Update = function(p1, p2)
+        local v = p1 == h and p2 or p1
+        if e.removed or type(v) ~= "table" then return false end
+        Sdk.Guard(Impl.WgApply, e, v)
+        return true
+    end
+    h.Remove = function()
+        Impl.WgRemove(e)
+    end
+    h.IsOnIsland = function()
+        return not e.removed and Impl.IsChipInActiveList(cid)
+    end
+    return h
+end
+
 function Sdk.Tick(now)
+    Impl.WgSync()
     Sdk.TickExpand(now)
     if not Sdk.Ready then return end
     if #Sdk.Early > 0 then
@@ -12260,6 +12438,13 @@ do
         __newindex = ReadOnly,
         __metatable = false
     })
+    local widget = setmetatable({}, {
+        __index = {
+            Register = function(o) return Sdk.Guard(Impl.WgRegister, o) end
+        },
+        __newindex = ReadOnly,
+        __metatable = false
+    })
     Sdk.Facade = setmetatable({}, {
         __index = {
             api = Sdk.API,
@@ -12268,6 +12453,7 @@ do
             PlaySound = function(name, vol) return Sdk.Guard(Sdk.PlaySound, name, vol) end,
             Has = function(feature) return Sdk.Features[feature] == true end,
             Activity = activity,
+            Widget = widget,
             IsAllowed = function(app)
                 local name = Sdk.AppName(app)
                 return name ~= nil and Sdk.Apps[name] == true
