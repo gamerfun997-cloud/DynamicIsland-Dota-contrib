@@ -2715,7 +2715,8 @@ local Haptic = {
         RATCHET_NOTCH = 5,
         BOUNDARY_BUMP = 6,
         SUCCESS_APPLE_PAY = 7,
-        HEARTBEAT = 8
+        HEARTBEAT = 8,
+        ERROR = 9
     },
     State = {
         OffsetX = 0.0,
@@ -2888,7 +2889,18 @@ function Haptic.Trigger(hType, p1, p2)
             Haptic.State.VelScaleY = Haptic.State.VelScaleY + 0.08 * intensity
             Haptic.State.GlowAlpha = 40 * intensity
             Haptic.State.GlowColor = Color(255, 69, 58, 240)
+            if p1 == 1 or p1 == -1 then
+                Haptic.State.VelX = Haptic.State.VelX + p1 * 220 * intensity
+            end
         end
+    elseif hType == Haptic.Types.ERROR then
+        if visualOn then
+            Haptic.ShakeAt = nowClk
+            Haptic.ShakeAmp = 7 * intensity
+            Haptic.State.GlowAlpha = 45 * intensity
+            Haptic.State.GlowColor = Color(255, 69, 58, 240)
+        end
+        HapticPlaySound("wheel_boundary_bump", 0.45)
     elseif hType == Haptic.Types.SUCCESS_APPLE_PAY then
         if visualOn then
             Haptic.State.VelScaleX = Haptic.State.VelScaleX + 1.4 * intensity
@@ -2938,6 +2950,17 @@ function Haptic.Update(dt)
     local nx, nvx = SolveDampedSpring(Haptic.State.OffsetX, Haptic.State.VelX, 0.0, clampedDt, 38.0, 0.68)
     Haptic.State.OffsetX = nx
     Haptic.State.VelX = nvx
+    if Haptic.ShakeAt then
+        local t = (nowClk - Haptic.ShakeAt) / AnimScale()
+        if t < 0.42 then
+            local k = 1 - t / 0.42
+            Haptic.State.OffsetX = (Haptic.ShakeAmp or 7) * math.sin(t * math.pi * 2 * 8.5) * k * k
+            Haptic.State.VelX = 0
+        else
+            Haptic.ShakeAt = nil
+            Haptic.State.OffsetX, Haptic.State.VelX = 0, 0
+        end
+    end
 
     local ny, nvy = SolveDampedSpring(Haptic.State.OffsetY, Haptic.State.VelY, 0.0, clampedDt, 38.0, 0.68)
     Haptic.State.OffsetY = ny
@@ -3522,6 +3545,13 @@ local function TriggerStateTransition(nextState)
         end
     end
 
+    tr.SqueezeUntil = nil
+    if not toLarge and not fromLarge and not shared and prev ~= nextState then
+        tr.SqueezeW = math.max(70, StateMachine.Spring.W.value * 0.58)
+        tr.SqueezeUntil = os.clock() + 0.12 * AnimScale()
+        MotionEngine.CurrentProfile = "BOUNCY"
+    end
+
     if nextState == StateMachine.States.GAME_PAUSED then
         HapticPlaySound("game_paused", 0.45)
     elseif StateMachine.PreviousState == StateMachine.States.GAME_PAUSED then
@@ -3942,9 +3972,18 @@ function Reminders.Tick()
 end
 
 local function SendMediaCommand(cmd)
+    local base = string.match(cmd, "^(%a+)") or cmd
+    if Sheet.BridgeOnline and not Sheet.BridgeOnline() then
+        if Dbg.On then Dbg.Log("media", base .. " not sent, the bridge is offline") end
+        if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.ERROR) end
+        return
+    end
+    if Dbg.On then Dbg.MediaSent(base, cmd) end
+    local sentAt = os.clock()
     local port = 45455
     local url = string.format("http://127.0.0.1:%d/media/%s", port, cmd)
     pcall(HTTP.Request, "GET", url, {}, function(res)
+        if Dbg.On then Dbg.MediaReply(base, res, sentAt) end
         if res and res.response and res.response ~= "" then
             local vStr = string.match(res.response, '"volume"%s*:%s*(%d+)')
             if vStr then
@@ -4084,10 +4123,58 @@ function Impl.Plan(inCombat, mediaActive, now)
             if sec then add("sdk2", sec) end
         end
     end
+    local pin = Impl.Pin
+    if pin then
+        local idx
+        for i, it in ipairs(list) do
+            if it.kind == pin.kind then
+                idx = i
+                break
+            end
+        end
+        local newer = false
+        if idx then
+            for i = 1, idx - 1 do
+                if not pin.seen[list[i].kind] then newer = true end
+            end
+        end
+        if not idx or newer then
+            Impl.Pin = nil
+        elseif idx > 1 then
+            table.insert(list, 1, table.remove(list, idx))
+        end
+    end
     for kind in pairs(Impl.SatHidden) do
         if not seen[kind] then Impl.SatHidden[kind] = nil end
     end
     return list
+end
+
+function Impl.SwapWithBubble()
+    local R = Satellite.Right
+    local kind = R.kind
+    local seen = {}
+    for _, it in ipairs(Impl.PlanList or {}) do seen[it.kind] = true end
+    if kind == "notif" and NotificationQueue.Active then
+        NotificationQueue.Active.Priority = 99
+        NotificationQueue.StartTime = os.clock()
+    elseif kind == "activity" and R.act then
+        for i, a in ipairs(Sdk.Acts) do
+            if a == R.act then
+                table.remove(Sdk.Acts, i)
+                break
+            end
+        end
+        Sdk.Acts[#Sdk.Acts + 1] = R.act
+        if Impl.MainKind ~= "sdk" then Impl.Pin = { kind = "sdk", seen = seen } end
+    elseif kind and Impl.MainKinds[kind] then
+        Impl.Pin = { kind = kind, seen = seen }
+    else
+        Haptic.Trigger(Haptic.Types.ERROR)
+        return
+    end
+    if Dbg.On then Dbg.Log("notif", "side bubble " .. tostring(kind) .. " swapped into the island") end
+    Haptic.Trigger(Haptic.Types.TAP_MEDIUM)
 end
 
 function Impl.RestState()
@@ -6320,6 +6407,14 @@ function Impl.HandleInteractions()
 
     local padHit = 6
     local isHover = (cx >= layout.x - padHit and cx <= layout.x + layout.w + padHit and cy >= layout.y - padHit and cy <= layout.y + layout.h + padHit)
+    if Dbg.On and isLeftClicked and isHover then
+        Dbg.Log("input", string.format("click on the island at %d%% of its width%s", math.floor((cx - layout.x) / math.max(1, layout.w) * 100), isCtrlOnly and " with ctrl" or ""))
+    end
+    if isLeftClicked and isHover and not isCtrlOnly and ToggleOn(UI.Haptics.Enabled) and ToggleOn(UI.Haptics.VisualFeedback) then
+        local rel = math.max(-1, math.min(1, (cx - (layout.x + layout.w / 2)) / math.max(1, layout.w / 2)))
+        local intensity = UI.Haptics.Intensity and (UI.Haptics.Intensity:Get() / 100) or 1
+        Haptic.State.VelX = Haptic.State.VelX + rel * 260 * layout.scale * intensity
+    end
 
     if isHover and IsMediaActive() then
         if (nowClk - (MouseInput.LastKeyEventWheelTime or 0)) > 0.15 then
@@ -6569,7 +6664,7 @@ function Impl.HandleInteractions()
                     if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
                 elseif b.action == "toggle_active" then
                     if Impl.IsChipInActiveList(id) and #HUDCustomizer.ActiveChips <= 1 then
-                        if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.BOUNDARY_BUMP) end
+                        if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.ERROR) end
                     else
                         Impl.ToggleChipInActiveList(id)
                         if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_MEDIUM) end
@@ -6805,6 +6900,7 @@ function Impl.HandleInteractions()
             TriggerStateTransition(StateMachine.States.FOCUS_BANNER)
         end
     elseif not inGame then
+        Impl.Pin = nil
         if not NotificationQueue.Active then
             local detected
             local canAccept = Engine.CanAcceptMatch and Engine.CanAcceptMatch()
@@ -7131,6 +7227,8 @@ function Impl.HandleInteractions()
             if ok then
                 Journey.Accepted = true
                 Journey.AcceptedAt = os.clock()
+            elseif Haptic and Haptic.Trigger then
+                Haptic.Trigger(Haptic.Types.ERROR)
             end
         end
     end
@@ -7862,7 +7960,7 @@ function Satellite.Step(id, want, wide)
     local dt = math.min(0.05, math.max(0.001, now - st.clk)) / AnimScale()
     st.clk = now
     local keep = want or st.w > 0.2
-    st.p, st.pv = SolveDampedSpring(st.p, st.pv, keep and 1 or 0, dt, 7.0, 0.62)
+    st.p, st.pv = SolveDampedSpring(st.p, st.pv, keep and 1 or 0, dt, 11.0, 0.64)
     local wideT = (want and wide and st.p > 0.55) and 1 or 0
     st.w, st.wv = SolveDampedSpring(st.w, st.wv, wideT, dt, 8.0, 0.74)
     return st
@@ -12146,6 +12244,7 @@ function Dbg.Passport(reason)
     table.sort(apps)
     Dbg.Log("session", "sdk scripts: " .. (#apps > 0 and table.concat(apps, ", ") or "none") .. ", activities " .. #Sdk.Acts)
     Dbg.Log("session", "now: " .. table.concat(Dbg.Check(true), "  "))
+    if Sheet.BridgeOnline() then Dbg.AudioDiag("session start") end
 end
 
 function Dbg.Start(reason)
@@ -12268,10 +12367,84 @@ function Dbg.Tick()
         Dbg.PerfAt = now
         Dbg.PerfSummary()
     end
+    if Dbg.Vol and now - Dbg.Vol.at > 0.8 then Dbg.VolumeDone() end
     if now - Dbg.FlushAt > 1 then
         Dbg.FlushAt = now
         Dbg.Flush()
     end
+end
+
+function Dbg.MediaSent(base, cmd)
+    if base ~= "volup" and base ~= "voldown" then
+        Dbg.Log("media", "sent " .. cmd)
+        return
+    end
+    local v = Dbg.Vol
+    if not v then
+        local bump = string.find(cmd, "bump=1", 1, true) ~= nil
+        v = { up = 0, down = 0, limit = 0, replies = 0, failed = 0, from = bump and VolumeState.Target or math.max(0, math.min(100, VolumeState.Target + (base == "volup" and -4 or 4))) }
+        Dbg.Vol = v
+    end
+    if base == "volup" then v.up = v.up + 1 else v.down = v.down + 1 end
+    if string.find(cmd, "bump=1", 1, true) then v.limit = v.limit + 1 end
+    v.at = os.clock()
+end
+
+function Dbg.MediaReply(base, res, sentAt)
+    local body = res and res.response or ""
+    local ms = math.floor((os.clock() - sentAt) * 1000)
+    local vol = tonumber(string.match(body, '"volume"%s*:%s*(%-?%d+)'))
+    local target = string.match(body, '"target"%s*:%s*"([^"]*)"')
+    if base == "volup" or base == "voldown" then
+        local v = Dbg.Vol
+        if not v then return end
+        if body == "" then
+            v.failed = v.failed + 1
+            v.err = tostring(res and res.error_code) .. " " .. tostring(res and res.error_message)
+            return
+        end
+        v.replies = v.replies + 1
+        if vol then
+            v.first = v.first or vol
+            v.last = vol
+        end
+        v.target = target or v.target
+        return
+    end
+    if body == "" then
+        Dbg.Log("media", string.format("%s got no answer after %d ms (code %s, %s)", base, ms, tostring(res and res.code), tostring(res and res.error_message)))
+    else
+        Dbg.Log("media", string.format("%s answered in %d ms: %s", base, ms, string.sub(string.gsub(body, "[%c]", " "), 1, 160)))
+    end
+end
+
+function Dbg.VolumeDone()
+    local v = Dbg.Vol
+    Dbg.Vol = nil
+    local function pct(n) return n and (n < 0 and "unknown" or (tostring(n) .. "%")) or "no answer" end
+    Dbg.Log("media", string.format("volume wheel: %d up, %d down%s, island %s -> %s, player %s -> %s, %d answers%s, changed %s",
+        v.up, v.down, v.limit > 0 and (", " .. v.limit .. " at the limit") or "",
+        pct(math.floor(v.from + 0.5)), pct(math.floor(VolumeState.Target + 0.5)), pct(v.first), pct(v.last),
+        v.replies, v.failed > 0 and (", " .. v.failed .. " failed (" .. tostring(v.err) .. ")") or "",
+        v.target or "nothing (this bridge does not report it)"))
+    if (v.last == nil or v.last < 0 or (v.target and string.find(v.target, "^no audio"))) and not Dbg.AudioDiagDone then
+        Dbg.AudioDiagDone = true
+        Dbg.AudioDiag("the volume did not reach the player")
+    end
+end
+
+function Dbg.AudioDiag(why)
+    pcall(HTTP.Request, "GET", "http://127.0.0.1:45455/diag/audio", {}, function(res)
+        local body = res and res.response or ""
+        if body == "" or not string.find(body, '"sessions"', 1, true) then
+            Dbg.Log("media", "audio sessions (" .. why .. "): this bridge can not list them, update it")
+            return
+        end
+        local app = string.match(body, '"app"%s*:%s*"([^"]*)"') or "?"
+        local fam = string.match(body, '"family"%s*:%s*"([^"]*)"') or "?"
+        local list = string.match(body, '"sessions"%s*:%s*"([^"]*)"') or "?"
+        Dbg.Log("media", "audio sessions (" .. why .. "): player " .. app .. " looks like \"" .. fam .. "\", windows mixer has: " .. list)
+    end, "di_diag_audio")
 end
 
 function Dbg.Dump(name, t, depth)
@@ -13918,9 +14091,15 @@ function Swipe.Start(x, y)
     end
     local sb = SatelliteBounds
     local kind = Satellite.Right.kind
-    if sb and (kind == "notif" or kind == "aegis" or kind == "activity") and x >= sb.x1 and x <= sb.x2 and y >= sb.y1 and y <= sb.y2 then
+    if sb and kind and x >= sb.x1 and x <= sb.x2 and y >= sb.y1 and y <= sb.y2 then
+        for _, key in ipairs({ "SatellitePrev", "SatellitePlay", "SatelliteNext" }) do
+            local h = ButtonHits[key]
+            if h and x >= h.x1 and x <= h.x2 and y >= h.y1 and y <= h.y2 then return false end
+        end
         Swipe.Target = "sat"
         Swipe.SatKind = kind
+        Swipe.SatPressAt = os.clock()
+        Swipe.SatHeld = false
         return true
     end
     if StateMachine.TargetState == S.NOTIF_CENTER then
@@ -13947,12 +14126,21 @@ function Swipe.Tick(layout, now, dt)
             Swipe.IslandX, Swipe.IslandV = dx * 0.85, 0
         elseif t == "sat" then
             Swipe.SatX, Swipe.SatV = dx * 0.85, 0
+            if not g.moved and not Swipe.SatHeld and now - (Swipe.SatPressAt or now) >= 0.35 * AnimScale() then
+                Swipe.SatHeld = true
+                Impl.SwapWithBubble()
+            end
         elseif t == "nc" and Swipe.Row then
             local it = Swipe.Row.item
             it._x, it._xv = dx < 0 and dx or Gesture.Rubber(dx, 14 * s), 0
         end
     elseif ev == "end" then
         local dx, dy = g.x - g.x0, g.y - g.y0
+        if Dbg.On and t then
+            local what = t == "island" and ("island " .. tostring(Swipe.IslandKind)) or t == "sat" and ("side bubble " .. tostring(Swipe.SatKind)) or "notification center row"
+            local how = Swipe.SatHeld and "hold" or g.moved and string.format("swipe %+d px, %d px/s", math.floor(dx), math.floor(g.vx or 0)) or "tap"
+            Dbg.Log("input", how .. " on the " .. what)
+        end
         if t == "island" then
             local far = g.moved and math.abs(dx) > 6 and (math.abs(dx) > 28 * s or math.abs(g.vx) > 600)
             if far then StateMachine.NoExpand = true end
@@ -13968,7 +14156,9 @@ function Swipe.Tick(layout, now, dt)
                 Sdk.TapNotif(now)
             end
         elseif t == "sat" then
-            if g.moved and math.abs(dx) > 6 and (math.abs(dx) > 24 * s or math.abs(g.vx) > 600) then
+            if Swipe.SatHeld then
+                Swipe.SatHeld = false
+            elseif g.moved and math.abs(dx) > 6 and (math.abs(dx) > 24 * s or math.abs(g.vx) > 600) then
                 Impl.DismissSatellite(Swipe.SatKind, now)
             elseif not g.moved and Swipe.SatKind == "activity" then
                 Sdk.TapActivity(Satellite.Right.act)
@@ -14137,8 +14327,15 @@ function DynamicIsland.OnFrame()
     local targetW = Config.Dimensions.CompactTargetW or Config.Dimensions.CompactW
     local targetH = Config.Dimensions.CompactTargetH or Config.Dimensions.CompactH
     local targetR = Config.Dimensions.CompactTargetR or Config.Dimensions.CompactRadius
+    local trq = StateMachine.Transition
+    if trq.SqueezeUntil and curClock >= trq.SqueezeUntil then trq.SqueezeUntil = nil end
+    if trq.SqueezeUntil then
+        targetW = math.min(targetW, trq.SqueezeW)
+        targetH = math.min(targetH, Config.Dimensions.CompactH)
+        targetR = math.min(targetR, targetH / 2)
+    end
 
-    local prof = MotionEngine.GetProfile(MotionEngine.CurrentProfile)
+    local prof = MotionEngine.GetProfile(trq.SqueezeUntil and "SNAPPY" or MotionEngine.CurrentProfile)
     local smoothDt = MotionEngine.UpdateSmoothedDt(dt)
 
     local newW, newVelW = MotionEngine.SolveSpring(StateMachine.Spring.W.value, StateMachine.Spring.W.vel, targetW, smoothDt, prof.omega, prof.zeta)
