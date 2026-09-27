@@ -10111,6 +10111,7 @@ function Impl.LyReply(key, res)
         if #lines > 0 and not lines[1].gap and lines[1].t > 3 then table.insert(lines, 1, { t = 0, x = "", gap = true, a = 0, h = 0 }) end
         while #lines > 0 and lines[#lines].gap do lines[#lines] = nil end
         Ly.Lines = lines
+        Ly.COff = {}
         Ly.Status = #lines > 0 and "ok" or "none"
         Ly.WrapW = 0
     elseif head == "none" or head == "instrumental" then
@@ -10151,6 +10152,7 @@ function Impl.LyTick(dt)
     local now = os.clock()
     if key ~= Ly.Key then
         Ly.Key, Ly.Status, Ly.Lines, Ly.ChangedAt, Ly.Idx, Ly.WrapW = key, "wait", {}, now, 0, 0
+        Ly.COff = {}
         Ly.Scroll, Ly.ScrollV, Ly.Target = 0, 0, 0
         return
     end
@@ -10275,10 +10277,25 @@ function Impl.LyCompactLine(i, title, x, y, w, font, size, aMul, scale, done)
     local tw = Render.TextSize(font, size, text).x
     local karaoke = Impl.LyKaraokeOn()
     local frac = done and 1 or Impl.LyFrac(i, (MediaData.PosSmooth or 0) + 0.1)
+    local Ly = Impl.Ly
+    Ly.COff = Ly.COff or {}
     local off = 0
     if tw > w then
-        local fill = Impl.LyPrefixW(font, size, text, frac * Impl.LyLen(text))
-        off = math.max(0, math.min(tw - w, fill - w * 0.6))
+        if done then
+            off = Ly.COff[i] or 0
+        else
+            local now = os.clock()
+            local dt = math.min(0.05, math.max(0.001, now - (Ly.COffAt or now)))
+            Ly.COffAt = now
+            local fill = Impl.LyPrefixW(font, size, text, frac * Impl.LyLen(text))
+            local target = math.max(0, math.min(tw - w, fill - w * 0.7))
+            local cur = Ly.COff[i] or 0
+            local lag = math.max(0, fill - cur - w)
+            local maxStep = (40 + lag * 1.5) * scale * dt
+            local step = (target - cur) * math.min(1, dt * 2.2)
+            off = cur + math.max(-maxStep, math.min(maxStep, step))
+            Ly.COff[i] = off
+        end
     end
     local rowH = Render.TextSize(font, size, "Ag").y
     if karaoke and not done then
