@@ -11259,7 +11259,7 @@ function NotifCenter.Render(layout, alphaMul, yOffset)
     end
 end
 
-Sdk.API = 1
+Sdk.API = 2
 Sdk.Apps = {}
 Sdk.Asks = {}
 Sdk.AskAt = {}

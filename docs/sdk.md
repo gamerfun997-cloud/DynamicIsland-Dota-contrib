@@ -26,7 +26,7 @@ DynamicIslandQueue = DynamicIslandQueue or {}
 table.insert(DynamicIslandQueue, { app = "My Script", title = "Loaded", level = "passive" })
 ```
 
-`DynamicIsland` is read only. `DynamicIsland.api` is the API version, currently `1`. `DynamicIsland.Has("actions")` tells you if a feature is there.
+`DynamicIsland` is read only. `DynamicIsland.api` is the API version, currently `2`. `DynamicIsland.Has("actions")` tells you if a feature is there.
 
 ## Permission
 
@@ -111,6 +111,39 @@ The handle has `Update(fields)`, `End(fields)` and `IsActive()`. `IsActive()` tu
 
 When music is playing, the activity takes the island and the music moves to a side bubble. With two activities from different scripts, the newest one is in the island and the other one sits in the side bubble. In a fight the fight wins and your activity goes to the bubble.
 
+## Widgets
+
+Small values that sit in the island next to the clock, like WidgetKit on the iPhone. Your script registers a widget, the user decides whether to put it on the island in the widget editor, the same way as the built-in ones.
+
+```lua
+local w = DynamicIsland.Widget.Register({
+    app = "Rune Timer",
+    id = "next_rune",
+    title = "Next Rune",
+    icon = "clock",
+    tint = "orange",
+    text = "1:42"
+})
+
+w:Set("1:41")
+w:Update({ tint = "red", icon = "bolt" })
+w:Remove()
+```
+
+| Field | What it does |
+| --- | --- |
+| `app` | Your app name, the same one you use for notifications. Required. |
+| `id` | Stays the same between reloads. The island remembers where the user put your widget by it. Required, letters and digits count. |
+| `title` | Name in the widget editor, up to 24 characters. |
+| `text` | What the island shows, up to 16 characters. Set it again with `Set` whenever it changes. |
+| `icon`, `tint` | Glyph and color of the widget in the editor. The user can recolor the text on the island. |
+
+The handle has `Set(text)`, `Update(fields)`, `Remove()` and `IsOnIsland()`. Both `w:Set("x")` and `w.Set("x")` work. Registering the same `app` and `id` again replaces the old widget and keeps its place on the island.
+
+The island only draws what you `Set`, it never calls your code while drawing, so a slow script can't slow the island down. Update the text from your own `OnUpdate` or `OnFrame` when the value changes.
+
+Widgets don't ask for permission: nothing shows up until the user adds your widget. If the user turns your script off in Alerts > Scripts, its widgets disappear and come back on their old place when it's turned on again. If your script isn't loaded, its widget waits for it and the rest of the island stays as it was.
+
 ## Sounds
 
 ```lua
@@ -127,6 +160,7 @@ Plays one of the island's own sounds through the user's sound settings. Allowed 
 
 - 3 notifications in a row per app, then one every 2 seconds. A script that keeps hammering gets muted until the next reload, and it's written to the console.
 - One live activity per app. Starting a new one ends your previous one. 3 activities at most across all scripts.
+- 4 widgets per app, 12 across all scripts.
 - Your callbacks run in `pcall`. After 3 errors the island stops calling that script's callbacks and writes why to the console.
 - The island copies what it needs from your tables and trims long text, so changing a table after the call does nothing.
 
