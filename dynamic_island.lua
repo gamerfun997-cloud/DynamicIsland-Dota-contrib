@@ -851,6 +851,8 @@ local localization = qLocalization.new({
         di_media_enabled = "Media Sync",
         di_media_spotify_like = "Spotify Like Button",
         di_media_volume_wheel = "Scroll Wheel Volume Control",
+        di_media_lyrics = "Synced Lyrics",
+        di_media_lyrics_tip = "Shows the song text in time with the music in the expanded player. The lyrics come from lrclib.net through the bridge. Press the quote button to open them, press a line to jump to it",
         di_media_marquee_speed = "Marquee Speed",
         di_media_compact_title = "Track Title in Compact View",
         di_media_artwork_tint = "Wave Color From Artwork",
@@ -1376,6 +1378,8 @@ local localization = qLocalization.new({
         di_media_enabled = "Медиа плеер",
         di_media_spotify_like = "Лайк трека Spotify",
         di_media_volume_wheel = "Громкость колесиком мыши",
+        di_media_lyrics = "Текст песен",
+        di_media_lyrics_tip = "Показывает текст песни в такт музыке в раскрытом плеере. Текст берется с lrclib.net через мост. Кнопка с кавычками открывает его, клик по строке перематывает на нее",
         di_media_marquee_speed = "Скорость бегущей строки",
         di_media_compact_title = "Название трека в маленьком островке",
         di_media_artwork_tint = "Цвет волны из обложки",
@@ -1534,6 +1538,7 @@ local Config = {
         Medium = nil,
         Semibold = nil,
         Display = nil,
+        Lyric = nil,
         Main = nil,
         Bold = nil
     },
@@ -1764,6 +1769,7 @@ local ButtonSprings = {
     MediaLike = { scale = 1.0, vel = 0 },
     MediaShuffle = { scale = 1.0, vel = 0 },
     MediaRepeat = { scale = 1.0, vel = 0 },
+    MediaLyrics = { scale = 1.0, vel = 0 },
     SatellitePrev = { scale = 1.0, vel = 0 },
     SatellitePlay = { scale = 1.0, vel = 0 },
     SatelliteNext = { scale = 1.0, vel = 0 }
@@ -2177,6 +2183,7 @@ local VectorIcons = {
     ["media_play"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M7 4.9c0-1 1.1-1.6 2-1.1l11.4 7.1c.8.5.8 1.7 0 2.2L9 20.2c-.9.5-2-.1-2-1.1z" fill="#FFF"/></svg>',
     ["media_pause"] = '<svg viewBox="0 0 24 24" width="24" height="24"><rect x="5.5" y="4" width="4.6" height="16" rx="1.4" fill="#FFF"/><rect x="13.9" y="4" width="4.6" height="16" rx="1.4" fill="#FFF"/></svg>',
 
+    ["lyrics"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 3.6c5 0 9 3.3 9 7.4s-4 7.4-9 7.4c-1 0-2-.1-2.9-.4L5 20.2l1.1-3.6C4.2 15.3 3 13.3 3 11c0-4.1 4-7.4 9-7.4z" fill="none" stroke="#FFF" stroke-width="2" stroke-linejoin="round"/><circle cx="9.4" cy="10.2" r="1.5" fill="#FFF"/><circle cx="14.6" cy="10.2" r="1.5" fill="#FFF"/><path d="M10.9 10.3c0 1.3-.6 2.3-1.7 2.9M16.1 10.3c0 1.3-.6 2.3-1.7 2.9" fill="none" stroke="#FFF" stroke-width="1.4" stroke-linecap="round"/></svg>',
     ["heart_outline"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 20.3 10.7 19.1C6 14.9 3 12.2 3 8.9 3 6.2 5.1 4.2 7.7 4.2c1.6 0 3.2.8 4.3 2 1.1-1.2 2.7-2 4.3-2 2.6 0 4.7 2 4.7 4.7 0 3.3-3 6-7.7 10.2z" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linejoin="round"/></svg>',
     ["heart_fill"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 20.3 10.7 19.1C6 14.9 3 12.2 3 8.9 3 6.2 5.1 4.2 7.7 4.2c1.6 0 3.2.8 4.3 2 1.1-1.2 2.7-2 4.3-2 2.6 0 4.7 2 4.7 4.7 0 3.3-3 6-7.7 10.2z" fill="#FFF"/></svg>',
     ["shuffle"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 17h2.4c1.9 0 3.1-.8 4.1-2.4l4.8-7.2C15.3 5.8 16.5 5 18.4 5H21" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5 21 5l-2.5 2.5" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 7h2.4c1.5 0 2.6.5 3.5 1.5" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.1 15.5c.9 1 2 1.5 3.3 1.5H21" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 14.5 21 17l-2.5 2.5" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -2350,6 +2357,7 @@ local function SaveAllConfig()
             if Sheet.SeenVer then f:write("seen_ver=" .. Sheet.SeenVer .. "\n") end
             if Sheet.BridgeHintSeen then f:write("bridge_hint=1\n") end
             if Hello.SetupDone then f:write("setup_done=1\n") end
+            if Impl.Ly.Open then f:write("lyrics_open=1\n") end
             if Hello.ChatPrev ~= nil then f:write("hello_chat=" .. (Hello.ChatPrev and "1" or "0") .. "\n") end
             if Hello.StampValue or Hello.SavedStamp then f:write("hello_stamp=" .. tostring(Hello.StampValue or Hello.SavedStamp) .. "\n") end
             if HUDCustomizer.Saved and #HUDCustomizer.Saved > 0 then f:write("saved_colors=" .. table.concat(HUDCustomizer.Saved, ",") .. "\n") end
@@ -2492,6 +2500,8 @@ function Impl.LoadAllConfig()
             Sheet.BridgeHintSeen = true
         elseif line == "setup_done=1" then
             Hello.SetupDone = true
+        elseif line == "lyrics_open=1" then
+            Impl.Ly.Open = true
         elseif line == "hello_chat=1" or line == "hello_chat=0" then
             Hello.ChatPending = line == "hello_chat=1"
         elseif string.match(line, "^hello_stamp=%-?%d+$") then
@@ -2702,6 +2712,7 @@ function Impl.LoadScriptFonts()
     Config.Fonts.Medium = Render.LoadFont("SF Pro Text", aa, 500)
     Config.Fonts.Semibold = Render.LoadFont("SF Pro Text", aa, 600)
     Config.Fonts.Display = Render.LoadFont("SF Pro Display", aa, 500)
+    Config.Fonts.Lyric = Render.LoadFont("SF Pro Display", aa, 700)
     Config.Fonts.Main = Config.Fonts.Regular
     Config.Fonts.Bold = Config.Fonts.Semibold
 end
@@ -3364,6 +3375,8 @@ function Impl.InitMenu()
     D.SpotifyLike = dur(gSpotifyLike)
     snd(gSpotifyLike, "SpotifyLike")
     Md.VolumeWheel = gMedia:Switch("di_media_volume_wheel", true, "\u{f028}")
+    Md.Lyrics = gMedia:Switch("di_media_lyrics", true, "\u{f10d}")
+    Md.Lyrics:ToolTip("di_media_lyrics_tip")
     Md.SecondaryBubble = gMedia:Switch("di_media_secondary_bubble", true, "\u{f111}")
     Md.InMenu = gMedia:Switch("di_media_in_menu", false, "\u{f015}")
     Md.InMenu:ToolTip("di_media_in_menu_tip")
@@ -3433,6 +3446,7 @@ function Impl.InitMenu()
         local mOn = Md.Enabled:Get()
         Md.SpotifyLike:Disabled(not mOn)
         Md.VolumeWheel:Disabled(not mOn)
+        Md.Lyrics:Disabled(not mOn)
         Md.SecondaryBubble:Disabled(not mOn)
     end
     H.Enabled:SetCallback(refreshDisabled, true)
@@ -3463,7 +3477,7 @@ end
 function StateMachine.SharedM(kind)
     local D = Config.Dimensions
     local lo, hi = D.CompactH, D.LargeH
-    if kind == "media" then lo, hi = D.CompactMediaH, D.LargeMediaH end
+    if kind == "media" then lo, hi = D.CompactMediaH, D.LargeMediaH + (Impl.LyWant() and Impl.LyH or 0) end
     local m = (StateMachine.Spring.H.value - lo) / math.max(1, hi - lo)
     if m < 0.004 then return 0 end
     if m > 0.996 then return 1 end
@@ -7049,7 +7063,7 @@ function Impl.HandleInteractions()
         Config.Dimensions.CompactTargetR = Config.Dimensions.NotificationRadius
     elseif StateMachine.TargetState == StateMachine.States.LARGE_MEDIA then
         Config.Dimensions.CompactTargetW = Config.Dimensions.LargeMediaW
-        Config.Dimensions.CompactTargetH = Config.Dimensions.LargeMediaH
+        Config.Dimensions.CompactTargetH = Config.Dimensions.LargeMediaH + (Impl.LyWant() and Impl.LyH or 0)
         Config.Dimensions.CompactTargetR = Config.Dimensions.LargeMediaRadius
     elseif StateMachine.TargetState == StateMachine.States.LARGE_FIGHT then
         Config.Dimensions.CompactTargetW = (UI and UI.Combat and UI.Combat.FightLargeW) and UI.Combat.FightLargeW:Get() or Config.Dimensions.LargeFightW
@@ -7279,6 +7293,22 @@ function Impl.HandleInteractions()
                 ButtonSprings.MediaRepeat.scale = 0.80
                 MediaData.RepeatMode = (MediaData.RepeatMode + 1) % 3
                 SendMediaCommand("repeat")
+                clickedButton = true
+            elseif StateMachine.TargetState == StateMachine.States.LARGE_MEDIA and Impl.Ly.Btn > 0.5 and ButtonHits.MediaLyrics and cx >= ButtonHits.MediaLyrics.x1 and cx <= ButtonHits.MediaLyrics.x2 and cy >= ButtonHits.MediaLyrics.y1 and cy <= ButtonHits.MediaLyrics.y2 then
+                ButtonSprings.MediaLyrics.scale = 0.75
+                Impl.Ly.Open = not Impl.Ly.Open
+                if Dbg.On then Dbg.Log("media", "lyrics " .. (Impl.Ly.Open and "opened" or "closed")) end
+                SaveAllConfig()
+                clickedButton = true
+            elseif StateMachine.TargetState == StateMachine.States.LARGE_MEDIA and Impl.LyHitAt(cx, cy) then
+                local t = Impl.LyHitAt(cx, cy)
+                SendMediaCommand(string.format("seek?pos=%.2f", t))
+                MediaData.PosTarget = t
+                MediaData.PosSmooth = t
+                SeekDrag.HoldPos = t
+                SeekDrag.HoldStart = nowClk
+                SeekDrag.HoldUntil = nowClk + 2.5
+                if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.TAP_LIGHT) end
                 clickedButton = true
             elseif ButtonHits.MediaLike and cx >= ButtonHits.MediaLike.x1 and cx <= ButtonHits.MediaLike.x2 and cy >= ButtonHits.MediaLike.y1 and cy <= ButtonHits.MediaLike.y2 then
                 ButtonSprings.MediaLike.scale = 0.65
@@ -9703,6 +9733,167 @@ function Impl.RenderNotificationState(layout, alphaMul, yOffset)
     TwoLines(textX, math.floor(layout.x + layout.w - textX - 16 * scale - qW), notif.Tag or L("di_ui_notification"), accent, notif.Title)
 end
 
+Impl.Ly = { Key = nil, Status = "idle", Lines = {}, Open = false, Btn = 0, Scroll = 0, ScrollV = 0, Target = 0, ChangedAt = 0, RetryAt = 0, Idx = 0, Hits = {}, WrapW = 0, WrapS = 0 }
+Impl.LyH = 92
+
+function Impl.LyOn()
+    return UI and UI.Media and UI.Media.Lyrics and UI.Media.Lyrics:Get() or false
+end
+
+function Impl.LyWant()
+    local Ly = Impl.Ly
+    return Ly.Open and Ly.Status == "ok" and #Ly.Lines > 0 and Impl.LyOn() or false
+end
+
+function Impl.LyReply(key, res)
+    local Ly = Impl.Ly
+    if Ly.Key ~= key then return end
+    local body = res and res.response or ""
+    local head = string.match(body, "^([^\n]*)") or ""
+    if head == "ok" then
+        local lines = {}
+        for ms, text in string.gmatch(body, "\n(%d+)\t([^\n]*)") do
+            local s = string.match(text, "^%s*(.-)%s*$") or ""
+            local gap = s == "" or s == "\u{266A}" or s == "\u{266B}" or s == "\u{2026}" or s == "..."
+            local prev = lines[#lines]
+            if not (gap and prev and prev.gap) then
+                lines[#lines + 1] = { t = tonumber(ms) / 1000, x = gap and "" or s, gap = gap, a = 0, h = 0 }
+            end
+        end
+        if #lines > 0 and not lines[1].gap and lines[1].t > 3 then table.insert(lines, 1, { t = 0, x = "", gap = true, a = 0, h = 0 }) end
+        while #lines > 0 and lines[#lines].gap do lines[#lines] = nil end
+        Ly.Lines = lines
+        Ly.Status = #lines > 0 and "ok" or "none"
+        Ly.WrapW = 0
+    elseif head == "none" or head == "instrumental" then
+        Ly.Status = head
+    else
+        Ly.Status = "error"
+        Ly.RetryAt = os.clock() + 20
+    end
+    if Dbg.On then
+        local name = string.gsub(key, "\n", " - ")
+        Dbg.Log("media", "lyrics for \"" .. name .. "\": " .. Ly.Status .. (Ly.Status == "ok" and (", " .. #Ly.Lines .. " lines") or (head ~= Ly.Status and (" (" .. string.sub(head, 1, 60) .. ")") or "")))
+    end
+end
+
+function Impl.LyTick(dt)
+    local Ly = Impl.Ly
+    local on = Impl.LyOn()
+    local target = (on and Ly.Status == "ok" and #Ly.Lines > 0) and 1 or 0
+    Ly.Btn = Ly.Btn + (target - Ly.Btn) * math.min(1, dt * 12)
+    Ly.Scroll, Ly.ScrollV = MotionEngine.Step(Ly.Scroll, Ly.ScrollV, Ly.Target, dt, "SMOOTH")
+    local pos = (MediaData.PosSmooth or 0) + 0.25
+    local idx = 0
+    for i, ln in ipairs(Ly.Lines) do
+        if ln.t <= pos then idx = i else break end
+    end
+    Ly.Idx = idx
+    local k = math.min(1, dt * 9)
+    for i, ln in ipairs(Ly.Lines) do
+        ln.a = ln.a + ((i == idx and 1 or 0) - ln.a) * k
+        if ln.gap then
+            local nxt = Ly.Lines[i + 1]
+            local open = (i == idx and (not nxt or nxt.t - pos > 1.0)) and 1 or 0
+            ln.h = ln.h + (open - ln.h) * k
+        end
+    end
+    if not on or not MediaData.HasReceivedData or (MediaData.Title or "") == "" then return end
+    local key = (MediaData.Artist or "") .. "\n" .. MediaData.Title
+    local now = os.clock()
+    if key ~= Ly.Key then
+        Ly.Key, Ly.Status, Ly.Lines, Ly.ChangedAt, Ly.Idx, Ly.WrapW = key, "wait", {}, now, 0, 0
+        Ly.Scroll, Ly.ScrollV, Ly.Target = 0, 0, 0
+        return
+    end
+    if (Ly.Status == "wait" and now - Ly.ChangedAt > 0.6) or (Ly.Status == "error" and now > Ly.RetryAt) then
+        if not Sheet.BridgeOnline() then return end
+        Ly.Status = "loading"
+        local q = "artist=" .. Sheet.UrlEncode(MediaData.Artist or "") .. "&title=" .. Sheet.UrlEncode(MediaData.Title) .. "&album=" .. Sheet.UrlEncode(MediaData.Album or "") .. string.format("&dur=%d", math.floor((MediaData.Duration or 0) + 0.5))
+        local ok = pcall(HTTP.Request, "GET", "http://127.0.0.1:45455/lyrics?" .. q, {}, function(res) Impl.LyReply(key, res) end, "di_lyrics")
+        if not ok then
+            Ly.Status = "error"
+            Ly.RetryAt = now + 20
+        end
+    end
+end
+
+function Impl.LyWrap(font, size, text, maxW)
+    local rows, cur = {}, ""
+    for word in string.gmatch(text, "%S+") do
+        local try = cur == "" and word or (cur .. " " .. word)
+        if cur ~= "" and Render.TextSize(font, size, try).x > maxW then
+            rows[#rows + 1] = cur
+            cur = word
+        else
+            cur = try
+        end
+    end
+    if cur ~= "" then rows[#rows + 1] = cur end
+    return rows
+end
+
+function Impl.LyHitAt(cx, cy)
+    for _, h in ipairs(Impl.Ly.Hits) do
+        if cx >= h.x1 and cx <= h.x2 and cy >= h.y1 and cy <= h.y2 then return h.t end
+    end
+    return nil
+end
+
+function Impl.LyDraw(x, y, w, h, scale, aMul)
+    local Ly = Impl.Ly
+    local font = Config.Fonts.Lyric or Config.Fonts.Semibold
+    local size = 17 * scale
+    local rowH = math.floor(Render.TextSize(font, size, "Ag").y + 1 * scale)
+    local dotsH = 16 * scale
+    local space = 7 * scale
+    if Ly.WrapW ~= w or Ly.WrapS ~= size then
+        for _, ln in ipairs(Ly.Lines) do ln.rows = ln.gap and {} or Impl.LyWrap(font, size, ln.x, w) end
+        Ly.WrapW, Ly.WrapS = w, size
+    end
+    local tops, acc = {}, 0
+    for i, ln in ipairs(Ly.Lines) do
+        tops[i] = acc
+        if ln.gap then
+            acc = acc + (dotsH + space) * ln.h
+        else
+            acc = acc + #ln.rows * rowH + space
+        end
+    end
+    local inset = math.floor(2 * scale)
+    Ly.Target = Ly.Idx > 0 and tops[Ly.Idx] or 0
+    Ly.Hits = {}
+    local fade = rowH * 0.9
+    local now = os.clock()
+    Render.PushClip(Vec2(x - 4 * scale, y), Vec2(x + w + 4 * scale, y + h), true)
+    for i, ln in ipairs(Ly.Lines) do
+        local ty = y + inset + tops[i] - Ly.Scroll
+        if ty > y + h then break end
+        local lh = ln.gap and dotsH * ln.h or #ln.rows * rowH
+        if ty + lh >= y then
+            local edge = math.max(0, math.min(1, (ty + lh - y) / fade, (y + h - ty) / fade))
+            local base = i < Ly.Idx and 0.26 or 0.36
+            local al = (base + (1 - base) * ln.a) * edge * aMul
+            if ln.gap then
+                if ln.h > 0.02 then
+                    for d = 0, 2 do
+                        local ph = 0.5 + 0.5 * math.sin(now * 3.2 - d * 0.7)
+                        local r = (2.4 + 0.9 * ph) * scale * ln.h
+                        Render.FilledCircle(Vec2(x + (4 + d * 11) * scale, ty + dotsH * ln.h / 2), r, FadeColor(Config.Colors.TextPrimary, al * ln.h * (0.45 + 0.55 * ph)))
+                    end
+                end
+            else
+                local col = FadeColor(Config.Colors.TextPrimary, al)
+                for r, row in ipairs(ln.rows) do
+                    Render.Text(font, size, row, Vec2(x, math.floor(ty + (r - 1) * rowH)), col)
+                end
+                Ly.Hits[#Ly.Hits + 1] = { x1 = x, y1 = math.max(y, ty), x2 = x + w, y2 = math.min(y + h, ty + lh), t = ln.t }
+            end
+        end
+    end
+    Render.PopClip()
+end
+
 function Impl.RenderLargeMedia(layout, alphaMul, yOffset)
     local aMul = alphaMul or 1.0
     local yOff = yOffset or 0
@@ -9763,7 +9954,7 @@ function Impl.RenderLargeMedia(layout, alphaMul, yOffset)
 
         local artSizeText = Render.TextSize(fontMain, artistSz, artistStr)
         local artYPos = math.floor(infoY + titleSize.y + 2 * scale)
-        local artistW = UI.Media.SpotifyLike:Get() and math.max(10, math.floor(layout.x + layout.w - pad - 16 * scale - 10 * scale - infoX)) or maxInfoW
+        local artistW = UI.Media.SpotifyLike:Get() and math.max(10, math.floor(layout.x + layout.w - pad - 16 * scale - 10 * scale - infoX - (Impl.Ly.Btn > 0.01 and 28 * scale or 0))) or maxInfoW
         if artSizeText.x > artistW then
             RenderMarqueeText(fontMain, artistSz, artistStr, infoX, artYPos, artistW, subCol, scale)
         else
@@ -9781,6 +9972,14 @@ function Impl.RenderLargeMedia(layout, alphaMul, yOffset)
     end
 
     local progressY = math.floor(artY + artSize + 14 * scale)
+    local lyK = math.max(0, math.min(1, (StateMachine.Spring.H.value - Config.Dimensions.LargeMediaH) / Impl.LyH))
+    local lyExtra = math.floor(lyK * Impl.LyH * scale)
+    if lyExtra > 1 and #Impl.Ly.Lines > 0 then
+        Impl.LyDraw(layout.x + pad, math.floor(artY + artSize + 12 * scale), layout.w - pad * 2, math.max(0, lyExtra - 8 * scale), scale, aMul * math.min(1, lyK * 1.3))
+    else
+        Impl.Ly.Hits = {}
+    end
+    progressY = progressY + lyExtra
     local progressW = math.floor(layout.w - pad * 2)
     local progressH = math.floor(4.5 * scale)
 
@@ -9855,6 +10054,22 @@ function Impl.RenderLargeMedia(layout, alphaMul, yOffset)
         if MediaData.RepeatMode == 2 then
             Render.Text(fontTiny, tinySz, "1", Vec2(repX + 5 * scale, playY - 8 * scale), FadeColor(Config.Colors.TextPrimary, aMul * d))
         end
+    end
+
+    local lyB = Impl.Ly.Btn
+    if lyB > 0.01 then
+        local lyX = math.floor(layout.x + layout.w - pad - 8 * scale - (UI.Media.SpotifyLike:Get() and 28 * scale or 0))
+        local lyY = math.floor(artY + artSize - 10 * scale)
+        ButtonHits.MediaLyrics = { x1 = lyX - 14 * scale, y1 = lyY - 14 * scale, x2 = lyX + 14 * scale, y2 = lyY + 14 * scale }
+        local lk, ld = Impl.PointerBlob("m_lyr", lyX, lyY, 14 * scale, ButtonHits.MediaLyrics, aMul)
+        local icon = GetVectorIcon("lyrics")
+        if icon then
+            local sz = 16 * scale * lk * ButtonSprings.MediaLyrics.scale
+            local col = Impl.Ly.Open and Config.Colors.TextPrimary or Config.Colors.TextSecondary
+            Render.Image(icon, Vec2(lyX - sz / 2, lyY - sz / 2), Vec2(sz, sz), FadeColor(col, aMul * ld * lyB), 0)
+        end
+    else
+        ButtonHits.MediaLyrics = nil
     end
 
     if UI.Media.SpotifyLike:Get() then
@@ -10153,7 +10368,8 @@ function Impl.RenderMediaSharedTransition(fromState, toState, layout, progress)
     local artT = math.max(0.0, math.min(1.0, progress or 0.0))
     local D = Config.Dimensions
     local cL = StateMachine.FrameFor(layout, CompactMediaTitle() and D.CompactMediaW or D.CompactMediaBareW, D.CompactMediaH, D.CompactMediaRadius)
-    local lL = StateMachine.FrameFor(layout, D.LargeMediaW, D.LargeMediaH, D.LargeMediaRadius)
+    local lyOpen = Impl.LyWant() and Impl.LyH or 0
+    local lL = StateMachine.FrameFor(layout, D.LargeMediaW, D.LargeMediaH + lyOpen, D.LargeMediaRadius)
     local secAlpha = artT * artT
 
     local cThumbSize = math.floor(20 * scale)
@@ -10219,7 +10435,7 @@ function Impl.RenderMediaSharedTransition(fromState, toState, layout, progress)
     end
 
     if secAlpha > 0.01 then
-        local progressY = math.floor(lThumbY + lThumbSize + 14 * scale)
+        local progressY = math.floor(lThumbY + lThumbSize + 14 * scale + lyOpen * scale)
         local progressW = math.floor(lL.w - pad * 2)
         local progressH = math.floor(4.5 * scale)
 
@@ -14218,6 +14434,7 @@ function DynamicIsland.OnFrame()
     dt = dt / AnimScale()
     Pointer.Update(dt)
     Impl.TickArt(dt)
+    Fuse.Guard("lyrics", Impl.LyTick, dt)
     Fuse.Guard("sdk", Sdk.Tick, curClock)
 
     if VolumeState.Visible then
