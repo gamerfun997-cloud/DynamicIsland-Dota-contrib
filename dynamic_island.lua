@@ -916,7 +916,7 @@ local localization = qLocalization.new({
         di_media_lyrics_compact = "Lyrics in the Small Island",
         di_media_lyrics_compact_tip = "Shows the line being sung instead of\nthe song name in the small island",
         di_media_karaoke = "Karaoke",
-        di_media_karaoke_tip = "In songs with word timings the line fills in\nas it is sung, like in Apple Music",
+        di_media_karaoke_tip = "The line fills in as it is sung,\nlike in Apple Music",
         di_media_lyrics_tip = "Song text in time with the music, from lrclib.net.\nThe quote button opens it, click a line to jump",
         di_media_marquee_speed = "Marquee Speed",
         di_media_marquee_speed_tip = "How fast long titles scroll",
@@ -1537,7 +1537,7 @@ local localization = qLocalization.new({
         di_media_lyrics_compact = "Текст в маленьком островке",
         di_media_lyrics_compact_tip = "Показывает строку, которую поют,\nвместо названия трека в маленьком островке",
         di_media_karaoke = "Караоке",
-        di_media_karaoke_tip = "В песнях с таймингами слов строка заливается\nпо мере пения, как в Apple Music",
+        di_media_karaoke_tip = "Строка заливается по мере пения,\nкак в Apple Music",
         di_media_lyrics_tip = "Текст песни в такт музыке, с lrclib.net.\nКавычки открывают его, клик по строке перематывает",
         di_media_marquee_speed = "Скорость бегущей строки",
         di_media_marquee_speed_tip = "Как быстро прокручиваются длинные названия",
@@ -10111,7 +10111,6 @@ function Impl.LyReply(key, res)
         if #lines > 0 and not lines[1].gap and lines[1].t > 3 then table.insert(lines, 1, { t = 0, x = "", gap = true, a = 0, h = 0 }) end
         while #lines > 0 and lines[#lines].gap do lines[#lines] = nil end
         Ly.Lines = lines
-        Ly.COff = {}
         Ly.Status = #lines > 0 and "ok" or "none"
         Ly.WrapW = 0
     elseif head == "none" or head == "instrumental" then
@@ -10152,7 +10151,6 @@ function Impl.LyTick(dt)
     local now = os.clock()
     if key ~= Ly.Key then
         Ly.Key, Ly.Status, Ly.Lines, Ly.ChangedAt, Ly.Idx, Ly.WrapW = key, "wait", {}, now, 0, 0
-        Ly.COff, Ly.CXLine = {}, nil
         Ly.Scroll, Ly.ScrollV, Ly.Target = 0, 0, 0
         return
     end
@@ -10199,6 +10197,7 @@ function Impl.LyFrac(i, pos)
     local n = math.max(1, ln.len or 1)
     local nxt = Ly.Lines[i + 1]
     local span = nxt and math.max(0.3, nxt.t - ln.t) or 6
+    local rate = 0.075
     local c
     local K = ln.knots
     if K and #K > 0 then
@@ -10216,13 +10215,14 @@ function Impl.LyFrac(i, pos)
             if not c then
                 local last = K[#K]
                 local left = n - last.c
-                local dur = math.max(0.2, math.min((ln.t + span - math.min(0.35, span * 0.12)) - last.t, left * 0.16 + 0.3))
+                local dur = math.max(0.2, math.min((ln.t + span * 0.95) - last.t, left * rate * 1.6 + 0.2))
                 c = last.c + left * math.min(1, (pos - last.t) / dur)
             end
         end
         return math.max(0, math.min(1, c / n))
     end
-    return 1
+    local sing = math.max(0.6, math.min(span * 0.92, 0.35 + n * rate))
+    return math.max(0, math.min(1, (pos - ln.t) / sing))
 end
 
 function Impl.LyKaraoke(font, size, rows, x, y, rowH, frac, colDim, colLit)
@@ -10269,64 +10269,22 @@ function Impl.LyCompactLine(i, title, x, y, w, font, size, aMul, scale, done)
         RenderMarqueeText(font, size, title, x, y, w, FadeColor(col, aMul), scale)
         return
     end
-    local Ly = Impl.Ly
-    local ln = Ly.Lines[i]
+    local ln = Impl.Ly.Lines[i]
     if not ln then return end
     local text = ln.x
-    local glyphs = Marquee.Layout(font, size, text)
-    local tw = #glyphs > 0 and glyphs[#glyphs].x1 or 0
+    local tw = Render.TextSize(font, size, text).x
+    local karaoke = Impl.LyKaraokeOn()
     local frac = done and 1 or Impl.LyFrac(i, (MediaData.PosSmooth or 0) + 0.1)
-    Ly.COff = Ly.COff or {}
-    local off = Ly.COff[i] or 0
-    if not done then
-        local now = os.clock()
-        if Ly.CXLine ~= i then
-            Ly.CXLine, Ly.CXStart = i, now
-        end
-        local travel = math.max(0, tw - w)
-        if travel > 0 then
-            local nxt = Ly.Lines[i + 1]
-            local span = nxt and (nxt.t - ln.t) or 6
-            local hold = 0.5
-            local dur = math.max(travel / 70, math.min(travel / 28, span - hold - 0.9))
-            local k = math.max(0, math.min(1, (now - Ly.CXStart - hold) / math.max(0.3, dur)))
-            off = travel * (k * k * (3 - 2 * k))
-        else
-            off = 0
-        end
-        Ly.COff[i] = off
+    local off = 0
+    if tw > w then
+        local fill = Impl.LyPrefixW(font, size, text, frac * Impl.LyLen(text))
+        off = math.max(0, math.min(tw - w, fill - w * 0.6))
     end
-    local karaoke = Impl.LyKaraokeOn() and not done
-    local n = #glyphs
-    local kf = frac * n
-    local ki = math.min(n, math.floor(kf))
-    local fillPx = 0
-    if ki >= n then
-        fillPx = tw
-    elseif n > 0 then
-        local gl = glyphs[ki + 1]
-        fillPx = gl.x0 + (gl.x1 - gl.x0) * (kf - ki)
-    end
-    local edge = size * 0.8
-    local fadeW = 14 * scale
-    local ox = x - off
-    local right = x + w
-    local baseA = (col.a or 255) * aMul
-    for _, gl in ipairs(glyphs) do
-        local gx0, gx1 = ox + gl.x0, ox + gl.x1
-        if gx1 > x and gx0 < right then
-            local mid = (gx0 + gx1) / 2
-            local a = 1
-            if mid > right - fadeW and off < tw - w - 0.5 then a = math.max(0, (right - mid) / fadeW) end
-            if mid < x + fadeW and off > 0.5 then a = math.min(a, math.max(0, (mid - x) / fadeW)) end
-            if karaoke then
-                local lit = math.max(0, math.min(1, (fillPx - gl.x0) / edge + 0.5))
-                a = a * (0.4 + 0.6 * lit)
-            end
-            if a > 0.01 then
-                Render.Text(font, size, gl.ch, Vec2(math.floor(gx0), math.floor(y)), Color(col.r, col.g, col.b, math.floor(baseA * a)))
-            end
-        end
+    local rowH = Render.TextSize(font, size, "Ag").y
+    if karaoke and not done then
+        Impl.LyKaraoke(font, size, { text }, math.floor(x - off), y, rowH, frac, FadeColor(col, aMul * 0.4), FadeColor(col, aMul))
+    else
+        Render.Text(font, size, text, Vec2(math.floor(x - off), math.floor(y)), FadeColor(col, aMul))
     end
 end
 
@@ -10415,7 +10373,7 @@ function Impl.LyDraw(x, y, w, h, scale, aMul)
                         Render.FilledCircle(Vec2(x + (4 + d * 11) * scale, ty + dotsH * ln.h / 2), r, FadeColor(Config.Colors.TextPrimary, al * ln.h * (0.45 + 0.55 * ph)))
                     end
                 end
-            elseif i == Ly.Idx and Impl.LyKaraokeOn() and ln.knots then
+            elseif i == Ly.Idx and Impl.LyKaraokeOn() then
                 Impl.LyKaraoke(font, size, ln.rows, x, ty, rowH, Impl.LyFrac(i, (MediaData.PosSmooth or 0) + 0.1), FadeColor(Config.Colors.TextPrimary, al * 0.42), FadeColor(Config.Colors.TextPrimary, al))
                 Ly.Hits[#Ly.Hits + 1] = { x1 = x, y1 = math.max(y, ty), x2 = x + w, y2 = math.min(y + h, ty + lh), t = ln.t }
             else
