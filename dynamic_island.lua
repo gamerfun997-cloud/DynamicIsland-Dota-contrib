@@ -8469,9 +8469,11 @@ function Impl.FaceStart(result, scan)
 end
 
 function Impl.FacePoly(pts, col, th)
-    Render.PolyLine(pts, col, th)
-    Render.FilledCircle(pts[1], th / 2, col, 0, 1.0, 12)
-    Render.FilledCircle(pts[#pts], th / 2, col, 0, 1.0, 12)
+    for i = 1, #pts - 1 do Render.Line(pts[i], pts[i + 1], col, th) end
+    local joints = (col.a or 255) >= 250
+    if joints then
+        for i = 1, #pts do Render.FilledCircle(pts[i], th / 2, col, 0, 1.0, 10) end
+    end
 end
 
 function Impl.RenderFaceID(layout, alphaMul, yOffset)
@@ -13881,13 +13883,6 @@ ContentFx.Wrap = {
         for i, pt in ipairs(a[1]) do pts[i] = ContentFx.P(pt) end
         a[2] = ContentFx.Alpha(a[2], a[1][1].y)
         a[1] = pts
-    end,
-    PolyLine = function(a)
-        local pts = {}
-        for i, pt in ipairs(a[1]) do pts[i] = ContentFx.P(pt) end
-        a[2] = ContentFx.Alpha(a[2], a[1][1].y)
-        a[1] = pts
-        if a.n >= 3 and a[3] then a[3] = a[3] * ContentFx.k end
     end,
     PushClip = function(a)
         a[1], a[2] = ContentFx.P(a[1]), ContentFx.P(a[2])
