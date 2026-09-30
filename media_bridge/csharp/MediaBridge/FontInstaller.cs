@@ -19,8 +19,8 @@ public static class FontInstaller
         ("SFPRODISPLAYMEDIUM.OTF", "SF Pro Display Medium"),
     };
 
-    private const string IconsFile = "ionicons.ttf";
-    private const string IconsName = "Ionicons";
+    private const string IconsFile = "di_symbols.ttf";
+    private const string IconsName = "DI Symbols";
 
     private static readonly object Sync = new();
     private static string _state = "idle";

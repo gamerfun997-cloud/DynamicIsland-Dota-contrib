@@ -670,7 +670,7 @@ local localization = qLocalization.new({
         di_su_bridge_how = "Download media_bridge.exe from the latest release and add this to Dota launch options in Steam:",
         di_su_bridge_skip = "Continue Without Bridge",
         di_su_fonts_t = "Fonts and Icons",
-        di_su_fonts_d = "The island uses Apple's own typeface and an iOS icon font. They install for your account only, no admin rights needed.",
+        di_su_fonts_d = "The island uses Apple's own typeface and symbols. They install for your account only, no admin rights needed.",
         di_su_position_t = "Position and Size",
         di_su_position_d = "Pick where the island lives. Changes show up right away.",
         di_su_pos_top = "Top",
@@ -1289,7 +1289,7 @@ local localization = qLocalization.new({
         di_su_bridge_how = "Скачай media_bridge.exe из последнего релиза и добавь в параметры запуска доты в Steam:",
         di_su_bridge_skip = "Продолжить без бриджа",
         di_su_fonts_t = "Шрифты и иконки",
-        di_su_fonts_d = "Островок рисуется фирменным шрифтом Apple и шрифтом иконок в стиле iOS. Ставятся только для твоей учётки, без прав админа.",
+        di_su_fonts_d = "Островок рисуется фирменным шрифтом и значками Apple. Ставятся только для твоей учётки, без прав админа.",
         di_su_position_t = "Позиция и размер",
         di_su_position_d = "Выбери, где будет островок. Изменения видно сразу.",
         di_su_pos_top = "Сверху",
@@ -2351,60 +2351,60 @@ Impl.MapLandmarks = {
 }
 
 local VectorIcons = {
-    ["bounty"] = { "\u{f144}", 0, 16, 448, 368, k = 0.833, bg = Color(255, 159, 10, 255) },
-    ["lotus"] = { "\u{f433}", 0, -16, 416, 400, k = 0.958, oy = 0.062, bg = Color(255, 55, 95, 255) },
-    ["wisdom"] = { "\u{f138}", 0, -16, 296, 400, k = 0.833, bg = Color(191, 90, 242, 255) },
-    ["rune_wisdom"] = { "\u{f138}", 0, -16, 296, 400, k = 0.842, oy = -0.021, bg = Color(191, 90, 242, 255) },
-    ["rune_water"] = { "\u{f26b}", 0, -16, 320, 401, k = 0.925, oy = 0.042, bg = Color(100, 210, 255, 255) },
-    ["rune_dd"] = { "\u{f17e}", -1, -33, 258, 417, k = 0.833, bg = Color(10, 132, 255, 255) },
-    ["rune_haste"] = { "\u{f427}", 0, 63, 448, 321, k = 0.833, bg = Color(255, 69, 58, 255) },
-    ["rune_invis"] = { "\u{f17a}", -7, -2, 453, 390, k = 0.833, bg = Color(94, 92, 230, 255) },
-    ["rune_regen"] = { "\u{f443}", 0, -8, 416, 392, k = 0.833, bg = Color(48, 209, 88, 255) },
-    ["rune_arcane"] = { "\u{f416}", 0, -4, 388, 384, k = 0.833, bg = Color(255, 55, 95, 255) },
-    ["rune_shield"] = { "\u{f25f}", 0, -16, 416, 400, k = 0.854, oy = 0.01, bg = Color(255, 214, 10, 255) },
-    ["buyback"] = { "\u{f49c}", 0, -32, 385, 419, k = 0.725, ox = 0.01, oy = -0.025 },
-    ["swords"] = { "\u{f42f}", 0, -16, 293, 400, k = 0.717 },
-    ["flame"] = { "\u{f42f}", 0, -16, 293, 400, k = 0.958, oy = 0.062 },
-    ["media_prev"] = { "\u{f4a1}", 0, 63, 448, 321, k = 0.801 },
-    ["media_next"] = { "\u{f427}", 0, 63, 448, 321, k = 0.801 },
-    ["media_play"] = { "\u{f488}", 0, 31, 256, 353, k = 0.698, ox = 0.083 },
-    ["media_pause"] = { "\u{f478}", 0, 32, 256, 352, k = 0.667 },
-    ["lyrics"] = { "\u{f1f5}", 0, 32, 320, 352, k = 0.833 },
-    ["heart_outline"] = { "\u{f19b}", 0, -8, 416, 392, k = 0.842, oy = 0.01 },
-    ["heart_fill"] = { "\u{f443}", 0, -8, 416, 392, k = 0.75, oy = 0.01 },
-    ["shuffle"] = { "\u{f4a9}", 0, 56, 384, 328, k = 0.842, oy = -0.042 },
-    ["repeat"] = { "\u{f1fe}", 0, 55, 384, 330, k = 0.842 },
-    ["clock"] = { "\u{f394}", 0, -16, 416, 400, k = 0.842 },
-    ["kda"] = { "\u{f31c}", 0, -32, 448, 416, k = 0.925 },
-    ["gold"] = { "\u{f144}", 0, 16, 448, 368, k = 0.842 },
-    ["networth"] = { "\u{f25b}", 0, 64, 448, 320, k = 0.779, ox = -0.01 },
-    ["lasthits"] = { "\u{f18e}", -7, -7, 418, 384, k = 0.738, oy = 0.01 },
-    ["heroname"] = { "\u{f47e}", -2, 0, 386, 384, k = 0.8, oy = -0.01 },
-    ["fps"] = { "\u{f4b0}", 0, 0, 448, 384, k = 0.842, oy = -0.053 },
-    ["ping"] = { "\u{f26d}", -4, 28, 452, 352, k = 0.888, oy = 0.027 },
-    ["home"] = { "\u{f448}", 0, -16, 416, 400, k = 0.8 },
-    ["search"] = { "\u{f4a5}", 0, 0, 391, 384, k = 0.8, ox = 0.021, oy = 0.021 },
-    ["check"] = { "\u{f2bc}", 0, 46, 384, 338, k = 0.7, oy = 0.01 },
-    ["close"] = { "\u{f2c0}", 0, 43, 298, 341, k = 0.567 },
-    ["chevron"] = { "\u{f3d1}", 0, 24, 202, 360, k = 0.733, ox = 0.031 },
-    ["chevron_back"] = { "\u{f3cf}", -10, 24, 192, 360, k = 0.825, ox = -0.031 },
-    ["appearance"] = { "\u{f163}", 0, -16, 416, 400, k = 0.842 },
-    ["plus"] = { "\u{f273}", 0, 32, 320, 352, k = 0.708 },
-    ["bolt"] = { "\u{f17e}", -1, -33, 258, 417, k = 0.849 },
-    ["music"] = { "\u{f46c}", 0, -16, 320, 401, k = 0.73, ox = -0.05, oy = -0.023 },
-    ["headphones"] = { "\u{f194}", 0, 16, 448, 368, k = 0.733 },
-    ["display"] = { "\u{f16c}", 0, 0, 448, 384, k = 0.842, oy = 0.013 },
-    ["battery_low"] = { "\u{f121}", 0, 80, 480, 304, k = 0.862 },
-    ["arrow_down"] = { "\u{f118}", -5, 48, 197, 336, k = 0.7, oy = -0.021 },
-    ["hold"] = { "\u{f1f7}", 0, -16, 416, 400, k = 0.758 },
-    ["moon"] = { "\u{f468}", 0, 0, 352, 385, k = 0.75 },
-    ["bell"] = { "\u{f1d3}", -3, -8, 323, 392, k = 0.721, oy = -0.014 },
-    ["courier"] = { "\u{f168}", 0, -17, 416, 402, k = 0.753 },
-    ["pause"] = { "\u{f478}", 0, 32, 256, 352, k = 0.667 },
-    ["volume"] = { "\u{f11c}", 0, 32, 383, 356, k = 0.786, ox = 0.039 },
-    ["mute"] = { "\u{f264}", 0, -16, 384, 405, k = 0.796, ox = 0.044 },
-    ["apple_check"] = { "\u{f14a}", 0, -16, 416, 400, k = 0.833, fg = Color(52, 199, 89, 255) },
-    ["stack"] = { "\u{f10a}", 0, 0, 384, 391, k = 0.692 }
+    ["bounty"] = { "\u{e000}", 179, -311, 2246, 1755, k = 0.833, fg = Color(255, 159, 10, 255) },
+    ["lotus"] = { "\u{e001}", 179, -238, 2370, 1631, k = 0.833, bg = Color(255, 55, 95, 255) },
+    ["wisdom"] = { "\u{e002}", 374, -417, 1955, 1948, k = 0.833, bg = Color(191, 90, 242, 255) },
+    ["rune_wisdom"] = { "\u{e002}", 374, -417, 1955, 1948, k = 0.833, bg = Color(191, 90, 242, 255) },
+    ["rune_water"] = { "\u{e003}", 179, -308, 1601, 1753, k = 0.833, bg = Color(100, 210, 255, 255) },
+    ["rune_dd"] = { "\u{e004}", 275, -415, 1732, 1875, k = 0.833, bg = Color(10, 132, 255, 255) },
+    ["rune_haste"] = { "\u{e005}", 179, -299, 3224, 1884, k = 0.833, bg = Color(255, 69, 58, 255) },
+    ["rune_invis"] = { "\u{e006}", 218, -188, 2938, 1667, k = 0.833, bg = Color(94, 92, 230, 255) },
+    ["rune_regen"] = { "\u{e007}", 242, -245, 2263, 1627, k = 0.833, bg = Color(48, 209, 88, 255) },
+    ["rune_arcane"] = { "\u{e008}", 204, -356, 2079, 1940, k = 0.833, bg = Color(255, 55, 95, 255) },
+    ["rune_shield"] = { "\u{e009}", 377, -295, 2039, 1707, k = 0.833, bg = Color(255, 214, 10, 255) },
+    ["buyback"] = { "\u{e00a}", 179, -243, 1966, 1933, k = 0.725, ox = 0.01, oy = -0.025 },
+    ["swords"] = { "\u{e00b}", 179, -283, 1878, 1908, k = 0.717 },
+    ["flame"] = { "\u{e00b}", 179, -283, 1878, 1908, k = 0.958, oy = 0.062 },
+    ["media_prev"] = { "\u{e00c}", 25, -80, 2865, 1527, k = 0.801 },
+    ["media_next"] = { "\u{e00d}", 255, -80, 3095, 1527, k = 0.801 },
+    ["media_play"] = { "\u{e00e}", 255, -154, 1819, 1595, k = 0.698, ox = 0.083 },
+    ["media_pause"] = { "\u{e00f}", 254, -109, 1532, 1552, k = 0.667 },
+    ["lyrics"] = { "\u{e010}", 255, -393, 2470, 1714, k = 0.833 },
+    ["heart_outline"] = { "\u{e011}", 242, -245, 2263, 1627, k = 0.842, oy = 0.01 },
+    ["heart_fill"] = { "\u{e007}", 242, -245, 2263, 1627, k = 0.75, oy = 0.01 },
+    ["shuffle"] = { "\u{e012}", 255, -250, 2676, 1683, k = 0.842, oy = -0.042 },
+    ["repeat"] = { "\u{e013}", 255, -221, 2497, 1685, k = 0.842 },
+    ["clock"] = { "\u{e014}", 179, -311, 2246, 1755, k = 0.842 },
+    ["kda"] = { "\u{e015}", 179, -502, 2624, 1944, k = 0.925 },
+    ["gold"] = { "\u{e016}", 179, -311, 2246, 1755, k = 0.842 },
+    ["networth"] = { "\u{e017}", 255, -215, 2847, 1668, k = 0.779, ox = -0.01 },
+    ["lasthits"] = { "\u{e018}", 226, -452, 2759, 1918, k = 0.738, oy = 0.01 },
+    ["heroname"] = { "\u{e019}", 255, -220, 2875, 1795, k = 0.8, oy = -0.01 },
+    ["fps"] = { "\u{e01a}", 179, -343, 2246, 1723, k = 0.842, oy = -0.053 },
+    ["ping"] = { "\u{e01b}", 183, -122, 2516, 1564, k = 0.888, oy = 0.027 },
+    ["home"] = { "\u{e01c}", 255, -357, 2696, 1781, k = 0.8 },
+    ["search"] = { "\u{e01d}", 230, -240, 2135, 1683, k = 0.8, ox = 0.021, oy = 0.021 },
+    ["check"] = { "\u{e01e}", 255, -170, 2023, 1565, k = 0.7, oy = 0.01 },
+    ["close"] = { "\u{e01f}", 251, -89, 1870, 1529, k = 0.567 },
+    ["chevron"] = { "\u{e020}", 386, -163, 1405, 1607, k = 0.733, ox = 0.031 },
+    ["chevron_back"] = { "\u{e021}", 123, -163, 1142, 1607, k = 0.825, ox = -0.031 },
+    ["appearance"] = { "\u{e022}", 179, -311, 2246, 1755, k = 0.842 },
+    ["plus"] = { "\u{e023}", 255, -115, 1929, 1559, k = 0.708 },
+    ["bolt"] = { "\u{e004}", 275, -415, 1732, 1875, k = 0.849 },
+    ["music"] = { "\u{e024}", 255, -315, 1503, 1722, k = 0.73, ox = -0.05, oy = -0.023 },
+    ["headphones"] = { "\u{e025}", 255, -235, 2377, 1720, k = 0.733 },
+    ["display"] = { "\u{e026}", 255, -298, 2661, 1743, k = 0.842, oy = 0.013 },
+    ["battery_low"] = { "\u{e027}", 255, -6, 3285, 1449, k = 0.862 },
+    ["arrow_down"] = { "\u{e028}", 255, -228, 1804, 1671, k = 0.7, oy = -0.021 },
+    ["hold"] = { "\u{e029}", 179, -311, 2246, 1755, k = 0.758 },
+    ["moon"] = { "\u{e02a}", 179, -266, 2149, 1714, k = 0.75 },
+    ["bell"] = { "\u{e02b}", 209, -351, 2137, 1779, k = 0.721, oy = -0.014 },
+    ["courier"] = { "\u{e02c}", 255, -375, 2300, 1811, k = 0.753 },
+    ["pause"] = { "\u{e00f}", 254, -109, 1532, 1552, k = 0.667 },
+    ["volume"] = { "\u{e02d}", 312, -174, 2630, 1616, k = 0.786, ox = 0.039 },
+    ["mute"] = { "\u{e02e}", 112, -294, 2021, 1616, k = 0.796, ox = 0.044 },
+    ["apple_check"] = { "\u{e02f}", 179, -311, 2246, 1755, k = 0.833, fg = Color(52, 199, 89, 255) },
+    ["stack"] = { "\u{e030}", 245, -428, 2316, 1836, k = 0.692 }
 }
 
 local PowerRunesCycleList = {
@@ -2872,9 +2872,9 @@ function Impl.IconFont()
     if not f then return nil end
     if Impl.IonFor ~= f then
         Impl.IonFor = f
-        Impl.IonUnit = 1 / 512
-        local ok, ts = pcall(Render.TextSize, f, 100, "\u{f4bf}")
-        if ok and ts and ts.x > 0 then Impl.IonUnit = ts.x / 41600 end
+        Impl.IonUnit = 1 / 2048
+        local ok, ts = pcall(Render.TextSize, f, 100, "\u{e014}")
+        if ok and ts and ts.x > 0 then Impl.IonUnit = ts.x / 242500 end
     end
     return f
 end
@@ -2897,7 +2897,7 @@ function Impl.DrawIcon(g, x, y, w, h, col)
     local sc = fit / math.max(g[4] - g[2], g[5] - g[3])
     local size = sc / Impl.IonUnit
     local px = cx - (g[2] + g[4]) * 0.5 * sc
-    local py = cy + (g[3] + g[5]) * 0.5 * sc - 449 * sc
+    local py = cy + (g[3] + g[5]) * 0.5 * sc - 1950 * sc
     Render.Text(f, size, g[1], Vec2(math.floor(px + 0.5), math.floor(py + 0.5)), col)
 end
 
@@ -2965,7 +2965,7 @@ function Impl.LoadScriptFonts()
     Config.Fonts.Semibold = F("SF Pro Text", bold and 700 or 600)
     Config.Fonts.Display = F("SF Pro Display", bold and 700 or 500)
     Config.Fonts.Lyric = F("SF Pro Display", bold and 800 or 700)
-    Config.Fonts.Icons = F("Ionicons", 400)
+    Config.Fonts.Icons = F("DI Symbols", 400)
     Config.Fonts.Main = Config.Fonts.Regular
     Config.Fonts.Bold = Config.Fonts.Semibold
 end
