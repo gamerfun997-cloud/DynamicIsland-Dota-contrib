@@ -428,10 +428,11 @@ public static class MediaSessionService
     }
 
     private static DateTime _lastValidAt = DateTime.MinValue;
+    private static DateTime? _noSessionSince;
 
     private static MediaInfo? Recent()
     {
-        return (DateTime.UtcNow - _lastValidAt).TotalSeconds < 4 ? _lastValidData : null;
+        return (DateTime.UtcNow - _lastValidAt).TotalSeconds < 30 ? _lastValidData : null;
     }
 
     public static async Task<MediaInfo?> GetMediaInfoAsync()
@@ -453,11 +454,15 @@ public static class MediaSessionService
             }
             if (session == null)
             {
+                _noSessionSince ??= DateTime.UtcNow;
+                if ((DateTime.UtcNow - _noSessionSince.Value).TotalSeconds < 2) return _lastValidData;
                 _lastValidData = null;
                 CurrentFamily = "";
                 CurrentAppId = "";
                 return null;
             }
+
+            _noSessionSince = null;
 
             var props = await WinRtAsync.WithTimeout(session.TryGetMediaPropertiesAsync(), 350);
             if (props == null) return Recent();

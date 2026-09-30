@@ -75,11 +75,17 @@ public static partial class Lyrics
             if (Cache.TryGetValue(key, out string? hit)) return hit;
             if (!Pending.TryGetValue(key, out task))
             {
-                task = FetchAsync(artist, title, album, duration);
+                task = Task.Run(() => FetchAndStoreAsync(key, artist, title, album, duration));
                 Pending[key] = task;
             }
         }
-        string res = await task;
+        var first = await Task.WhenAny(task, Task.Delay(1200));
+        return first == task ? await task : "pending";
+    }
+
+    private static async Task<string> FetchAndStoreAsync(string key, string artist, string title, string album, double duration)
+    {
+        string res = await FetchAsync(artist, title, album, duration);
         lock (Sync)
         {
             Pending.Remove(key);

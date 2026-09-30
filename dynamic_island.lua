@@ -10141,6 +10141,10 @@ function Impl.LyReply(key, res)
         Ly.Lines = lines
         Ly.Status = #lines > 0 and "ok" or "none"
         Ly.WrapW = 0
+    elseif head == "pending" then
+        Ly.Status = "wait"
+        Ly.ChangedAt = os.clock() + 0.4
+        return
     elseif head == "none" or head == "instrumental" then
         Ly.Status = head
     else
@@ -10182,9 +10186,14 @@ function Impl.LyTick(dt)
         Ly.Scroll, Ly.ScrollV, Ly.Target = 0, 0, 0
         return
     end
+    if Ly.Status == "loading" and now - (Ly.LoadAt or now) > 12 then
+        Ly.Status = "error"
+        Ly.RetryAt = now + 5
+    end
     if (Ly.Status == "wait" and now - Ly.ChangedAt > 0.6) or (Ly.Status == "error" and now > Ly.RetryAt) then
         if not Sheet.BridgeOnline() then return end
         Ly.Status = "loading"
+        Ly.LoadAt = now
         local q = "artist=" .. Sheet.UrlEncode(MediaData.Artist or "") .. "&title=" .. Sheet.UrlEncode(MediaData.Title) .. "&album=" .. Sheet.UrlEncode(MediaData.Album or "") .. string.format("&dur=%d", math.floor((MediaData.Duration or 0) + 0.5))
         local ok = pcall(HTTP.Request, "GET", "http://127.0.0.1:45455/lyrics?" .. q, {}, function(res) Impl.LyReply(key, res) end, "di_lyrics")
         if not ok then
