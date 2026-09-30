@@ -876,6 +876,8 @@ local localization = qLocalization.new({
         di_combat_courier_delivery_tip = "A live activity while the courier\ncarries your items",
         di_combat_pause_alert = "Pause Notification Pill",
         di_combat_pause_alert_tip = "Shows when the game is paused",
+        di_match_alert = "Match Found",
+        di_match_alert_tip = "Accept countdown in the menu.\nPriority, Focus and sound in the gear",
         di_runes_active_runes = "Active Power Runes",
         di_runes_active_runes_tip = "Reminder before power runes spawn",
         di_runes_water_runes = "Water Runes",
@@ -1495,6 +1497,8 @@ local localization = qLocalization.new({
         di_combat_courier_delivery_tip = "Живая активность, пока курьер\nнесет твои предметы",
         di_combat_pause_alert = "Оповещение паузы игры",
         di_combat_pause_alert_tip = "Показывает, когда игра на паузе",
+        di_match_alert = "Матч найден",
+        di_match_alert_tip = "Отсчёт принятия матча в меню.\nПриоритет, фокус и звук в шестерёнке",
         di_runes_active_runes = "Активные руны (Power)",
         di_runes_active_runes_tip = "Напоминание перед появлением силовых рун",
         di_runes_water_runes = "Водные руны",
@@ -3593,6 +3597,11 @@ function Impl.InitMenu()
     C.CourierDelivery:ToolTip("di_combat_courier_delivery_tip")
     C.PauseAlert = gLive:Switch("di_combat_pause_alert", true, "\u{f04c}")
     C.PauseAlert:ToolTip("di_combat_pause_alert_tip")
+    C.MatchFound = gLive:Switch("di_match_alert", true, "\u{f11b}")
+    C.MatchFound:ToolTip("di_match_alert_tip")
+    local gMatch = C.MatchFound:Gear("di_gear_alert")
+    P.MatchFound = prio(gMatch, "di_alert_priority", 4)
+    snd(gMatch, "MatchFound")
     UI.System.Output = gSystem:Switch("di_sys_output", true, "\u{f025}")
     UI.System.Output:ToolTip("di_sys_output_tip")
     UI.System.Mute = gSystem:Switch("di_sys_mute", true, "\u{f6a9}")
@@ -3915,7 +3924,7 @@ local function TriggerStateTransition(nextState)
     elseif StateMachine.PreviousState == StateMachine.States.GAME_PAUSED then
         HapticPlaySound("game_unpaused", 0.45)
     elseif nextState == StateMachine.States.MENU_MATCH_FOUND then
-        HapticPlaySound("match_found", 0.60)
+        if ToggleOn(UI and UI.Sounds and UI.Sounds.MatchFound) then HapticPlaySound("match_found", 0.60) end
     end
 end
 
@@ -6720,7 +6729,29 @@ function Impl.BubbleAvail()
     return (Engine.IsInGame and Engine.IsInGame()) and UI and UI.Media and UI.Media.SecondaryBubble and UI.Media.SecondaryBubble:Get() and not HUDCustomizer.IsOpen or false
 end
 
+function Impl.MatchPrio()
+    local w = UI and UI.Priority and UI.Priority.MatchFound
+    return w and w:Get() or 4
+end
+
+function Impl.MatchAllowed(active)
+    if not ToggleOn(UI and UI.Combat and UI.Combat.MatchFound) then return false end
+    local p = Impl.MatchPrio()
+    if active and (active.Priority or DEFAULT_NOTIF_PRIORITY) > p then return false end
+    if StateMachine.TargetState == StateMachine.States.MENU_MATCH_FOUND then return true end
+    if Focus.Active and Focus.Blocks({ Priority = p }) then return false end
+    if p < 5 and Impl.Engaged() then return false end
+    return true
+end
+
 function Impl.HoldQueue()
+    if StateMachine.TargetState == StateMachine.States.MENU_MATCH_FOUND then
+        local p = Impl.MatchPrio()
+        for _, n in ipairs(NotificationQueue.List) do
+            if (n.Priority or DEFAULT_NOTIF_PRIORITY) > p then return false end
+        end
+        return true
+    end
     return Impl.Engaged() and not Impl.BubbleAvail()
 end
 
@@ -7314,10 +7345,20 @@ function Impl.HandleInteractions()
         end
     elseif not inGame then
         Impl.Pin = nil
-        if not NotificationQueue.Active then
+        local canAccept = Engine.CanAcceptMatch and Engine.CanAcceptMatch()
+        local wantMatch = canAccept or (Journey.AcceptedAt and nowClk - Journey.AcceptedAt < 1.2)
+        if not canAccept then Journey.MatchHeld = nil end
+        if wantMatch and not Impl.MatchAllowed(NotificationQueue.Active) then
+            if canAccept and not Journey.MatchHeld then
+                Journey.MatchHeld = true
+                if Focus.Active and Focus.Blocks({ Priority = Impl.MatchPrio() }) then Focus.Suppressed = Focus.Suppressed + 1 end
+                if Dbg.On then Dbg.Log("notif", "match found is waiting, priority " .. tostring(Impl.MatchPrio())) end
+            end
+            wantMatch = false
+        end
+        if not NotificationQueue.Active or wantMatch then
             local detected
-            local canAccept = Engine.CanAcceptMatch and Engine.CanAcceptMatch()
-            if canAccept or (Journey.AcceptedAt and nowClk - Journey.AcceptedAt < 1.2) then
+            if wantMatch then
                 detected = StateMachine.States.MENU_MATCH_FOUND
             else
                 local isSearching = Impl.GetMatchSearchInfo()
