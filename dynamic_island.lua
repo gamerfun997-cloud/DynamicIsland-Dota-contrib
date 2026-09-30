@@ -669,8 +669,8 @@ local localization = qLocalization.new({
         di_su_bridge_off = "Bridge not found",
         di_su_bridge_how = "Download media_bridge.exe from the latest release and add this to Dota launch options in Steam:",
         di_su_bridge_skip = "Continue Without Bridge",
-        di_su_fonts_t = "SF Pro Fonts",
-        di_su_fonts_d = "The island uses Apple's own typeface. It installs for your account only, no admin rights needed.",
+        di_su_fonts_t = "Fonts and Icons",
+        di_su_fonts_d = "The island uses Apple's own typeface and an iOS icon font. They install for your account only, no admin rights needed.",
         di_su_position_t = "Position and Size",
         di_su_position_d = "Pick where the island lives. Changes show up right away.",
         di_su_pos_top = "Top",
@@ -1288,8 +1288,8 @@ local localization = qLocalization.new({
         di_su_bridge_off = "Бридж не найден",
         di_su_bridge_how = "Скачай media_bridge.exe из последнего релиза и добавь в параметры запуска доты в Steam:",
         di_su_bridge_skip = "Продолжить без бриджа",
-        di_su_fonts_t = "Шрифты SF Pro",
-        di_su_fonts_d = "Островок рисуется фирменным шрифтом Apple. Ставится только для твоей учётки, без прав админа.",
+        di_su_fonts_t = "Шрифты и иконки",
+        di_su_fonts_d = "Островок рисуется фирменным шрифтом Apple и шрифтом иконок в стиле iOS. Ставятся только для твоей учётки, без прав админа.",
         di_su_position_t = "Позиция и размер",
         di_su_position_d = "Выбери, где будет островок. Изменения видно сразу.",
         di_su_pos_top = "Сверху",
@@ -2351,62 +2351,60 @@ Impl.MapLandmarks = {
 }
 
 local VectorIcons = {
-    ["bounty"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="10" fill="#FFB300"/><circle cx="12" cy="12" r="7.5" fill="#FF8F00"/><text x="12" y="16" font-size="11" font-weight="900" font-family="sans-serif" text-anchor="middle" fill="#FFF">$</text></svg>',
-    ["lotus"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 2C8 6 3 11 3 16a9 9 0 0 0 18 0C21 11 16 6 12 2z" fill="#FF69B4"/><circle cx="12" cy="15" r="4.5" fill="#FFD700"/></svg>',
-    ["wisdom"] = '<svg viewBox="0 0 24 24" width="24" height="24"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5" fill="#8A2BE2"/><text x="12" y="15" font-size="10" font-weight="bold" font-family="sans-serif" text-anchor="middle" fill="#FFF">XP</text></svg>',
-    ["rune_wisdom"] = '<svg viewBox="0 0 24 24" width="24" height="24"><polygon points="12,2 21.5,8 18,21 6,21 2.5,8" fill="#7B1FA2" stroke="#BA68C8" stroke-width="1.2"/><polygon points="12,5 18,9.5 15.5,18.5 8.5,18.5 6,9.5" fill="#9C27B0"/><polygon points="12,7 15.5,10 14,16 10,16 8.5,10" fill="#E1BEE7"/></svg>',
-    ["rune_water"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 2.5 C12 2.5 4.5 11.5 4.5 16 C4.5 20.1 7.9 23.5 12 23.5 C16.1 23.5 19.5 20.1 19.5 16 C19.5 11.5 12 2.5 12 2.5 Z" fill="#00B0FF" stroke="#80D8FF" stroke-width="1.2"/><path d="M9 13.5 C9 13.5 7.5 16.5 7.5 18 C7.5 19.4 8.6 20.5 10 20.5" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/></svg>',
-    ["rune_dd"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="10" fill="#2196F3"/><path fill="#FFF" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
-    ["rune_haste"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="10" fill="#F44336"/><path fill="#FFF" d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>',
-    ["rune_invis"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="10" fill="#9C27B0"/><path fill="#FFF" d="M12 6.5C8 6.5 4.5 9 3 12c1.5 3 5 5.5 9 5.5s7.5-2.5 9-5.5c-1.5-3-5-5.5-9-5.5zm0 9a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>',
-    ["rune_regen"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="10" fill="#4CAF50"/><path fill="#FFF" d="M12 19.5l-1.2-1.1C6.5 14.5 3.5 11.8 3.5 8.5 3.5 5.8 5.6 3.7 8.3 3.7c1.5 0 3 .7 3.7 1.8.7-1.1 2.2-1.8 3.7-1.8 2.7 0 4.8 2.1 4.8 4.8 0 3.3-3 6-7.3 9.9L12 19.5z"/></svg>',
-    ["rune_arcane"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="10" fill="#E91E63"/><path fill="#FFF" d="M13.5 2s.7 2.3.7 4.2c0 1.8-1.2 3.3-3 3.3-1.8 0-3.2-1.5-3.2-3.3l.03-.3C5.5 7.8 4.5 10.5 4.5 13.5c0 3.9 3.1 7 7 7s7-3.1 7-7c0-4.7-2.3-8.9-5-11.5z"/></svg>',
-    ["rune_shield"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="10" fill="#FFC107"/><path fill="#FFF" d="M12 3L4.5 6.5v5.3c0 4.9 3.4 9.5 7.5 10.7 4.1-1.2 7.5-5.8 7.5-10.7V6.5L12 3z"/></svg>',
-    ["buyback"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M19 12a7 7 0 1 1-2.05-4.95" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.5 3.8v4.2h-4.2" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["swords"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M4.5 4.5 14 14" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.5 16.5l5-5" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 15.5l4 4" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.5 4.5 10 14" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 16.5l-5-5" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 15.5l-4 4" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["flame"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path fill="#FFFFFF" d="M12 2C9.5 5.5 8 8.5 8 11.5c0 1.2.3 2.3.8 3.3-.5-.4-.9-.9-1.2-1.5-.4-.9-.6-1.9-.6-2.9C5.3 12.2 4 14.5 4 17c0 4.4 3.6 8 8 8s8-3.6 8-8c0-4.5-3.5-8.5-8-15zm1 18.5c-2.5 0-4.5-2-4.5-4.5 0-1.5.8-2.9 2-3.7.3.8.8 1.5 1.5 2 .7.5 1.5.8 2.4.8.4 0 .7-.1 1.1-.2-.4 3.2-2.3 5.6-2.5 5.6z"/></svg>',
-    ["media_prev"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M11.5 7.3v9.4c0 .8-.9 1.3-1.6.9L2.8 13c-.7-.4-.7-1.5 0-1.9l7.1-4.6c.7-.5 1.6 0 1.6.8z" fill="#FFF"/><path d="M21.5 7.3v9.4c0 .8-.9 1.3-1.6.9L12.8 13c-.7-.4-.7-1.5 0-1.9l7.1-4.6c.7-.5 1.6 0 1.6.8z" fill="#FFF"/></svg>',
-    ["media_next"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12.5 7.3v9.4c0 .8.9 1.3 1.6.9l7.1-4.6c.7-.4.7-1.5 0-1.9l-7.1-4.6c-.7-.5-1.6 0-1.6.8z" fill="#FFF"/><path d="M2.5 7.3v9.4c0 .8.9 1.3 1.6.9l7.1-4.6c.7-.4.7-1.5 0-1.9L4.1 6.5c-.7-.5-1.6 0-1.6.8z" fill="#FFF"/></svg>',
-    ["media_play"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M7 4.9c0-1 1.1-1.6 2-1.1l11.4 7.1c.8.5.8 1.7 0 2.2L9 20.2c-.9.5-2-.1-2-1.1z" fill="#FFF"/></svg>',
-    ["media_pause"] = '<svg viewBox="0 0 24 24" width="24" height="24"><rect x="5.5" y="4" width="4.6" height="16" rx="1.4" fill="#FFF"/><rect x="13.9" y="4" width="4.6" height="16" rx="1.4" fill="#FFF"/></svg>',
-
-    ["lyrics"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 3.6c5 0 9 3.3 9 7.4s-4 7.4-9 7.4c-1 0-2-.1-2.9-.4L5 20.2l1.1-3.6C4.2 15.3 3 13.3 3 11c0-4.1 4-7.4 9-7.4z" fill="none" stroke="#FFF" stroke-width="2" stroke-linejoin="round"/><circle cx="9.4" cy="10.2" r="1.5" fill="#FFF"/><circle cx="14.6" cy="10.2" r="1.5" fill="#FFF"/><path d="M10.9 10.3c0 1.3-.6 2.3-1.7 2.9M16.1 10.3c0 1.3-.6 2.3-1.7 2.9" fill="none" stroke="#FFF" stroke-width="1.4" stroke-linecap="round"/></svg>',
-    ["heart_outline"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 20.3 10.7 19.1C6 14.9 3 12.2 3 8.9 3 6.2 5.1 4.2 7.7 4.2c1.6 0 3.2.8 4.3 2 1.1-1.2 2.7-2 4.3-2 2.6 0 4.7 2 4.7 4.7 0 3.3-3 6-7.7 10.2z" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linejoin="round"/></svg>',
-    ["heart_fill"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 20.3 10.7 19.1C6 14.9 3 12.2 3 8.9 3 6.2 5.1 4.2 7.7 4.2c1.6 0 3.2.8 4.3 2 1.1-1.2 2.7-2 4.3-2 2.6 0 4.7 2 4.7 4.7 0 3.3-3 6-7.7 10.2z" fill="#FFF"/></svg>',
-    ["shuffle"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 17h2.4c1.9 0 3.1-.8 4.1-2.4l4.8-7.2C15.3 5.8 16.5 5 18.4 5H21" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5 21 5l-2.5 2.5" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 7h2.4c1.5 0 2.6.5 3.5 1.5" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.1 15.5c.9 1 2 1.5 3.3 1.5H21" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 14.5 21 17l-2.5 2.5" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["repeat"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 11.5V10a4 4 0 0 1 4-4h12" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 3l3 3-3 3" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12.5V14a4 4 0 0 1-4 4H4" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 21l-3-3 3-3" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-
-    ["clock"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="9" fill="none" stroke="#FFF" stroke-width="2.2"/><path d="M12 7v5l3.5 2" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["kda"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="7.5" fill="none" stroke="#FFF" stroke-width="2.2"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="2" fill="#FFF"/></svg>',
-    ["gold"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="9" fill="none" stroke="#FFF" stroke-width="2.2"/><path d="M12 6.5v11M14.6 9.3a2.3 2.3 0 0 0-2.3-2H11.2a2.1 2.1 0 0 0 0 4.2h1.6a2.1 2.1 0 0 1 0 4.2h-1.4a2.3 2.3 0 0 1-2.3-2" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["networth"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M3.5 4v14.5a1.5 1.5 0 0 0 1.5 1.5h15" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 14.5l3.5-4 3 3 5-6M15.5 7.5H19v3.5" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["lasthits"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M14.5 4.5l5 5L10 19l-5.5 1 1-5.5z" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 6.5l5 5" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["heroname"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 18.5h16M4.5 15.5 3.5 7.5l4.8 3.6L12 5l3.7 6.1 4.8-3.6-1 8z" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["fps"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M5.6 18.4A9 9 0 1 1 18.4 18.4" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 13l4-4.5" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="13" r="1.9" fill="#FFF"/></svg>',
-    ["ping"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M2.45 9.45a13.5 13.5 0 0 1 19.1 0" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.64 12.64a9 9 0 0 1 12.72 0" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.82 15.82a4.5 4.5 0 0 1 6.36 0" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="19.2" r="1.7" fill="#FFF"/></svg>',
-    ["home"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M3.5 10.8 12 3.5l8.5 7.3V19a1.5 1.5 0 0 1-1.5 1.5h-4v-6h-6v6H5A1.5 1.5 0 0 1 3.5 19z" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["search"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="#FFF" stroke-width="2.2"/><path d="M15.5 15.5 21 21" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["check"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#FFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["close"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="#FFF" stroke-width="2.6" stroke-linecap="round"/></svg>',
-    ["chevron"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M9 4.5l7.5 7.5L9 19.5" fill="none" stroke="#FFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["chevron_back"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M15.5 3.5L7 12l8.5 8.5" fill="none" stroke="#FFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["appearance"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="9" fill="none" stroke="#FFF" stroke-width="2.2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="#FFF"/></svg>',
-    ["plus"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 5v14M5 12h14" fill="none" stroke="#FFF" stroke-width="3" stroke-linecap="round"/></svg>',
-    ["bolt"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M13.6 2.2 4.8 13.1a.8.8 0 0 0 .6 1.3h5.4l-1.2 7.1c-.1.7.8 1.1 1.2.5l8.7-10.9a.8.8 0 0 0-.6-1.3h-5.4l1.2-7.1c.1-.7-.8-1.1-1.1-.5z" fill="#FFF"/></svg>',
-    ["music"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M18.5 3.6v11.2a3.1 3.1 0 1 1-1.8-2.8V7.9l-7.4 1.9v7.3a3.1 3.1 0 1 1-1.8-2.8V6.3c0-.6.4-1.1 1-1.3l8.9-2.3c.6-.1 1.1.3 1.1.9z" fill="#FFF"/></svg>',
-    ["headphones"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M4.4 15.4V12a7.6 7.6 0 0 1 15.2 0v3.4" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><rect x="3.2" y="13.2" width="4.8" height="7.6" rx="2" fill="#FFF"/><rect x="16" y="13.2" width="4.8" height="7.6" rx="2" fill="#FFF"/></svg>',
-    ["display"] = '<svg viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="4.4" width="18" height="12.2" rx="2.2" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M8.6 20.2h6.8M12 16.8v3.2" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
-    ["battery_low"] = '<svg viewBox="0 0 24 24" width="24" height="24"><rect x="2.4" y="7.2" width="17" height="9.6" rx="2.8" fill="none" stroke="#FFF" stroke-width="1.8"/><rect x="20.4" y="10.2" width="1.8" height="3.6" rx=".9" fill="#FFF"/><rect x="4.6" y="9.4" width="3.6" height="5.2" rx="1.2" fill="#FFF"/></svg>',
-    ["arrow_down"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 4.2v14.6M5.8 12.6l6.2 6.2 6.2-6.2" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
-    ["hold"] = '<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="3.6" fill="#FFF"/><circle cx="12" cy="12" r="8" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
-    ["moon"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 3A6.364 6.364 0 0 0 21 12A9 9 0 1 1 12 3Z" fill="#FFFFFF"/></svg>',
-    ["bell"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 3a6 6 0 0 0-6 6v4.3L4.4 16v1.2h15.2V16L18 13.3V9a6 6 0 0 0-6-6z" fill="#FFFFFF"/><path d="M9.7 18.6a2.4 2.4 0 0 0 4.6 0z" fill="#FFFFFF"/></svg>',
-    ["courier"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path fill="#FFD60A" d="M19.38 6.81l-6.5-3.61a1.76 1.76 0 0 0-1.76 0l-6.5 3.61A1.76 1.76 0 0 0 3.75 8.35v7.3a1.76 1.76 0 0 0 .87 1.54l6.5 3.61a1.76 1.76 0 0 0 1.76 0l6.5-3.61a1.76 1.76 0 0 0 .87-1.54v-7.3a1.76 1.76 0 0 0-.87-1.54zm-7.38-2.1l6.12 3.4-2.6 1.45-6.13-3.41 2.61-1.44zm-7 4.19l6.13 3.41v6.86L5 15.76V8.9zm8 10.27v-6.86l6.13-3.41v6.86l-6.13 3.41z"/></svg>',
-    ["pause"] = '<svg viewBox="0 0 24 24" width="24" height="24"><rect x="5.5" y="4" width="4.6" height="16" rx="1.4" fill="#FFF"/><rect x="13.9" y="4" width="4.6" height="16" rx="1.4" fill="#FFF"/></svg>',
-    ["volume"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M3.5 9.8A1.3 1.3 0 0 1 4.8 8.5h2.6l4.3-3.7c.7-.6 1.8-.1 1.8.8v12.8c0 .9-1.1 1.4-1.8.8l-4.3-3.7H4.8a1.3 1.3 0 0 1-1.3-1.3z" fill="#FFF"/><path d="M16.3 9.2a4 4 0 0 1 0 5.6" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6.5a7.8 7.8 0 0 1 0 11" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["mute"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M3.5 9.8A1.3 1.3 0 0 1 4.8 8.5h2.6l4.3-3.7c.7-.6 1.8-.1 1.8.8v12.8c0 .9-1.1 1.4-1.8.8l-4.3-3.7H4.8a1.3 1.3 0 0 1-1.3-1.3z" fill="#FFF"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    ["apple_check"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path fill="#34C759" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.2 15.2l-4.5-4.5 1.41-1.41 3.09 3.08 7.09-7.09 1.41 1.41-8.5 8.51z"/></svg>',
-    ["stack"] = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 3.8l7.2 3.6L12 11 4.8 7.4z" fill="#FFF"/><path d="M4.8 11.6 12 15.2l7.2-3.6" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.8 15.6 12 19.2l7.2-3.6" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    ["bounty"] = { "\u{f144}", 0, 16, 448, 368, k = 0.833, bg = Color(255, 159, 10, 255) },
+    ["lotus"] = { "\u{f433}", 0, -16, 416, 400, k = 0.958, oy = 0.062, bg = Color(255, 55, 95, 255) },
+    ["wisdom"] = { "\u{f138}", 0, -16, 296, 400, k = 0.833, bg = Color(191, 90, 242, 255) },
+    ["rune_wisdom"] = { "\u{f138}", 0, -16, 296, 400, k = 0.842, oy = -0.021, bg = Color(191, 90, 242, 255) },
+    ["rune_water"] = { "\u{f26b}", 0, -16, 320, 401, k = 0.925, oy = 0.042, bg = Color(100, 210, 255, 255) },
+    ["rune_dd"] = { "\u{f17e}", -1, -33, 258, 417, k = 0.833, bg = Color(10, 132, 255, 255) },
+    ["rune_haste"] = { "\u{f427}", 0, 63, 448, 321, k = 0.833, bg = Color(255, 69, 58, 255) },
+    ["rune_invis"] = { "\u{f17a}", -7, -2, 453, 390, k = 0.833, bg = Color(94, 92, 230, 255) },
+    ["rune_regen"] = { "\u{f443}", 0, -8, 416, 392, k = 0.833, bg = Color(48, 209, 88, 255) },
+    ["rune_arcane"] = { "\u{f416}", 0, -4, 388, 384, k = 0.833, bg = Color(255, 55, 95, 255) },
+    ["rune_shield"] = { "\u{f25f}", 0, -16, 416, 400, k = 0.854, oy = 0.01, bg = Color(255, 214, 10, 255) },
+    ["buyback"] = { "\u{f49c}", 0, -32, 385, 419, k = 0.725, ox = 0.01, oy = -0.025 },
+    ["swords"] = { "\u{f42f}", 0, -16, 293, 400, k = 0.717 },
+    ["flame"] = { "\u{f42f}", 0, -16, 293, 400, k = 0.958, oy = 0.062 },
+    ["media_prev"] = { "\u{f4a1}", 0, 63, 448, 321, k = 0.801 },
+    ["media_next"] = { "\u{f427}", 0, 63, 448, 321, k = 0.801 },
+    ["media_play"] = { "\u{f488}", 0, 31, 256, 353, k = 0.698, ox = 0.083 },
+    ["media_pause"] = { "\u{f478}", 0, 32, 256, 352, k = 0.667 },
+    ["lyrics"] = { "\u{f1f5}", 0, 32, 320, 352, k = 0.833 },
+    ["heart_outline"] = { "\u{f19b}", 0, -8, 416, 392, k = 0.842, oy = 0.01 },
+    ["heart_fill"] = { "\u{f443}", 0, -8, 416, 392, k = 0.75, oy = 0.01 },
+    ["shuffle"] = { "\u{f4a9}", 0, 56, 384, 328, k = 0.842, oy = -0.042 },
+    ["repeat"] = { "\u{f1fe}", 0, 55, 384, 330, k = 0.842 },
+    ["clock"] = { "\u{f394}", 0, -16, 416, 400, k = 0.842 },
+    ["kda"] = { "\u{f31c}", 0, -32, 448, 416, k = 0.925 },
+    ["gold"] = { "\u{f144}", 0, 16, 448, 368, k = 0.842 },
+    ["networth"] = { "\u{f25b}", 0, 64, 448, 320, k = 0.779, ox = -0.01 },
+    ["lasthits"] = { "\u{f18e}", -7, -7, 418, 384, k = 0.738, oy = 0.01 },
+    ["heroname"] = { "\u{f47e}", -2, 0, 386, 384, k = 0.8, oy = -0.01 },
+    ["fps"] = { "\u{f4b0}", 0, 0, 448, 384, k = 0.842, oy = -0.053 },
+    ["ping"] = { "\u{f26d}", -4, 28, 452, 352, k = 0.888, oy = 0.027 },
+    ["home"] = { "\u{f448}", 0, -16, 416, 400, k = 0.8 },
+    ["search"] = { "\u{f4a5}", 0, 0, 391, 384, k = 0.8, ox = 0.021, oy = 0.021 },
+    ["check"] = { "\u{f2bc}", 0, 46, 384, 338, k = 0.7, oy = 0.01 },
+    ["close"] = { "\u{f2c0}", 0, 43, 298, 341, k = 0.567 },
+    ["chevron"] = { "\u{f3d1}", 0, 24, 202, 360, k = 0.733, ox = 0.031 },
+    ["chevron_back"] = { "\u{f3cf}", -10, 24, 192, 360, k = 0.825, ox = -0.031 },
+    ["appearance"] = { "\u{f163}", 0, -16, 416, 400, k = 0.842 },
+    ["plus"] = { "\u{f273}", 0, 32, 320, 352, k = 0.708 },
+    ["bolt"] = { "\u{f17e}", -1, -33, 258, 417, k = 0.849 },
+    ["music"] = { "\u{f46c}", 0, -16, 320, 401, k = 0.73, ox = -0.05, oy = -0.023 },
+    ["headphones"] = { "\u{f194}", 0, 16, 448, 368, k = 0.733 },
+    ["display"] = { "\u{f16c}", 0, 0, 448, 384, k = 0.842, oy = 0.013 },
+    ["battery_low"] = { "\u{f121}", 0, 80, 480, 304, k = 0.862 },
+    ["arrow_down"] = { "\u{f118}", -5, 48, 197, 336, k = 0.7, oy = -0.021 },
+    ["hold"] = { "\u{f1f7}", 0, -16, 416, 400, k = 0.758 },
+    ["moon"] = { "\u{f468}", 0, 0, 352, 385, k = 0.75 },
+    ["bell"] = { "\u{f1d3}", -3, -8, 323, 392, k = 0.721, oy = -0.014 },
+    ["courier"] = { "\u{f168}", 0, -17, 416, 402, k = 0.753 },
+    ["pause"] = { "\u{f478}", 0, 32, 256, 352, k = 0.667 },
+    ["volume"] = { "\u{f11c}", 0, 32, 383, 356, k = 0.786, ox = 0.039 },
+    ["mute"] = { "\u{f264}", 0, -16, 384, 405, k = 0.796, ox = 0.044 },
+    ["apple_check"] = { "\u{f14a}", 0, -16, 416, 400, k = 0.833, fg = Color(52, 199, 89, 255) },
+    ["stack"] = { "\u{f10a}", 0, 0, 384, 391, k = 0.692 }
 }
 
 local PowerRunesCycleList = {
@@ -2866,17 +2864,46 @@ local function GetActualMatchTime()
 end
 
 local function GetVectorIcon(name)
-    if not name or not VectorIcons[name] then return nil end
-    local cacheKey = "svg_apple_v39_" .. name
-    local h = ImageCache[cacheKey]
-    if h ~= nil then return h or nil end
-    local ok, handle = pcall(Render.LoadSvgString, VectorIcons[name], Vec2(48, 48), "vec_sym_apple_v39_" .. name)
-    if ok and handle and handle ~= 0 then
-        ImageCache[cacheKey] = handle
-        return handle
+    return name and VectorIcons[name] or nil
+end
+
+function Impl.IconFont()
+    local f = Config.Fonts.Icons
+    if not f then return nil end
+    if Impl.IonFor ~= f then
+        Impl.IonFor = f
+        Impl.IonUnit = 1 / 512
+        local ok, ts = pcall(Render.TextSize, f, 100, "\u{f4bf}")
+        if ok and ts and ts.x > 0 then Impl.IonUnit = ts.x / 41600 end
     end
-    ImageCache[cacheKey] = false
-    return nil
+    return f
+end
+
+function Impl.DrawIcon(g, x, y, w, h, col)
+    local f = Impl.IconFont()
+    col = col or Color(255, 255, 255, 255)
+    local a = col.a or 255
+    if not f or a <= 0 or w <= 0 or h <= 0 then return end
+    local box = math.min(w, h)
+    local cx, cy = x + w / 2 + box * (g.ox or 0), y + h / 2 + box * (g.oy or 0)
+    local fit = box * g.k
+    if g.bg then
+        Render.FilledCircle(Vec2(cx, cy), fit / 2, Color(g.bg.r, g.bg.g, g.bg.b, math.floor(g.bg.a * a / 255)), 0, 1.0, 32)
+        fit = fit * 0.56
+        col = Color(255, 255, 255, a)
+    elseif g.fg then
+        col = Color(math.floor(g.fg.r * col.r / 255), math.floor(g.fg.g * col.g / 255), math.floor(g.fg.b * col.b / 255), a)
+    end
+    local sc = fit / math.max(g[4] - g[2], g[5] - g[3])
+    local size = sc / Impl.IonUnit
+    local px = cx - (g[2] + g[4]) * 0.5 * sc
+    local py = cy + (g[3] + g[5]) * 0.5 * sc - 449 * sc
+    Render.Text(f, size, g[1], Vec2(math.floor(px + 0.5), math.floor(py + 0.5)), col)
+end
+
+function Impl.Img(h, pos, size, col, ...)
+    if type(h) == "table" then return Impl.DrawIcon(h, pos.x, pos.y, size.x, size.y, col) end
+    return Render.Image(h, pos, size, col, ...)
 end
 
 local function GetCachedImage(path, fallbackSvgKey)
@@ -2938,6 +2965,7 @@ function Impl.LoadScriptFonts()
     Config.Fonts.Semibold = F("SF Pro Text", bold and 700 or 600)
     Config.Fonts.Display = F("SF Pro Display", bold and 700 or 500)
     Config.Fonts.Lyric = F("SF Pro Display", bold and 800 or 700)
+    Config.Fonts.Icons = F("Ionicons", 400)
     Config.Fonts.Main = Config.Fonts.Regular
     Config.Fonts.Bold = Config.Fonts.Semibold
 end
@@ -7753,10 +7781,8 @@ local function DrawAppleWaveform(x, y, maxH, count, isPlaying, scale, customColo
 end
 
 local function Glyph(name, cx, cy, sz, col)
-    local h = GetVectorIcon(name)
-    if h and sz > 0 then
-        Render.Image(h, Vec2(math.floor(cx - sz / 2 + 0.5), math.floor(cy - sz / 2 + 0.5)), Vec2(sz, sz), col, 0)
-    end
+    local g = GetVectorIcon(name)
+    if g and sz > 0 then Impl.DrawIcon(g, cx - sz / 2, cy - sz / 2, sz, sz, col) end
 end
 
 local function SoftShadow(p1, p2, r, col, thick, off)
@@ -7926,7 +7952,7 @@ local function DrawAlbumThumbnail(x, y, size, radius, alphaMul, scaleMul, custom
             fadeIn = math.max(0.0, math.min(1.0, since / 0.25))
         end
         if fadeIn < 1.0 then Placeholder(aMul * (1.0 - fadeIn)) end
-        Render.Image(imgH, Vec2(ix, iy), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), aMul * fadeIn), ir)
+        Impl.Img(imgH, Vec2(ix, iy), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), aMul * fadeIn), ir)
     else
         Placeholder(aMul)
     end
@@ -7974,7 +8000,7 @@ function Journey.RenderIdle(layout, alphaMul, yOffset)
     Journey.DrawLine(layout, aMul, yOffset or 0, function(x, midY, sz)
         local h = GetVectorIcon("home")
         if h then
-            Render.Image(h, Vec2(x, math.floor(midY - sz / 2 + MenuIconOffsetY * layout.scale)), Vec2(sz, sz), FadeColor(Config.Colors.TextSecondary, aMul), 0)
+            Impl.Img(h, Vec2(x, math.floor(midY - sz / 2 + MenuIconOffsetY * layout.scale)), Vec2(sz, sz), FadeColor(Config.Colors.TextSecondary, aMul), 0)
         end
     end, label, Config.Colors.TextSecondary, right, Config.Colors.TextPrimary, "journey_clock")
 end
@@ -8003,7 +8029,7 @@ function Journey.RenderMatchFound(layout, alphaMul, yOffset)
         local h = GetVectorIcon("check")
         local isz = math.floor(r * 1.3)
         if h then
-            Render.Image(h, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), aMul), 0)
+            Impl.Img(h, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), aMul), 0)
         end
     end, label, Config.Colors.TextPrimary)
 end
@@ -8058,7 +8084,7 @@ local function RenderModularIdlePill(layout, alphaMul, yOffset)
             local iconSz = math.floor(14 * scale)
             local iconY = math.floor(midY - iconSz / 2 + MenuIconOffsetY * scale)
             if iconHandle then
-                Render.Image(iconHandle, Vec2(drawX, iconY), Vec2(iconSz, iconSz), chip.color, 0)
+                Impl.Img(iconHandle, Vec2(drawX, iconY), Vec2(iconSz, iconSz), chip.color, 0)
             end
             Odometer.Text(odoId, chip.font, s, chip.text, Vec2(drawX + math.floor(20 * scale), ty), chip.color, soft)
         else
@@ -8448,7 +8474,7 @@ function Focus.RenderBubble(layout)
         local isz = math.floor(d * 0.52 * bump)
         local h = GetVectorIcon("moon")
         if h then
-            Render.Image(h, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(accent, ca), 0)
+            Impl.Img(h, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(accent, ca), 0)
         end
         if Focus.Until > Focus.StartedAt then
             local frac = math.max(0, math.min(1, (Focus.Until - now) / (Focus.Until - Focus.StartedAt)))
@@ -8473,7 +8499,7 @@ function Focus.RenderBanner(layout, alphaMul, yOffset)
             local a = math.min(1, t / 0.25)
             local s2 = math.floor(sz * (0.55 + 0.45 * e))
             local dy = math.floor((1 - e) * 5 * layout.scale)
-            Render.Image(h, Vec2(math.floor(x + (sz - s2) / 2), math.floor(midY - s2 / 2 + dy)), Vec2(s2, s2), FadeColor(on and Focus.Accent or Config.Colors.TextSecondary, aMul * a), 0)
+            Impl.Img(h, Vec2(math.floor(x + (sz - s2) / 2), math.floor(midY - s2 / 2 + dy)), Vec2(s2, s2), FadeColor(on and Focus.Accent or Config.Colors.TextSecondary, aMul * a), 0)
         end
     end, L("di_focus_name"), Config.Colors.TextPrimary, on and L("di_focus_on") or L("di_focus_off"), on and Focus.Accent or Config.Colors.TextMuted)
 end
@@ -8502,7 +8528,7 @@ function Focus.RenderTile(layout, x1, x2, y1, aMul)
     local isz = math.floor(cr * 1.15)
     local moon = GetVectorIcon("moon")
     if moon then
-        Render.Image(moon, Vec2(math.floor(cc.x - isz / 2), math.floor(cc.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), aMul), 0)
+        Impl.Img(moon, Vec2(math.floor(cc.x - isz / 2), math.floor(cc.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), aMul), 0)
     end
     local f, s = TF("FootnoteEm", scale)
     local label = L("di_focus_name")
@@ -9419,7 +9445,7 @@ function Impl.RenderSecondarySatelliteBubble(layout)
             local realImg = n.Icon and GetCachedImage(n.Icon) or nil
             local hIcon = realImg or ((fb and not NotifGlyphs[fb]) and GetCachedImage(nil, fb) or nil)
             if hIcon then
-                Render.Image(hIcon, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), ca), math.floor(isz / 2))
+                Impl.Img(hIcon, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), ca), math.floor(isz / 2))
             else
                 Render.FilledCircle(c, isz / 2, FadeColor(accent, ca), 0, 1.0, 24)
                 Glyph(fb or "bell", c.x, c.y, math.floor(isz * 0.58), FadeColor(Color(255, 255, 255, 255), ca))
@@ -9456,7 +9482,7 @@ function Impl.RenderSecondarySatelliteBubble(layout)
                 local isz = math.floor(ringR * 1.3)
                 local hImg = GetCachedImage("panorama/images/heroes/icons/" .. Rampage.Target .. "_png.vtex_c")
                 if hImg then
-                    Render.Image(hImg, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), ca), math.floor(isz / 2))
+                    Impl.Img(hImg, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), ca), math.floor(isz / 2))
                 end
             end
             if ta > 0.01 then
@@ -9482,7 +9508,7 @@ function Impl.RenderSecondarySatelliteBubble(layout)
             end
             local aegisH = GetCachedImage("panorama/images/items/aegis_png.vtex_c")
             if aegisH then
-                Render.Image(aegisH, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), ca), math.floor(isz / 2))
+                Impl.Img(aegisH, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), ca), math.floor(isz / 2))
             end
             if ta > 0.01 then
                 Odometer.Text("aegis_time", fontBold, fontSize, timeStr, Vec2(math.floor(x1 + d + 5 * scale), math.floor(c.y - tsz.y / 2)), FadeColor(Config.Colors.TextPrimary, ta))
@@ -9499,7 +9525,7 @@ function Impl.RenderSecondarySatelliteBubble(layout)
             local isz = math.floor(d * 0.46)
             local h = GetVectorIcon("pause")
             if h then
-                Render.Image(h, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Config.Colors.Orange, ca), 0)
+                Impl.Img(h, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Config.Colors.Orange, ca), 0)
             end
             if ta > 0.01 then
                 Odometer.Text("sat_pause", fontBold, headSize, timeStr, Vec2(math.floor(x1 + d + 5 * scale), math.floor(c.y - th / 2)), FadeColor(Config.Colors.TextPrimary, ta))
@@ -9526,7 +9552,7 @@ function Impl.RenderSecondarySatelliteBubble(layout)
                 local isz = math.floor(ringR * 1.1)
                 local h = GetVectorIcon("courier")
                 if h then
-                    Render.Image(h, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Config.Colors.Yellow, ca), 0)
+                    Impl.Img(h, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Config.Colors.Yellow, ca), 0)
                 end
             end
             if ta > 0.01 then
@@ -9548,7 +9574,7 @@ function Impl.RenderSecondarySatelliteBubble(layout)
             local isz = math.floor(d * 0.5)
             local h = GetVectorIcon("swords")
             if h then
-                Render.Image(h, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Config.Colors.Red, ca), 0)
+                Impl.Img(h, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Config.Colors.Red, ca), 0)
             end
             if ta > 0.01 then
                 Odometer.Text("sat_fight", fontBold, headSize, txt, Vec2(math.floor(x1 + d + 5 * scale), math.floor(c.y - th / 2)), FadeColor(Config.Colors.TextPrimary, ta))
@@ -9575,7 +9601,7 @@ function Impl.RenderSecondarySatelliteBubble(layout)
             local isz = math.floor(ringR * (frac and 1.05 or 1.35))
             local img = a.image and GetCachedImage(a.image) or nil
             if img then
-                Render.Image(img, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), ca), math.floor(isz / 2))
+                Impl.Img(img, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), ca), math.floor(isz / 2))
             else
                 Glyph(a.glyph or "bell", c.x, c.y, isz, FadeColor(tint, ca))
             end
@@ -9592,7 +9618,7 @@ function Impl.RenderSecondarySatelliteBubble(layout)
                 local isz = math.floor(d * 0.52)
                 local hIcon = GetCachedImage(active.Icon, active.FallbackSvg)
                 if hIcon then
-                    Render.Image(hIcon, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), ca), math.floor(isz / 2))
+                    Impl.Img(hIcon, Vec2(math.floor(c.x - isz / 2), math.floor(c.y - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), ca), math.floor(isz / 2))
                 end
                 return
             end
@@ -9611,7 +9637,7 @@ function Impl.RenderSecondarySatelliteBubble(layout)
                 local sz = math.floor(it.size * scale * ButtonSprings[it.key].scale)
                 local h = GetVectorIcon(it.icon)
                 if h then
-                    Render.Image(h, Vec2(math.floor(bxc - sz / 2), math.floor(c.y - sz / 2)), Vec2(sz, sz), FadeColor(Config.Colors.TextPrimary, ta), 0)
+                    Impl.Img(h, Vec2(math.floor(bxc - sz / 2), math.floor(c.y - sz / 2)), Vec2(sz, sz), FadeColor(Config.Colors.TextPrimary, ta), 0)
                 end
             end
         end
@@ -9725,7 +9751,7 @@ function Impl.RenderFightCompact(layout, alphaMul, yOffset)
 
     local swordsSvg = GetVectorIcon("swords")
     if swordsSvg then
-        Render.Image(swordsSvg, Vec2(iconX, iconY), Vec2(iconSz, iconSz), FadeColor(Config.Colors.Red, aMul), 0)
+        Impl.Img(swordsSvg, Vec2(iconX, iconY), Vec2(iconSz, iconSz), FadeColor(Config.Colors.Red, aMul), 0)
     else
         Render.FilledCircle(Vec2(iconX + iconSz / 2, iconY + iconSz / 2), iconSz / 2, FadeColor(Config.Colors.Red, aMul), 0, 1.0, 18)
     end
@@ -9804,7 +9830,7 @@ function Impl.RenderFightLarge(layout, alphaMul, yOffset)
     local swSz = math.floor(15 * scale)
     local hdrX = layout.x + padX
     if swords then
-        Render.Image(swords, Vec2(hdrX, math.floor(hdrY + hdrSize.y / 2 - swSz / 2)), Vec2(swSz, swSz), FadeColor(Config.Colors.Red, aMul), 0)
+        Impl.Img(swords, Vec2(hdrX, math.floor(hdrY + hdrSize.y / 2 - swSz / 2)), Vec2(swSz, swSz), FadeColor(Config.Colors.Red, aMul), 0)
         hdrX = hdrX + swSz + math.floor(7 * scale)
     end
     Odometer.Draw(fTitle, sTitle, headerScore, Vec2(hdrX, hdrY), textCol)
@@ -9861,7 +9887,7 @@ function Impl.RenderFightLarge(layout, alphaMul, yOffset)
         local heroIconPath = "panorama/images/heroes/icons/" .. rawName .. "_png.vtex_c"
         local hHandle = GetCachedImage(heroIconPath)
         if hHandle then
-            Render.Image(hHandle, Vec2(ax, ay), Vec2(avatarSz, avatarSz), FadeColor(Color(255, 255, 255, 255), aMul), avatarSz / 2)
+            Impl.Img(hHandle, Vec2(ax, ay), Vec2(avatarSz, avatarSz), FadeColor(Color(255, 255, 255, 255), aMul), avatarSz / 2)
         else
             local dotCol = c.isAlly and Config.Colors.Green or Config.Colors.Red
             Render.FilledCircle(Vec2(ax + avatarSz / 2, ay + avatarSz / 2), avatarSz / 2, FadeColor(dotCol, aMul), 0, 1.0, 18)
@@ -9918,7 +9944,7 @@ function Impl.RenderFightLarge(layout, alphaMul, yOffset)
     Render.PushClip(rP1, rP2)
 
     if mapH and mapH > 0 then
-        Render.Image(mapH, rP1, Vec2(radarSz, radarSz), FadeColor(Color(255, 255, 255, 255), aMul), radarR, Enum.DrawFlags.None, uvMin, uvMax)
+        Impl.Img(mapH, rP1, Vec2(radarSz, radarSz), FadeColor(Color(255, 255, 255, 255), aMul), radarR, Enum.DrawFlags.None, uvMin, uvMax)
         Render.FilledRect(rP1, rP2, FadeColor(Color(0, 0, 0, 70), aMul), radarR)
     else
         local riverP1 = Vec2(radarX, radarY + radarSz * 0.75)
@@ -9971,7 +9997,7 @@ function Impl.RenderFightLarge(layout, alphaMul, yOffset)
 
             Render.FilledCircle(Vec2(hX, hY), tSz / 2 + 2 * scale, FadeColor(arrowCol, aMul), 0, 1.0, 24)
             if hIcon then
-                Render.Image(hIcon, Vec2(math.floor(hX - tSz / 2), math.floor(hY - tSz / 2)), Vec2(tSz, tSz), FadeColor(Color(255, 255, 255, 255), aMul), tSz / 2)
+                Impl.Img(hIcon, Vec2(math.floor(hX - tSz / 2), math.floor(hY - tSz / 2)), Vec2(tSz, tSz), FadeColor(Color(255, 255, 255, 255), aMul), tSz / 2)
             else
                 Render.FilledCircle(Vec2(hX, hY), tSz / 2, FadeColor(Config.Colors.TextPrimary, aMul), 0, 1.0, 16)
             end
@@ -10063,8 +10089,8 @@ function Impl.RenderNotificationState(layout, alphaMul, yOffset)
         local offA = -smoothFrac * 16 * scale
         local offB = (1.0 - smoothFrac) * 16 * scale
 
-        if hA then Render.Image(hA, Vec2(iconX, iconY + offA), Vec2(iconW, iconH), FadeColor(Color(255, 255, 255, 255), (1.0 - smoothFrac) * aMul), math.floor(iconW / 2)) end
-        if hB then Render.Image(hB, Vec2(iconX, iconY + offB), Vec2(iconW, iconH), FadeColor(Color(255, 255, 255, 255), smoothFrac * aMul), math.floor(iconW / 2)) end
+        if hA then Impl.Img(hA, Vec2(iconX, iconY + offA), Vec2(iconW, iconH), FadeColor(Color(255, 255, 255, 255), (1.0 - smoothFrac) * aMul), math.floor(iconW / 2)) end
+        if hB then Impl.Img(hB, Vec2(iconX, iconY + offB), Vec2(iconW, iconH), FadeColor(Color(255, 255, 255, 255), smoothFrac * aMul), math.floor(iconW / 2)) end
 
         Render.PopClip()
     else
@@ -10092,7 +10118,7 @@ function Impl.RenderNotificationState(layout, alphaMul, yOffset)
         local mono = fb and (NotifGlyphs[fb] or notif.Mono)
         local realImg = notif.Icon and GetCachedImage(notif.Icon) or nil
         if realImg or (iconHandle and not mono) then
-            Render.Image(realImg or iconHandle, Vec2(iconX, iconY), Vec2(iconW, iconH), FadeColor(Color(255, 255, 255, 255), aMul), iconRadius)
+            Impl.Img(realImg or iconHandle, Vec2(iconX, iconY), Vec2(iconW, iconH), FadeColor(Color(255, 255, 255, 255), aMul), iconRadius)
         else
             local cx, cy = iconX + iconW / 2, iconY + iconH / 2
             Render.FilledCircle(Vec2(cx, cy), iconH / 2, FadeColor(accent, aMul), 0, 1.0, 24)
@@ -10476,7 +10502,7 @@ function Impl.RenderLargeMedia(layout, alphaMul, yOffset)
     if shufH then
         local shufCol = MediaData.Shuffle and Config.Colors.TextPrimary or Config.Colors.TextSecondary
         local sSz = 14 * scale * ButtonSprings.MediaShuffle.scale * k
-        Render.Image(shufH, Vec2(shufX - sSz / 2, playY - sSz / 2), Vec2(sSz, sSz), FadeColor(shufCol, aMul * d), 0)
+        Impl.Img(shufH, Vec2(shufX - sSz / 2, playY - sSz / 2), Vec2(sSz, sSz), FadeColor(shufCol, aMul * d), 0)
     end
 
     local repH = GetVectorIcon("repeat")
@@ -10484,7 +10510,7 @@ function Impl.RenderLargeMedia(layout, alphaMul, yOffset)
     if repH then
         local repCol = (MediaData.RepeatMode > 0) and Config.Colors.TextPrimary or Config.Colors.TextSecondary
         local rSz = 14 * scale * ButtonSprings.MediaRepeat.scale * k
-        Render.Image(repH, Vec2(repX - rSz / 2, playY - rSz / 2), Vec2(rSz, rSz), FadeColor(repCol, aMul * d), 0)
+        Impl.Img(repH, Vec2(repX - rSz / 2, playY - rSz / 2), Vec2(rSz, rSz), FadeColor(repCol, aMul * d), 0)
         if MediaData.RepeatMode == 2 then
             Render.Text(fontTiny, tinySz, "1", Vec2(repX + 5 * scale, playY - 8 * scale), FadeColor(Config.Colors.TextPrimary, aMul * d))
         end
@@ -10500,7 +10526,7 @@ function Impl.RenderLargeMedia(layout, alphaMul, yOffset)
         if icon then
             local sz = 16 * scale * lk * ButtonSprings.MediaLyrics.scale
             local col = Impl.Ly.Open and Config.Colors.TextPrimary or Config.Colors.TextSecondary
-            Render.Image(icon, Vec2(lyX - sz / 2, lyY - sz / 2), Vec2(sz, sz), FadeColor(col, aMul * ld * lyB), 0)
+            Impl.Img(icon, Vec2(lyX - sz / 2, lyY - sz / 2), Vec2(sz, sz), FadeColor(col, aMul * ld * lyB), 0)
         end
     else
         ButtonHits.MediaLyrics = nil
@@ -10522,7 +10548,7 @@ function Impl.RenderLargeMedia(layout, alphaMul, yOffset)
         if heartH then
             local heartCol = isLiked and Config.Colors.Red or Config.Colors.TextSecondary
             local lSz = 16 * scale * likeScale * lk
-            Render.Image(heartH, Vec2(likeX - lSz / 2, likeY - lSz / 2), Vec2(lSz, lSz), FadeColor(heartCol, aMul * ld), 0)
+            Impl.Img(heartH, Vec2(likeX - lSz / 2, likeY - lSz / 2), Vec2(lSz, lSz), FadeColor(heartCol, aMul * ld), 0)
         end
     else
         ButtonHits.MediaLike = nil
@@ -10577,7 +10603,7 @@ local function RenderLargeIdle(layout, alphaMul, yOffset)
 
     local function Row(id, svg, txt, x, y, f, s, col, soft)
         local h = GetVectorIcon(svg)
-        if h then Render.Image(h, Vec2(x, y), Vec2(g.icon, g.icon), subCol, 0) end
+        if h then Impl.Img(h, Vec2(x, y), Vec2(g.icon, g.icon), subCol, 0) end
         local th = Render.TextSize(f, s, "0").y
         Odometer.Text(id, f, s, txt, Vec2(x + g.textDX, math.floor(y + g.icon / 2 - th / 2)), col, soft)
     end
@@ -10606,7 +10632,7 @@ function Impl.RenderGamePausedPill(layout, alphaMul, yOffset)
 
     local pauseSvg = GetVectorIcon("pause")
     if pauseSvg then
-        Render.Image(pauseSvg, Vec2(badgeX, badgeY), Vec2(badgeSize, badgeSize), FadeColor(Config.Colors.Orange, alphaMul), 0)
+        Impl.Img(pauseSvg, Vec2(badgeX, badgeY), Vec2(badgeSize, badgeSize), FadeColor(Config.Colors.Orange, alphaMul), 0)
     end
 
     local w1 = Render.TextSize(fB, sB, pText).x
@@ -10633,7 +10659,7 @@ function Impl.RenderCourierDeliveryPill(layout, alphaMul, yOffset)
     local iconSize = math.floor(16 * scale)
     local leftX = math.floor(layout.x + 12 * scale)
     if courierSvg then
-        Render.Image(courierSvg, Vec2(leftX, centerY - math.floor(iconSize / 2)), Vec2(iconSize, iconSize), FadeColor(Config.Colors.Yellow, alphaMul), 0)
+        Impl.Img(courierSvg, Vec2(leftX, centerY - math.floor(iconSize / 2)), Vec2(iconSize, iconSize), FadeColor(Config.Colors.Yellow, alphaMul), 0)
     end
 
     local etaStr = (CourierTracker.ETA > 0) and (L("di_courier_eta") .. " " .. FormatTime(CourierTracker.ETA)) or L("di_ui_courier_delivering_short")
@@ -10689,7 +10715,7 @@ function Impl.RenderCourierLarge(layout, alphaMul, yOffset)
 
     local courierSvg = GetVectorIcon("courier")
     if courierSvg then
-        Render.Image(courierSvg, Vec2(leftX, row1Y), Vec2(iconSz, iconSz), FadeColor(Config.Colors.Yellow, alphaMul), 0)
+        Impl.Img(courierSvg, Vec2(leftX, row1Y), Vec2(iconSz, iconSz), FadeColor(Config.Colors.Yellow, alphaMul), 0)
     end
     local titleTxt = L("di_courier_delivering")
     local hH = Render.TextSize(fH, sH, "Ag").y
@@ -10727,7 +10753,7 @@ function Impl.RenderCourierLarge(layout, alphaMul, yOffset)
             Render.FilledRect(Vec2(sx, sy), Vec2(sx + slotW, sy + slotH), FadeColor(Config.Colors.FillTertiary, alphaMul), 6 * scale)
             local itHandle = GetCachedImage(it.icon)
             if itHandle and itHandle > 0 then
-                Render.Image(itHandle, Vec2(sx + 2 * scale, sy + 2 * scale), Vec2(slotW - 4 * scale, slotH - 4 * scale), FadeColor(Color(255, 255, 255, 255), alphaMul), 4 * scale)
+                Impl.Img(itHandle, Vec2(sx + 2 * scale, sy + 2 * scale), Vec2(slotW - 4 * scale, slotH - 4 * scale), FadeColor(Color(255, 255, 255, 255), alphaMul), 4 * scale)
             end
         else
             Render.FilledRect(Vec2(sx, sy), Vec2(sx + slotW, sy + slotH), FadeColor(Config.Colors.FillQuaternary, alphaMul), 6 * scale)
@@ -10765,7 +10791,7 @@ function Impl.RenderVolumeOverlay(layout, alphaMul)
 
     local volSvg = (vol <= 0.5) and GetVectorIcon("mute") or GetVectorIcon("volume")
     if volSvg then
-        Render.Image(volSvg, Vec2(iconX, iconY), Vec2(iconSize, iconSize), FadeColor(Config.Colors.TextPrimary, aMul), 0)
+        Impl.Img(volSvg, Vec2(iconX, iconY), Vec2(iconSize, iconSize), FadeColor(Config.Colors.TextPrimary, aMul), 0)
     end
 
     local trackStartX = math.floor(iconX + iconSize + 10 * scale)
@@ -10925,7 +10951,7 @@ function Impl.RenderMediaSharedTransition(fromState, toState, layout, progress)
         if shufH then
             local shufCol = MediaData.Shuffle and Config.Colors.TextPrimary or Config.Colors.TextSecondary
             local sSz = 14 * scale * shufScale
-            Render.Image(shufH, Vec2(curShufX - sSz / 2, playY - sSz / 2), Vec2(sSz, sSz), FadeColor(shufCol, secAlpha), 0)
+            Impl.Img(shufH, Vec2(curShufX - sSz / 2, playY - sSz / 2), Vec2(sSz, sSz), FadeColor(shufCol, secAlpha), 0)
         end
 
         local repTargetX = math.floor(lL.x + lL.w - pad - 12 * scale)
@@ -10935,7 +10961,7 @@ function Impl.RenderMediaSharedTransition(fromState, toState, layout, progress)
         if repH then
             local repCol = (MediaData.RepeatMode > 0) and Config.Colors.TextPrimary or Config.Colors.TextSecondary
             local rSz = 14 * scale * repScale
-            Render.Image(repH, Vec2(curRepX - rSz / 2, playY - rSz / 2), Vec2(rSz, rSz), FadeColor(repCol, secAlpha), 0)
+            Impl.Img(repH, Vec2(curRepX - rSz / 2, playY - rSz / 2), Vec2(rSz, rSz), FadeColor(repCol, secAlpha), 0)
             if MediaData.RepeatMode == 2 then
                 Render.Text(fontTiny, tinySz * elemScale, "1", Vec2(curRepX + 5 * scale, playY - 8 * scale), FadeColor(Config.Colors.TextPrimary, secAlpha))
             end
@@ -10950,7 +10976,7 @@ function Impl.RenderMediaSharedTransition(fromState, toState, layout, progress)
                 local lyX = math.floor(likeTargetX - (UI.Media.SpotifyLike:Get() and 28 * scale or 0))
                 local sz = 16 * scale * elemScale
                 local col = Impl.Ly.Open and Config.Colors.TextPrimary or Config.Colors.TextSecondary
-                Render.Image(icon, Vec2(lyX - sz / 2, likeY - sz / 2), Vec2(sz, sz), FadeColor(col, secAlpha * lyB), 0)
+                Impl.Img(icon, Vec2(lyX - sz / 2, likeY - sz / 2), Vec2(sz, sz), FadeColor(col, secAlpha * lyB), 0)
             end
         end
         local likeScale = ButtonSprings.MediaLike.scale * elemScale
@@ -10960,7 +10986,7 @@ function Impl.RenderMediaSharedTransition(fromState, toState, layout, progress)
         if likeSvg and UI.Media.SpotifyLike:Get() then
             local lSz = 16 * scale * likeScale
             local lCol = isLiked and Config.Colors.Red or Config.Colors.TextSecondary
-            Render.Image(likeSvg, Vec2(curLikeX - lSz / 2, likeY - lSz / 2), Vec2(lSz, lSz), FadeColor(lCol, secAlpha), 0)
+            Impl.Img(likeSvg, Vec2(curLikeX - lSz / 2, likeY - lSz / 2), Vec2(lSz, lSz), FadeColor(lCol, secAlpha), 0)
         end
     end
 end
@@ -11024,7 +11050,7 @@ function Impl.RenderIdleSharedTransition(fromState, toState, layout, progress)
         local iconHandle = GetVectorIcon("clock")
         if iconHandle and ca > 0.01 then
             local iconSz = math.floor(14 * scale)
-            Render.Image(iconHandle, Vec2(math.floor(clockChip.startX + (curClockX - cClockX)), math.floor(midY - iconSz / 2 + MenuIconOffsetY * scale + (curClockY - cClockY))), Vec2(iconSz, iconSz), FadeColor(clockChip.chip.color, ca), 0)
+            Impl.Img(iconHandle, Vec2(math.floor(clockChip.startX + (curClockX - cClockX)), math.floor(midY - iconSz / 2 + MenuIconOffsetY * scale + (curClockY - cClockY))), Vec2(iconSz, iconSz), FadeColor(clockChip.chip.color, ca), 0)
         end
     end
 
@@ -11041,7 +11067,7 @@ function Impl.RenderIdleSharedTransition(fromState, toState, layout, progress)
                     local iconSz = math.floor(14 * scale)
                     local iconY = math.floor(midY - iconSz / 2 + MenuIconOffsetY * scale)
                     if iconHandle then
-                        Render.Image(iconHandle, Vec2(curX, iconY), Vec2(iconSz, iconSz), FadeColor(chip.color, compactAlpha), 0)
+                        Impl.Img(iconHandle, Vec2(curX, iconY), Vec2(iconSz, iconSz), FadeColor(chip.color, compactAlpha), 0)
                     end
                     tx = curX + math.floor(20 * scale)
                 end
@@ -11085,7 +11111,7 @@ function Impl.RenderIdleSharedTransition(fromState, toState, layout, progress)
             local iy = math.floor(sy + (ty - sy) * elemT + 0.5)
             local h = GetVectorIcon(svg)
             local iconA = cm.chip.svgKey and 1 or elemT
-            if h and iconA > 0.01 then Render.Image(h, Vec2(ix, iy), Vec2(iconSz, iconSz), FadeColor(LerpColor(cm.chip.color, iconCol, elemT), iconA), 0) end
+            if h and iconA > 0.01 then Impl.Img(h, Vec2(ix, iy), Vec2(iconSz, iconSz), FadeColor(LerpColor(cm.chip.color, iconCol, elemT), iconA), 0) end
             local sz = Q(sChip + (bigSize - sChip) * elemT)
             local dx0 = cm.chip.svgKey and 20 * scale or 0
             local dx = math.floor(dx0 + (g.textDX - dx0) * elemT + 0.5)
@@ -11103,7 +11129,7 @@ function Impl.RenderIdleSharedTransition(fromState, toState, layout, progress)
         elseif lateAlpha > 0.01 then
             local ux = tx + unfoldShiftX
             local h = GetVectorIcon(svg)
-            if h then Render.Image(h, Vec2(ux, ty), Vec2(g.icon, g.icon), FadeColor(iconCol, lateAlpha), 0) end
+            if h then Impl.Img(h, Vec2(ux, ty), Vec2(g.icon, g.icon), FadeColor(iconCol, lateAlpha), 0) end
             local th = Render.TextSize(bigFont, bigSize, "0").y
             Odometer.Draw(bigFont, bigSize, txt, Vec2(ux + g.textDX, math.floor(ty + g.icon / 2 - th / 2)), FadeColor(bigCol, lateAlpha))
         end
@@ -11610,7 +11636,7 @@ function NotifCenter.Render(layout, alphaMul, yOffset)
         local img = it.icon and GetCachedImage(it.icon) or nil
         if not img and it.fb and not NotifGlyphs[it.fb] and not it.mono then img = GetCachedImage(nil, it.fb) end
         if img then
-            Render.Image(img, Vec2(math.floor(icx - isz / 2), math.floor(icy - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), a), math.floor(isz / 2))
+            Impl.Img(img, Vec2(math.floor(icx - isz / 2), math.floor(icy - isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), a), math.floor(isz / 2))
         else
             Render.FilledCircle(Vec2(icx, icy), isz / 2, FadeColor(accent, a), 0, 1.0, 24)
             Glyph(it.fb or "bell", icx, icy, math.floor(isz * 0.56), FadeColor(Color(255, 255, 255, 255), a))
@@ -12411,7 +12437,7 @@ function Sdk.RenderExpanded(layout, am, yOffset, n)
     local icx, icy = ix + isz / 2, iy + isz / 2
     local img = n.Icon and GetCachedImage(n.Icon) or nil
     if img then
-        Render.Image(img, Vec2(ix, iy), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), am), math.floor(isz / 2))
+        Impl.Img(img, Vec2(ix, iy), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), am), math.floor(isz / 2))
     else
         Render.FilledCircle(Vec2(icx, icy), isz / 2, FadeColor(tint, am), 0, 1.0, 32)
         Glyph(n.FallbackSvg or "bell", icx, icy, math.floor(isz * 0.54), FadeColor(Color(255, 255, 255, 255), am))
@@ -12738,7 +12764,7 @@ function Sdk.RenderCompact(layout, alphaMul, yOffset)
     local ix = math.floor(layout.x + 12 * s)
     local img = a.image and GetCachedImage(a.image) or nil
     if img then
-        Render.Image(img, Vec2(ix, cy - math.floor(isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), am), math.floor(isz / 2))
+        Impl.Img(img, Vec2(ix, cy - math.floor(isz / 2)), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), am), math.floor(isz / 2))
     else
         Glyph(a.glyph or "bell", ix + isz / 2, cy, isz, FadeColor(tint, am))
     end
@@ -12782,7 +12808,7 @@ function Sdk.RenderLarge(layout, alphaMul, yOffset)
     local icx, icy = ix + isz / 2, iy + isz / 2
     local img = a.image and GetCachedImage(a.image) or nil
     if img then
-        Render.Image(img, Vec2(ix, iy), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), am), math.floor(isz / 2))
+        Impl.Img(img, Vec2(ix, iy), Vec2(isz, isz), FadeColor(Color(255, 255, 255, 255), am), math.floor(isz / 2))
     else
         Render.FilledCircle(Vec2(icx, icy), isz / 2, FadeColor(tint, am), 0, 1.0, 28)
         Glyph(a.glyph or "bell", icx, icy, math.floor(isz * 0.56), FadeColor(Color(255, 255, 255, 255), am))

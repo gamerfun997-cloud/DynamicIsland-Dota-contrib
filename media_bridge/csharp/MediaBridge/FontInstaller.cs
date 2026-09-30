@@ -19,6 +19,9 @@ public static class FontInstaller
         ("SFPRODISPLAYMEDIUM.OTF", "SF Pro Display Medium"),
     };
 
+    private const string IconsFile = "ionicons.ttf";
+    private const string IconsName = "Ionicons";
+
     private static readonly object Sync = new();
     private static string _state = "idle";
     private static string _error = "";
@@ -77,7 +80,7 @@ public static class FontInstaller
         {
             if (!names.Contains(name)) return false;
         }
-        return true;
+        return names.Contains(IconsName);
     }
 
     public static void Start()
@@ -95,15 +98,25 @@ public static class FontInstaller
     {
         try
         {
+            string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\Windows\Fonts");
+            Directory.CreateDirectory(dir);
+            using var key = Registry.CurrentUser.CreateSubKey(RegPath);
+
+            string icons = Path.Combine(dir, IconsFile);
+            if (!File.Exists(icons))
+            {
+                await using var src = typeof(FontInstaller).Assembly.GetManifestResourceStream("fonts/" + IconsFile) ?? throw new FileNotFoundException(IconsFile);
+                await using var dst = File.Create(icons);
+                await src.CopyToAsync(dst);
+            }
+            key.SetValue(IconsName + " (TrueType)", icons);
+            AddFontResourceW(icons);
+
             using var http = new HttpClient { Timeout = TimeSpan.FromMinutes(2) };
             http.DefaultRequestHeaders.UserAgent.ParseAdd("DynamicIsland-MediaBridge/" + UpdateChecker.BridgeVersion);
             byte[] zipBytes = await http.GetByteArrayAsync(FontsZip);
 
-            string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\Windows\Fonts");
-            Directory.CreateDirectory(dir);
-
             using var zip = new ZipArchive(new MemoryStream(zipBytes), ZipArchiveMode.Read);
-            using var key = Registry.CurrentUser.CreateSubKey(RegPath);
             foreach (var (file, name) in Needed)
             {
                 var entry = zip.Entries.FirstOrDefault(e => string.Equals(e.Name, file, StringComparison.OrdinalIgnoreCase));

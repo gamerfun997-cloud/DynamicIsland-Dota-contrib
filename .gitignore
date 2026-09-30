@@ -14,6 +14,7 @@
 !/media_bridge/README.md
 !/media_bridge/dynamic_island.ico
 !/media_bridge/sounds/
+!/media_bridge/fonts/
 !/media_bridge/csharp/
 
 /media_bridge/csharp/**/bin/
