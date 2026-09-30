@@ -878,6 +878,8 @@ local localization = qLocalization.new({
         di_combat_pause_alert_tip = "Shows when the game is paused",
         di_match_alert = "Match Found",
         di_match_alert_tip = "Accept countdown in the menu.\nPriority, Focus and sound in the gear",
+        di_match_faceid = "Face ID on Accept",
+        di_match_faceid_tip = "Face ID animation when\nyou accept a match",
         di_runes_active_runes = "Active Power Runes",
         di_runes_active_runes_tip = "Reminder before power runes spawn",
         di_runes_water_runes = "Water Runes",
@@ -1499,6 +1501,8 @@ local localization = qLocalization.new({
         di_combat_pause_alert_tip = "Показывает, когда игра на паузе",
         di_match_alert = "Матч найден",
         di_match_alert_tip = "Отсчёт принятия матча в меню.\nПриоритет, фокус и звук в шестерёнке",
+        di_match_faceid = "Face ID при принятии",
+        di_match_faceid_tip = "Анимация Face ID, когда\nты принимаешь матч",
         di_runes_active_runes = "Активные руны (Power)",
         di_runes_active_runes_tip = "Напоминание перед появлением силовых рун",
         di_runes_water_runes = "Водные руны",
@@ -1920,7 +1924,8 @@ local StateMachine = {
         SHEET = 18,
         NOTIF_CENTER = 19,
         ACTIVITY = 20,
-        ACTIVITY_LARGE = 21
+        ACTIVITY_LARGE = 21,
+        FACE_ID = 22
     },
     Current = 1,
     TargetState = 1,
@@ -3602,6 +3607,8 @@ function Impl.InitMenu()
     local gMatch = C.MatchFound:Gear("di_gear_alert")
     P.MatchFound = prio(gMatch, "di_alert_priority", 4)
     snd(gMatch, "MatchFound")
+    C.MatchFaceID = gMatch:Switch("di_match_faceid", true, "\u{f118}")
+    C.MatchFaceID:ToolTip("di_match_faceid_tip")
     UI.System.Output = gSystem:Switch("di_sys_output", true, "\u{f025}")
     UI.System.Output:ToolTip("di_sys_output_tip")
     UI.System.Mute = gSystem:Switch("di_sys_mute", true, "\u{f6a9}")
@@ -3839,6 +3846,7 @@ end
 
 local function TriggerStateTransition(nextState)
     if StateMachine.TargetState == nextState then return end
+    if nextState == StateMachine.States.NOTIFICATION and Impl.FaceLive and Impl.FaceLive() then return end
 
     local fromLarge = (StateMachine.TargetState == StateMachine.States.LARGE_IDLE or StateMachine.TargetState == StateMachine.States.LARGE_MEDIA or StateMachine.TargetState == StateMachine.States.LARGE_FIGHT or StateMachine.TargetState == StateMachine.States.COURIER_LARGE or StateMachine.TargetState == StateMachine.States.SHEET or StateMachine.TargetState == StateMachine.States.NOTIF_CENTER or StateMachine.TargetState == StateMachine.States.ACTIVITY_LARGE)
     local toLarge = (nextState == StateMachine.States.LARGE_IDLE or nextState == StateMachine.States.LARGE_MEDIA or nextState == StateMachine.States.LARGE_FIGHT or nextState == StateMachine.States.COURIER_LARGE or nextState == StateMachine.States.SHEET or nextState == StateMachine.States.NOTIF_CENTER or nextState == StateMachine.States.ACTIVITY_LARGE)
@@ -6079,6 +6087,7 @@ local Journey = { Accepted = false, AcceptedAt = nil, Hidden = false }
 function Journey.Reset()
     Journey.Accepted = false
     Journey.AcceptedAt = nil
+    Journey.FaceUsed = nil
 end
 
 function Journey.HiddenPhase()
@@ -6745,6 +6754,7 @@ function Impl.MatchAllowed(active)
 end
 
 function Impl.HoldQueue()
+    if Impl.FaceLive() then return true end
     if StateMachine.TargetState == StateMachine.States.MENU_MATCH_FOUND then
         local p = Impl.MatchPrio()
         for _, n in ipairs(NotificationQueue.List) do
@@ -7339,6 +7349,8 @@ function Impl.HandleInteractions()
         Demo.Tick(nowClk)
     elseif Journey.Hidden then
         Journey.Reset()
+    elseif Impl.FaceLive() then
+        if StateMachine.TargetState ~= StateMachine.States.FACE_ID then TriggerStateTransition(StateMachine.States.FACE_ID) end
     elseif Focus.BannerStart <= nowClk and Focus.BannerUntil > nowClk and StateMachine.TargetState ~= StateMachine.States.MENU_MATCH_FOUND then
         if StateMachine.TargetState ~= StateMachine.States.FOCUS_BANNER then
             TriggerStateTransition(StateMachine.States.FOCUS_BANNER)
@@ -7492,6 +7504,10 @@ function Impl.HandleInteractions()
         Config.Dimensions.CompactTargetW = math.max(170, math.ceil(((contentW / layout.scale) + 32) / 4) * 4)
         Config.Dimensions.CompactTargetH = Config.Dimensions.CompactH
         Config.Dimensions.CompactTargetR = Config.Dimensions.CompactRadius
+    elseif StateMachine.TargetState == StateMachine.States.FACE_ID then
+        Config.Dimensions.CompactTargetW = 56
+        Config.Dimensions.CompactTargetH = 56
+        Config.Dimensions.CompactTargetR = 20
     elseif StateMachine.TargetState == StateMachine.States.COMPACT_MEDIA then
         Config.Dimensions.CompactTargetW = CompactMediaTitle() and Config.Dimensions.CompactMediaW or Config.Dimensions.CompactMediaBareW
         Config.Dimensions.CompactTargetH = Config.Dimensions.CompactMediaH
@@ -7691,6 +7707,7 @@ function Impl.HandleInteractions()
             if ok then
                 Journey.Accepted = true
                 Journey.AcceptedAt = os.clock()
+                if ToggleOn(UI and UI.Combat and UI.Combat.MatchFaceID) and Impl.FaceStart("ok", 0.9) then Journey.FaceUsed = true end
             elseif Haptic and Haptic.Trigger then
                 Haptic.Trigger(Haptic.Types.ERROR)
             end
@@ -8093,7 +8110,7 @@ function Journey.RenderMatchFound(layout, alphaMul, yOffset)
     Journey.DrawLine(layout, aMul, yOffset or 0, function(x, midY, sz)
         local c = Vec2(x + sz / 2, midY)
         local r = sz / 2 + 1 * scale
-        if sucT < 1.2 then
+        if sucT < 1.2 and not Journey.FaceUsed then
             Success.Draw("accept" .. tostring(Journey.AcceptedAt), c, r, sucT, aMul, scale)
             return
         end
@@ -8414,6 +8431,109 @@ function Success.Draw(id, c, r, t, a, scale)
     if t >= 0.75 and not Success.Fired[id] then
         Success.Fired[id] = true
         if Haptic and Haptic.Trigger then Haptic.Trigger(Haptic.Types.SUCCESS_APPLE_PAY) end
+    end
+end
+
+Impl.Face = { At = nil, Result = "ok", Scan = 1, Total = 0, Fired = false }
+
+function Impl.FaceLive()
+    local F = Impl.Face
+    return F.At ~= nil and (os.clock() - F.At) / AnimScale() < F.Total
+end
+
+function Impl.FaceT()
+    local F = Impl.Face
+    return F.At and (os.clock() - F.At) / AnimScale() or nil
+end
+
+function Impl.FaceStart(result, scan)
+    local F = Impl.Face
+    if Impl.FaceLive() then return false end
+    F.At = os.clock()
+    F.Result = result == "fail" and "fail" or "ok"
+    F.Scan = math.max(0.4, math.min(3, scan or 1))
+    F.Total = 0.4 + F.Scan + (F.Result == "ok" and 1.0 or 0.9)
+    F.Fired = false
+    return true
+end
+
+function Impl.FaceLine(a, b, col, th)
+    Render.Line(a, b, col, th)
+    Render.FilledCircle(a, th / 2, col, 0, 1.0, 12)
+    Render.FilledCircle(b, th / 2, col, 0, 1.0, 12)
+end
+
+function Impl.RenderFaceID(layout, alphaMul, yOffset)
+    local F = Impl.Face
+    local t = Impl.FaceT() or 0
+    local am = alphaMul or 1
+    local C = Config.Colors
+    local S = math.min(layout.w, layout.h)
+    local cx, cy = layout.x + layout.w / 2, layout.y + layout.h / 2 + (yOffset or 0)
+    local ok = F.Result == "ok"
+    local reduce = MotionEngine.Reduce
+    local tRes = 0.4 + F.Scan
+    local function cl(v) return math.max(0, math.min(1, v)) end
+    local rk = cl((t - tRes) / 0.25)
+    local col = FadeColor(LerpColor(Color(255, 255, 255, 255), ok and C.Green or C.Red, rk), am)
+    local oxF, oxB, sc = 0, 0, 1
+    if t >= 0.4 and t < tRes and not reduce then
+        oxF = math.sin((t - 0.4) * 6.5) * 0.035 * S
+    end
+    if t >= tRes then
+        local dt = t - tRes
+        if not reduce then
+            if ok then
+                sc = 1 + 0.12 * math.sin(math.pi * cl(dt / 0.4))
+            elseif dt < 0.5 then
+                local sh = math.sin(dt * 46) * 0.07 * S * (1 - dt / 0.5)
+                oxF, oxB = sh, sh
+            end
+        end
+        if not F.Fired then
+            F.Fired = true
+            if Haptic and Haptic.Trigger then Haptic.Trigger(ok and Haptic.Types.SUCCESS_APPLE_PAY or Haptic.Types.ERROR) end
+        end
+    end
+    local function P(px, py, ox) return Vec2(cx + (ox or 0) + px * S * sc, cy + py * S * sc) end
+    local th = math.max(1.6, S * 0.046 * sc)
+    local eB = 1 - (1 - cl((t - 0.12) / 0.35)) ^ 3
+    local bs = 1.22 - 0.22 * eB
+    local bcol = FadeColor(LerpColor(Color(255, 255, 255, 255), ok and C.Green or C.Red, rk), am * eB)
+    local hs, rr, L = 0.30 * bs, 0.11 * bs, 0.085 * bs
+    local rad = rr * S * sc
+    Render.Circle(P(-hs + rr, -hs + rr, oxB), rad, bcol, th, 180, 0.25, true, 16)
+    Render.Circle(P(hs - rr, -hs + rr, oxB), rad, bcol, th, 270, 0.25, true, 16)
+    Render.Circle(P(hs - rr, hs - rr, oxB), rad, bcol, th, 0, 0.25, true, 16)
+    Render.Circle(P(-hs + rr, hs - rr, oxB), rad, bcol, th, 90, 0.25, true, 16)
+    Impl.FaceLine(P(-hs, -hs + rr, oxB), P(-hs, -hs + rr + L, oxB), bcol, th)
+    Impl.FaceLine(P(-hs + rr, -hs, oxB), P(-hs + rr + L, -hs, oxB), bcol, th)
+    Impl.FaceLine(P(hs, -hs + rr, oxB), P(hs, -hs + rr + L, oxB), bcol, th)
+    Impl.FaceLine(P(hs - rr, -hs, oxB), P(hs - rr - L, -hs, oxB), bcol, th)
+    Impl.FaceLine(P(hs, hs - rr, oxB), P(hs, hs - rr - L, oxB), bcol, th)
+    Impl.FaceLine(P(hs - rr, hs, oxB), P(hs - rr - L, hs, oxB), bcol, th)
+    Impl.FaceLine(P(-hs, hs - rr, oxB), P(-hs, hs - rr - L, oxB), bcol, th)
+    Impl.FaceLine(P(-hs + rr, hs, oxB), P(-hs + rr + L, hs, oxB), bcol, th)
+    local k2, k3, k4 = cl((t - 0.30) / 0.2), cl((t - 0.42) / 0.24), cl((t - 0.52) / 0.32)
+    if k2 > 0 then
+        local half = 0.05 * (1 - (1 - k2) ^ 3)
+        for _, ex in ipairs({ -0.125, 0.125 }) do
+            Impl.FaceLine(P(ex, -0.085 - half, oxF), P(ex, -0.085 + half, oxF), col, th)
+        end
+    end
+    if k3 > 0 then
+        local a, b, c = { 0.02, -0.09 }, { 0.02, 0.04 }, { -0.025, 0.058 }
+        local f1 = math.min(1, k3 / 0.7)
+        Impl.FaceLine(P(a[1], a[2], oxF), P(a[1], a[2] + (b[2] - a[2]) * f1, oxF), col, th)
+        local f2 = math.max(0, (k3 - 0.7) / 0.3)
+        if f2 > 0 then
+            Impl.FaceLine(P(b[1], b[2], oxF), P(b[1] + (c[1] - b[1]) * f2, b[2] + (c[2] - b[2]) * f2, oxF), col, th)
+        end
+    end
+    if k4 > 0 then
+        local grow = ok and rk or 0
+        local sweep = (104 + 22 * grow) * (1 - (1 - k4) ^ 3)
+        Render.Circle(P(0, 0.0, oxF), 0.15 * S * sc, col, th, 38 - 11 * grow, sweep / 360, true, 24)
     end
 end
 
@@ -9426,7 +9546,8 @@ function Impl.RenderSecondarySatelliteBubble(layout)
     local desired, notif = nil, nil
     local rampageSuccess = now - Rampage.SuccessAt < 1.5
     local S = StateMachine.States
-    if Engine.IsInGame and Engine.IsInGame() then
+    if ts == S.FACE_ID then
+    elseif Engine.IsInGame and Engine.IsInGame() then
         if not HUDCustomizer.IsOpen then
             local bubbleOn = UI.Media.SecondaryBubble:Get()
             if bubbleOn and active and ts ~= S.NOTIFICATION and IsNotifDeferred(active) then
@@ -11774,7 +11895,7 @@ Sdk.LogBudget = 40
 Sdk.Images = {}
 Sdk.ImageCount = 0
 Sdk.Hook = debug and debug.sethook and debug.gethook and { set = debug.sethook, get = debug.gethook } or nil
-Sdk.Features = { notify = true, activity = true, queue = true, levels = true, sounds = true, body = true, actions = true, trailing = true, onEnd = true, staleAfter = true, endAfter = true, playSound = true, focus = true, widgets = true }
+Sdk.Features = { notify = true, activity = true, queue = true, levels = true, sounds = true, body = true, actions = true, trailing = true, onEnd = true, staleAfter = true, endAfter = true, playSound = true, focus = true, widgets = true, faceId = true }
 Sdk.SoundFiles = { notification_toast = true, timer_chime = true, courier_delivered = true, courier_death_or_fail = true, button_press = true, button_dismiss = true, wheel_notch = true, wheel_boundary_bump = true, island_expand = true, island_collapse = true, island_hover = true, toast_dismiss = true }
 Sdk.Levels = { passive = 1, active = 3, ["time-sensitive"] = 5 }
 Sdk.Sounds = { default = "notification_toast", chime = "timer_chime", success = "courier_delivered", failure = "courier_death_or_fail" }
@@ -12256,6 +12377,18 @@ function Sdk.MenuSync(now)
     end
     if Sdk.NoneLabel then pcall(Sdk.NoneLabel.Visible, Sdk.NoneLabel, #apps == 0) end
     Sdk.Syncing = false
+end
+
+function Sdk.FaceID(o)
+    o = type(o) == "table" and o or {}
+    local now = os.clock()
+    if now - (Sdk.FaceAt or -10) < 3 then return false end
+    if not (UI and UI.Main.Enabled:Get()) or HUDCustomizer.IsOpen or Hello.Blocking() then return false end
+    if Impl.FaceStart(o.result, Sdk.Num(o.scan, 0.4, 3)) then
+        Sdk.FaceAt = now
+        return true
+    end
+    return false
 end
 
 function Sdk.PlaySound(name, vol)
@@ -12938,6 +13071,7 @@ do
             version = SCRIPT_VERSION,
             Notify = function(...) return Sdk.Guard(Sdk.Notify, ...) end,
             PlaySound = function(name, vol) return Sdk.Guard(Sdk.PlaySound, name, vol) end,
+            FaceID = function(o) return Sdk.Guard(Sdk.FaceID, o) end,
             Has = function(feature) return Sdk.Features[feature] == true end,
             Activity = activity,
             Widget = widget,
@@ -13475,6 +13609,7 @@ Demo.Steps = {
     { s = "COURIER_DELIVERY", d = 2.4, courier = true },
     { s = "COURIER_DELIVERED", d = 2.2, delivered = true },
     { s = "GAME_PAUSED", d = 2.0, pause = true },
+    { s = "FACE_ID", d = 3.2, face = true },
     { s = "FOCUS_BANNER", d = 2.2, banner = true },
     { s = "SHEET", d = 3.4, sheet = "whatsnew" }
 }
@@ -13545,6 +13680,7 @@ function Demo.Next(now)
         CourierTracker.Progress = 0.55
     end
     if st.delivered then CourierTracker.DeliveredStartTime = now end
+    if st.face then Impl.Face.At = nil Impl.FaceStart("ok", 0.9) end
     if st.pause then PauseTracker.PauseStartTime = now - 83 end
     if st.banner then
         Focus.BannerOn = true
@@ -13637,6 +13773,8 @@ local function RenderStateLayerRaw(state, layout, alphaMul, yOffset)
         Journey.RenderSearching(layout, alphaMul, yOffset)
     elseif state == StateMachine.States.MENU_MATCH_FOUND then
         Journey.RenderMatchFound(layout, alphaMul, yOffset)
+    elseif state == StateMachine.States.FACE_ID then
+        Impl.RenderFaceID(layout, alphaMul, yOffset)
     elseif state == StateMachine.States.FOCUS_BANNER then
         Focus.RenderBanner(layout, alphaMul, yOffset)
     elseif state == StateMachine.States.SHEET then

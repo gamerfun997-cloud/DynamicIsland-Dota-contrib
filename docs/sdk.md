@@ -152,6 +152,15 @@ DynamicIsland.PlaySound("wheel_notch", 0.8)
 
 Plays one of the island's own sounds through the user's sound settings. Allowed names: `notification_toast`, `timer_chime`, `courier_delivered`, `courier_death_or_fail`, `button_press`, `button_dismiss`, `wheel_notch`, `wheel_boundary_bump`, `island_expand`, `island_collapse`, `island_hover`, `toast_dismiss`, plus the aliases `default`, `chime`, `success`, `failure`. Returns `false` for anything else.
 
+## Face ID
+
+```lua
+DynamicIsland.FaceID({ result = "ok" })
+DynamicIsland.FaceID({ result = "fail", scan = 1.5 })
+```
+
+The island turns into a rounded square, draws a face and scans it, like Face ID on iPhone. `result` is `"ok"` (the face turns green) or `"fail"` (it turns red and shakes), `scan` is how long it looks, from 0.4 to 3 seconds. The whole thing takes about 2.5 seconds. Returns `true` when it started, `false` if another one is still playing or the island is busy (at most one every 3 seconds). Check `DynamicIsland.Has("faceId")` first if your script also runs on older versions.
+
 ## Icons
 
 `DynamicIsland.Glyphs()` returns every glyph name. The ones that work best as monochrome icons: `bell`, `bolt`, `check`, `close`, `clock`, `stack`, `swords`, `moon`, `music`, `search`, `home`, `plus`, `flame`, `gold`, `courier`, `heart_fill`, `volume`, `headphones`, `display`.
