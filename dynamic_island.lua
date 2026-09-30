@@ -4220,7 +4220,7 @@ function DynamicIsland.PushNotification(notif)
         if Dbg.On then Dbg.Log("notif", "held back by focus") end
         return
     end
-    if NotificationQueue.Active and notif.Priority > (NotificationQueue.Active.Priority or DEFAULT_NOTIF_PRIORITY) then
+    if NotificationQueue.Active and notif.Priority > (NotificationQueue.Active.Priority or DEFAULT_NOTIF_PRIORITY) and not Impl.HoldQueue() then
         table.insert(NotificationQueue.List, 1, NotificationQueue.Active)
         NotificationQueue.Active = notif
         NotificationQueue.StartTime = os.clock()
@@ -4446,8 +4446,10 @@ IsNotifDeferred = function(notif)
     if not notif then return false end
     if not (UI and UI.Priority and UI.Priority.Media) then return false end
     if not (UI.Media and UI.Media.SecondaryBubble and UI.Media.SecondaryBubble:Get()) then return false end
-    if HUDCustomizer.IsOpen or FightTracker.Active then return false end
+    if HUDCustomizer.IsOpen then return false end
     if not (Engine.IsInGame and Engine.IsInGame()) then return false end
+    if Impl.Engaged() then return true end
+    if FightTracker.Active then return false end
     if not IsMediaActive() or Impl.MainKind ~= "media" then return false end
     return (notif.Priority or DEFAULT_NOTIF_PRIORITY) <= UI.Priority.Media:Get()
 end
@@ -6696,11 +6698,30 @@ function Impl.NotifHold(cx, cy)
     local st = StateMachine.TargetState
     if st == S.NOTIF_CENTER then return "nc" end
     if HUDCustomizer.IsOpen or Hello.Blocking() or SeekDrag.Active then return "hold" end
-    if st == S.LARGE_IDLE or st == S.LARGE_MEDIA or st == S.COURIER_LARGE or st == S.ACTIVITY_LARGE then
+    if st == S.LARGE_IDLE or st == S.LARGE_MEDIA or st == S.LARGE_FIGHT or st == S.COURIER_LARGE or st == S.ACTIVITY_LARGE then
         local l = GetIslandLayout()
         if cx >= l.x - 12 and cx <= l.x + l.w + 12 and cy >= l.y - 12 and cy <= l.y + l.h + 12 then return "hold" end
     end
     return nil
+end
+
+function Impl.Engaged()
+    if Demo.Active or Hello.Blocking() or HUDCustomizer.IsOpen then return false end
+    local S = StateMachine.States
+    local st = StateMachine.TargetState
+    if st ~= S.LARGE_IDLE and st ~= S.LARGE_MEDIA and st ~= S.LARGE_FIGHT and st ~= S.COURIER_LARGE and st ~= S.ACTIVITY_LARGE then return false end
+    if SeekDrag.Active then return true end
+    local l = GetIslandLayout()
+    local cx, cy = Input.GetCursorPos()
+    return l ~= nil and cx >= l.x - 12 and cx <= l.x + l.w + 12 and cy >= l.y - 12 and cy <= l.y + l.h + 12
+end
+
+function Impl.BubbleAvail()
+    return (Engine.IsInGame and Engine.IsInGame()) and UI and UI.Media and UI.Media.SecondaryBubble and UI.Media.SecondaryBubble:Get() and not HUDCustomizer.IsOpen or false
+end
+
+function Impl.HoldQueue()
+    return Impl.Engaged() and not Impl.BubbleAvail()
 end
 
 function Impl.HandleInteractions()
@@ -6758,14 +6779,14 @@ function Impl.HandleInteractions()
         while #NotificationQueue.List > 0 do
             Impl.PopHighestPriorityNotif()
         end
-    elseif notifHold == "hold" and not NotificationQueue.Active then
+    elseif notifHold == "hold" and not NotificationQueue.Active and not (Impl.Engaged() and Impl.BubbleAvail()) then
     elseif NotificationQueue.Active then
         local elapsed = nowClk - NotificationQueue.StartTime
         if elapsed >= NotificationQueue.Active.Duration then
             if Dbg.On then Dbg.Log("notif", "timed out after " .. tostring(NotificationQueue.Active.Duration) .. "s") end
             NotificationQueue.LastDismissed = NotificationQueue.Active
             NotificationQueue.Active = nil
-            if #NotificationQueue.List > 0 then
+            if #NotificationQueue.List > 0 and not Impl.HoldQueue() then
                 NotificationQueue.Active = Impl.PopHighestPriorityNotif()
                 NotificationQueue.StartTime = nowClk
                 if not IsNotifDeferred(NotificationQueue.Active) then
@@ -6780,7 +6801,7 @@ function Impl.HandleInteractions()
                 TriggerStateTransition(StateMachine.States.NOTIFICATION)
             end
         end
-    elseif #NotificationQueue.List > 0 then
+    elseif #NotificationQueue.List > 0 and not Impl.HoldQueue() then
         NotificationQueue.Active = Impl.PopHighestPriorityNotif()
         NotificationQueue.StartTime = nowClk
         if not IsNotifDeferred(NotificationQueue.Active) then
@@ -7347,15 +7368,25 @@ function Impl.HandleInteractions()
                 break
             end
         end
+        if Impl.Engaged() then
+            local SS, cur = StateMachine.States, StateMachine.TargetState
+            local keep = (cur == SS.LARGE_MEDIA and "media") or (cur == SS.LARGE_FIGHT and "fight") or (cur == SS.COURIER_LARGE and "courier") or (cur == SS.ACTIVITY_LARGE and "sdk") or nil
+            if keep then
+                for _, it in ipairs(plan) do
+                    if it.kind == keep then mainKind = keep break end
+                end
+            end
+        end
         Impl.MainKind = mainKind
         local S = StateMachine.States
         local ts = StateMachine.TargetState
         local notif = NotificationQueue.Active
         local desired
-        if Sdk.AskInGame(inCombat, nowClk) then
+        local engaged = Impl.Engaged()
+        if not engaged and Sdk.AskInGame(inCombat, nowClk) then
             Sheet.Kind = "sdk_perm"
             desired = S.SHEET
-        elseif notif and not IsNotifDeferred(notif) then
+        elseif notif and not IsNotifDeferred(notif) and not engaged then
             desired = S.NOTIFICATION
         elseif mainKind == "pause" then
             desired = S.GAME_PAUSED
