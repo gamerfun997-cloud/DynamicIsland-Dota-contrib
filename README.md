@@ -16,6 +16,8 @@ iPhone style dynamic island for dota, made for umbrella. one small pill at the t
 - hello screen and a setup assistant on first launch: bridge, size, look, alerts, likes and focus in a few taps
 - clock, kda, gold, net worth, cs, fps, ping, pick what you want and drag them around, recolor them with an ios color picker (grid, spectrum, sliders)
 - music player: cover, track, live waveform from what's actually playing, seek by dragging the bar, volume on scroll, spotify likes, optionally in the main menu too
+- synced lyrics for any player, line by line under the track, tap a line to jump there, or show the current line right in the small island
+- two activities at once like on iphone: music in the pill and a fight, courier, pause or timer in the bubble next to it, the rest waits its turn
 - fight radar that pops up during fights
 - alerts for runes, stacks, lotus, neutrals, tormentor, roshan and aegis, kill streaks, buybacks, towers, couriers, enemy tps, invis and key items
 - every alert has its own priority, duration and sound switch, lower ones go to a small bubble next to the island instead of covering your music
@@ -24,9 +26,11 @@ iPhone style dynamic island for dota, made for umbrella. one small pill at the t
 - match flow in the menu: queue timer, accept countdown, who accepted, loading, draft with picks and bans
 - do not disturb and your own reminders (like "smoke at 12:00")
 - system alerts: headphones or speakers switching, windows sound muted, laptop charging and low battery
+- accessibility like ios: reduce motion, bold text, increase contrast
+- widgets from other scripts show up in the widget editor next to the built in ones
 - notification center with your last alerts, even the ones do not disturb kept quiet, repeats stack up
 - updates right from the island: a new version shows up in the menu and installs in one click
-- no sf pro yet? the island offers to install the fonts in one click, no admin rights needed
+- no sf pro or icons yet? the island offers to install the fonts in one click, no admin rights needed. the icons are real sf symbols
 - debug log for bug reports: turn on debug, reproduce, send the file (extra > diagnostics has a snapshot)
 - english and russian, switches live with the umbrella language
 
@@ -65,10 +69,11 @@ Step by step guide with spicetify install and troubleshooting (english and russi
 - right click the island with the umbrella menu open for the widget editor
 - ctrl + drag to move it, it snaps to the center of the screen
 - swipe a notification or a side bubble sideways to close it
+- press and hold the side bubble to swap it with the main pill
 
 ## For script authors
 
-Other scripts can send notifications and live activities to the island through the `DynamicIsland` global: permission prompt like on iPhone, alert levels, action buttons, timers and progress. Guide: [docs/sdk.md](docs/sdk.md), working example: [examples/di_sdk_demo.lua](examples/di_sdk_demo.lua).
+Other scripts can send notifications and live activities to the island through the `DynamicIsland` global: permission prompt like on iPhone, alert levels, action buttons, timers and progress, and their own widgets for the widget editor. Guide: [docs/sdk.md](docs/sdk.md), working example: [examples/di_sdk_demo.lua](examples/di_sdk_demo.lua).
 
 ## Building the bridge
 

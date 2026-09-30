@@ -754,14 +754,14 @@ local localization = qLocalization.new({
         di_upd_retry = "Try Again",
         di_wn_title = "What's New",
         di_wn_continue = "Continue",
-        di_wn_1_t = "Hello and setup",
-        di_wn_1_d = "A new welcome and a step by step setup",
-        di_wn_2_t = "Widget Editor",
-        di_wn_2_d = "Drag, add and recolor with a new picker",
-        di_wn_3_t = "SDK for scripts",
-        di_wn_3_d = "Other scripts send alerts and activities",
-        di_wn_4_t = "Sound for every alert",
-        di_wn_4_d = "Mute any alert or all of them at once",
+        di_wn_1_t = "Activities side by side",
+        di_wn_1_d = "Two live activities at once, like on iPhone",
+        di_wn_2_t = "Synced lyrics",
+        di_wn_2_d = "Line by line, in the player and the small island",
+        di_wn_3_t = "Accessibility",
+        di_wn_3_d = "Reduce Motion, Bold Text, Increase Contrast",
+        di_wn_4_t = "Widgets for scripts",
+        di_wn_4_d = "Other scripts add their own chips",
         di_nc_title = "Notifications",
         di_nc_clear = "Clear",
         di_sdk_perm_sub = "Would Like to Send You Notifications",
@@ -1373,14 +1373,14 @@ local localization = qLocalization.new({
         di_upd_retry = "Повторить",
         di_wn_title = "Что нового",
         di_wn_continue = "Продолжить",
-        di_wn_1_t = "Hello и настройка",
-        di_wn_1_d = "Новое приветствие и пошаговая настройка",
-        di_wn_2_t = "Редактор виджетов",
-        di_wn_2_d = "Двигай, добавляй, перекрашивай в пикере",
-        di_wn_3_t = "SDK для скриптов",
-        di_wn_3_d = "Уведомления и активности от других скриптов",
-        di_wn_4_t = "Звук у каждого алерта",
-        di_wn_4_d = "Выключай звук любого алерта или всех сразу",
+        di_wn_1_t = "Активности рядом",
+        di_wn_1_d = "Две активности сразу, как на iPhone",
+        di_wn_2_t = "Текст песен",
+        di_wn_2_d = "По строкам, в плеере и в маленьком островке",
+        di_wn_3_t = "Универсальный доступ",
+        di_wn_3_d = "Уменьшение движения, жирный шрифт, контраст",
+        di_wn_4_t = "Виджеты для скриптов",
+        di_wn_4_d = "Другие скрипты добавляют свои чипы",
         di_nc_title = "Уведомления",
         di_nc_clear = "Очистить",
         di_sdk_perm_sub = "Хочет отправлять вам уведомления",
@@ -2229,7 +2229,7 @@ local Success = { Fired = {} }
 local Odometer = { States = {}, Widths = {}, WidthCount = 0, Digit = {}, Layouts = {}, LayoutCount = 0 }
 local SeekDrag = { Active = false, Frac = 0, Grow = 0, GrowVel = 0, HoldUntil = 0, HoldPos = 0, HoldStart = 0 }
 
-local SCRIPT_VERSION = "2.4.0"
+local SCRIPT_VERSION = "2.5.0"
 
 local BridgeStatus = { FirstPoll = 0, LastPoll = 0, LastOk = 0, Version = "", Latest = "", MediaSessions = "" }
 local SystemState = { LastPoll = 0, Seen = false }
@@ -10331,7 +10331,8 @@ function Impl.LyDraw(x, y, w, h, scale, aMul)
         if ty > y + h then break end
         local lh = ln.gap and dotsH * ln.h or #ln.rows * rowH
         if ty + lh >= y then
-            local edge = math.max(0, math.min(1, (ty + lh - y) / fade, (y + h - ty) / fade))
+            local edge = math.max(0, math.min(1, (ty + lh - y - rowH * 0.3) / fade, (y + h - ty - rowH * 0.3) / fade))
+            edge = edge * edge * (3 - 2 * edge)
             local base = i < Ly.Idx and 0.26 or 0.36
             local al = (base + (1 - base) * ln.a) * edge * aMul
             if ln.gap then
@@ -11200,10 +11201,10 @@ function Sheet.Pick(now)
 end
 
 Sheet.News = {
-    { glyph = "home", color = "Blue", t = "di_wn_1_t", d = "di_wn_1_d" },
-    { glyph = "appearance", color = "Purple", t = "di_wn_2_t", d = "di_wn_2_d" },
-    { glyph = "bolt", color = "Orange", t = "di_wn_3_t", d = "di_wn_3_d" },
-    { glyph = "volume", color = "Green", t = "di_wn_4_t", d = "di_wn_4_d" }
+    { glyph = "stack", color = "Orange", t = "di_wn_1_t", d = "di_wn_1_d" },
+    { glyph = "lyrics", color = "Pink", t = "di_wn_2_t", d = "di_wn_2_d" },
+    { glyph = "appearance", color = "Blue", t = "di_wn_3_t", d = "di_wn_3_d" },
+    { glyph = "plus", color = "Purple", t = "di_wn_4_t", d = "di_wn_4_d" }
 }
 
 function Sheet.Desc()

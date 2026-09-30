@@ -33,7 +33,9 @@ Just start `media_bridge.exe`. Only one copy runs at a time, starting it again r
 | `/level` | live audio level of the playing app, 5 bars |
 | `/key?vk=<code>` | press a key in the dota window (a short list of safe keys) |
 | `/reveal` | show `dynamic_island_debug.log` in explorer |
-| `/fonts`, `/fonts/install` | check and install the sf pro fonts for the current user |
+| `/fonts`, `/fonts/install` | check and install the sf pro fonts and the sf symbols icon font for the current user, the icon font is also copied to the cheat `fonts` folder |
+| `/lyrics?artist=&title=&album=&dur=` | synced lyrics from lrclib as text (`ok`, then `ms<TAB>line` rows), or `none`, `instrumental`, `pending` while it is still downloading |
+| `/diag/audio` | audio sessions the bridge sees and the app it targets, for bug reports |
 
 ## Build
 
