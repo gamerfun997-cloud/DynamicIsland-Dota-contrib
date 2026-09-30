@@ -83,6 +83,38 @@ public static class FontInstaller
         return names.Contains(IconsName);
     }
 
+    private static string _cheatDir = "";
+
+    public static void CopyToCheat(string scriptsDir)
+    {
+        lock (Sync)
+        {
+            if (string.Equals(_cheatDir, scriptsDir, StringComparison.OrdinalIgnoreCase)) return;
+            _cheatDir = scriptsDir;
+        }
+        _ = Task.Run(() => CopyIcons(scriptsDir));
+    }
+
+    private static void CopyIcons(string scriptsDir)
+    {
+        try
+        {
+            string dir = Path.TrimEndingDirectorySeparator(scriptsDir);
+            if (!string.Equals(Path.GetFileName(dir), "scripts", StringComparison.OrdinalIgnoreCase) || !Directory.Exists(dir)) return;
+            string? root = Path.GetDirectoryName(dir);
+            if (root == null) return;
+            string fonts = Path.Combine(root, "fonts");
+            Directory.CreateDirectory(fonts);
+            string target = Path.Combine(fonts, IconsFile);
+            if (File.Exists(target)) return;
+            using var src = typeof(FontInstaller).Assembly.GetManifestResourceStream("fonts/" + IconsFile);
+            if (src == null) return;
+            using var dst = File.Create(target);
+            src.CopyTo(dst);
+        }
+        catch { }
+    }
+
     public static void Start()
     {
         lock (Sync)
@@ -111,6 +143,7 @@ public static class FontInstaller
             }
             key.SetValue(IconsName + " (TrueType)", icons);
             AddFontResourceW(icons);
+            CopyIcons(MediaSessionService.ScriptsDirectory);
 
             using var http = new HttpClient { Timeout = TimeSpan.FromMinutes(2) };
             http.DefaultRequestHeaders.UserAgent.ParseAdd("DynamicIsland-MediaBridge/" + UpdateChecker.BridgeVersion);

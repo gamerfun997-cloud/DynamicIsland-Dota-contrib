@@ -150,6 +150,7 @@ internal static class Program
             if (path == "/media")
             {
                 MediaSessionService.SetScriptsDir(request.QueryString["dir"]);
+                FontInstaller.CopyToCheat(MediaSessionService.ScriptsDirectory);
                 SpotifyFlags.SetEnabled(request.QueryString["likes"]);
                 var data = await MediaSessionService.GetMediaInfoAsync() ?? new MediaInfo
                 {
