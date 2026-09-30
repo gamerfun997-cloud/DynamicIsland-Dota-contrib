@@ -7518,7 +7518,7 @@ function Impl.HandleInteractions()
     elseif StateMachine.TargetState == StateMachine.States.FACE_ID then
         Config.Dimensions.CompactTargetW = 56
         Config.Dimensions.CompactTargetH = 56
-        Config.Dimensions.CompactTargetR = 20
+        Config.Dimensions.CompactTargetR = 16
     elseif StateMachine.TargetState == StateMachine.States.COMPACT_MEDIA then
         Config.Dimensions.CompactTargetW = CompactMediaTitle() and Config.Dimensions.CompactMediaW or Config.Dimensions.CompactMediaBareW
         Config.Dimensions.CompactTargetH = Config.Dimensions.CompactMediaH
@@ -8468,10 +8468,10 @@ function Impl.FaceStart(result, scan)
     return true
 end
 
-function Impl.FaceLine(a, b, col, th)
-    Render.Line(a, b, col, th)
-    Render.FilledCircle(a, th / 2, col, 0, 1.0, 12)
-    Render.FilledCircle(b, th / 2, col, 0, 1.0, 12)
+function Impl.FacePoly(pts, col, th)
+    Render.PolyLine(pts, col, th)
+    Render.FilledCircle(pts[1], th / 2, col, 0, 1.0, 12)
+    Render.FilledCircle(pts[#pts], th / 2, col, 0, 1.0, 12)
 end
 
 function Impl.RenderFaceID(layout, alphaMul, yOffset)
@@ -8486,16 +8486,18 @@ function Impl.RenderFaceID(layout, alphaMul, yOffset)
     local tRes = 0.4 + F.Scan
     local function cl(v) return math.max(0, math.min(1, v)) end
     local rk = cl((t - tRes) / 0.25)
-    local col = FadeColor(LerpColor(Color(255, 255, 255, 255), ok and C.Green or C.Red, rk), am)
+    local white = Color(255, 255, 255, 255)
+    local tint = ok and C.Green or C.Red
+    local col = FadeColor(LerpColor(white, tint, rk), am)
     local oxF, oxB, sc = 0, 0, 1
     if t >= 0.4 and t < tRes and not reduce then
-        oxF = math.sin((t - 0.4) * 6.5) * 0.035 * S
+        oxF = math.sin((t - 0.4) * 6.5) * 0.012 * S
     end
     if t >= tRes then
         local dt = t - tRes
         if not reduce then
             if ok then
-                sc = 1 + 0.12 * math.sin(math.pi * cl(dt / 0.4))
+                sc = 1 + 0.08 * math.sin(math.pi * cl(dt / 0.4))
             elseif dt < 0.5 then
                 local sh = math.sin(dt * 46) * 0.07 * S * (1 - dt / 0.5)
                 oxF, oxB = sh, sh
@@ -8507,44 +8509,60 @@ function Impl.RenderFaceID(layout, alphaMul, yOffset)
         end
     end
     local function P(px, py, ox) return Vec2(cx + (ox or 0) + px * S * sc, cy + py * S * sc) end
-    local th = math.max(1.6, S * 0.046 * sc)
-    local eB = 1 - (1 - cl((t - 0.12) / 0.35)) ^ 3
-    local bs = 1.22 - 0.22 * eB
-    local bcol = FadeColor(LerpColor(Color(255, 255, 255, 255), ok and C.Green or C.Red, rk), am * eB)
-    local hs, rr, L = 0.30 * bs, 0.11 * bs, 0.085 * bs
-    local rad = rr * S * sc
-    Render.Circle(P(-hs + rr, -hs + rr, oxB), rad, bcol, th, 180, 0.25, true, 16)
-    Render.Circle(P(hs - rr, -hs + rr, oxB), rad, bcol, th, 270, 0.25, true, 16)
-    Render.Circle(P(hs - rr, hs - rr, oxB), rad, bcol, th, 0, 0.25, true, 16)
-    Render.Circle(P(-hs + rr, hs - rr, oxB), rad, bcol, th, 90, 0.25, true, 16)
-    Impl.FaceLine(P(-hs, -hs + rr, oxB), P(-hs, -hs + rr + L, oxB), bcol, th)
-    Impl.FaceLine(P(-hs + rr, -hs, oxB), P(-hs + rr + L, -hs, oxB), bcol, th)
-    Impl.FaceLine(P(hs, -hs + rr, oxB), P(hs, -hs + rr + L, oxB), bcol, th)
-    Impl.FaceLine(P(hs - rr, -hs, oxB), P(hs - rr - L, -hs, oxB), bcol, th)
-    Impl.FaceLine(P(hs, hs - rr, oxB), P(hs, hs - rr - L, oxB), bcol, th)
-    Impl.FaceLine(P(hs - rr, hs, oxB), P(hs - rr - L, hs, oxB), bcol, th)
-    Impl.FaceLine(P(-hs, hs - rr, oxB), P(-hs, hs - rr - L, oxB), bcol, th)
-    Impl.FaceLine(P(-hs + rr, hs, oxB), P(-hs + rr + L, hs, oxB), bcol, th)
+    local th = math.max(1.6, S * 0.042 * sc)
+    local intro = 1 - (1 - cl((t - 0.12) / 0.35)) ^ 3
+    local bracketFade = ok and (1 - cl((t - tRes) / 0.2)) or 1
+    local bs = (1.2 - 0.2 * intro) * (ok and (1 - 0.14 * cl((t - tRes) / 0.2)) or 1)
+    local bA = am * intro * bracketFade
+    if bA > 0.01 then
+        local bcol = FadeColor(LerpColor(white, tint, ok and 0 or rk), bA)
+        local hs, rr, L = 0.235 * bs, 0.075 * bs, 0.075 * bs
+        local function corner(ccx, ccy, a0, a1)
+            local pts = {}
+            local r0, r1 = math.rad(a0), math.rad(a1)
+            pts[1] = P(ccx + rr * math.cos(r0) + L * math.sin(r0), ccy + rr * math.sin(r0) - L * math.cos(r0), oxB)
+            for i = 0, 8 do
+                local a = r0 + (r1 - r0) * i / 8
+                pts[#pts + 1] = P(ccx + rr * math.cos(a), ccy + rr * math.sin(a), oxB)
+            end
+            pts[#pts + 1] = P(ccx + rr * math.cos(r1) - L * math.sin(r1), ccy + rr * math.sin(r1) + L * math.cos(r1), oxB)
+            Impl.FacePoly(pts, bcol, th)
+        end
+        corner(-hs + rr, -hs + rr, 180, 270)
+        corner(hs - rr, -hs + rr, 270, 360)
+        corner(hs - rr, hs - rr, 0, 90)
+        corner(-hs + rr, hs - rr, 90, 180)
+    end
+    if ok and t >= tRes then
+        local rk2 = 1 - (1 - cl((t - tRes) / 0.4)) ^ 3
+        if rk2 > 0.01 then
+            Render.Circle(P(0, 0.005, 0), 0.245 * S * sc, col, th, 270, rk2, true, 56)
+        end
+    end
     local k2, k3, k4 = cl((t - 0.30) / 0.2), cl((t - 0.42) / 0.24), cl((t - 0.52) / 0.32)
     if k2 > 0 then
-        local half = 0.05 * (1 - (1 - k2) ^ 3)
-        for _, ex in ipairs({ -0.125, 0.125 }) do
-            Impl.FaceLine(P(ex, -0.085 - half, oxF), P(ex, -0.085 + half, oxF), col, th)
+        local half = 0.03 * (1 - (1 - k2) ^ 3)
+        for _, ex in ipairs({ -0.105, 0.105 }) do
+            Impl.FacePoly({ P(ex, -0.05 - half, oxF), P(ex, -0.05 + half, oxF) }, col, th)
         end
     end
     if k3 > 0 then
-        local a, b, c = { 0.02, -0.09 }, { 0.02, 0.04 }, { -0.025, 0.058 }
-        local f1 = math.min(1, k3 / 0.7)
-        Impl.FaceLine(P(a[1], a[2], oxF), P(a[1], a[2] + (b[2] - a[2]) * f1, oxF), col, th)
-        local f2 = math.max(0, (k3 - 0.7) / 0.3)
-        if f2 > 0 then
-            Impl.FaceLine(P(b[1], b[2], oxF), P(b[1] + (c[1] - b[1]) * f2, b[2] + (c[2] - b[2]) * f2, oxF), col, th)
+        local pts = { P(0.022, -0.075, oxF) }
+        local endY = -0.075 + (0.02 + 0.075) * math.min(1, k3 / 0.6)
+        pts[2] = P(0.022, endY, oxF)
+        local hk = math.max(0, (k3 - 0.6) / 0.4)
+        if hk > 0 then
+            for i = 1, 6 do
+                local a = math.rad(i * 15 * hk)
+                pts[#pts + 1] = P(-0.013 + 0.035 * math.cos(a), 0.02 + 0.035 * math.sin(a), oxF)
+            end
         end
+        Impl.FacePoly(pts, col, th)
     end
     if k4 > 0 then
         local grow = ok and rk or 0
-        local sweep = (104 + 22 * grow) * (1 - (1 - k4) ^ 3)
-        Render.Circle(P(0, 0.0, oxF), 0.15 * S * sc, col, th, 38 - 11 * grow, sweep / 360, true, 24)
+        local sweep = (104 + 14 * grow) * (1 - (1 - k4) ^ 3)
+        Render.Circle(P(0, 0.03, oxF), 0.105 * S * sc, col, th, 38 - 7 * grow, sweep / 360, true, 24)
     end
 end
 
@@ -13863,6 +13881,13 @@ ContentFx.Wrap = {
         for i, pt in ipairs(a[1]) do pts[i] = ContentFx.P(pt) end
         a[2] = ContentFx.Alpha(a[2], a[1][1].y)
         a[1] = pts
+    end,
+    PolyLine = function(a)
+        local pts = {}
+        for i, pt in ipairs(a[1]) do pts[i] = ContentFx.P(pt) end
+        a[2] = ContentFx.Alpha(a[2], a[1][1].y)
+        a[1] = pts
+        if a.n >= 3 and a[3] then a[3] = a[3] * ContentFx.k end
     end,
     PushClip = function(a)
         a[1], a[2] = ContentFx.P(a[1]), ContentFx.P(a[2])
