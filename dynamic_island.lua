@@ -878,6 +878,8 @@ local localization = qLocalization.new({
         di_combat_pause_alert_tip = "Shows when the game is paused",
         di_match_alert = "Match Found",
         di_match_alert_tip = "Accept countdown in the menu.\nPriority, Focus and sound in the gear",
+        di_courier_faceid = "Face ID on Delivery",
+        di_courier_faceid_tip = "Face ID animation when the\ncourier brings your items",
         di_match_faceid = "Face ID on Accept",
         di_match_faceid_tip = "Face ID animation when\nyou accept a match",
         di_runes_active_runes = "Active Power Runes",
@@ -1501,6 +1503,8 @@ local localization = qLocalization.new({
         di_combat_pause_alert_tip = "Показывает, когда игра на паузе",
         di_match_alert = "Матч найден",
         di_match_alert_tip = "Отсчёт принятия матча в меню.\nПриоритет, фокус и звук в шестерёнке",
+        di_courier_faceid = "Face ID при доставке",
+        di_courier_faceid_tip = "Анимация Face ID, когда курьер\nдоставил твои предметы",
         di_match_faceid = "Face ID при принятии",
         di_match_faceid_tip = "Анимация Face ID, когда\nты принимаешь матч",
         di_runes_active_runes = "Активные руны (Power)",
@@ -3600,6 +3604,8 @@ function Impl.InitMenu()
     snd(gLevel, "Level")
     C.CourierDelivery = gLive:Switch("di_combat_courier_delivery", true, "\u{f48b}")
     C.CourierDelivery:ToolTip("di_combat_courier_delivery_tip")
+    C.CourierFaceID = gLive:Switch("di_courier_faceid", true, "\u{f118}")
+    C.CourierFaceID:ToolTip("di_courier_faceid_tip")
     C.PauseAlert = gLive:Switch("di_combat_pause_alert", true, "\u{f04c}")
     C.PauseAlert:ToolTip("di_combat_pause_alert_tip")
     C.MatchFound = gLive:Switch("di_match_alert", true, "\u{f11b}")
@@ -6545,6 +6551,11 @@ function Impl.ProcessCourierTracker()
             CourierTracker.Delivered = true
             CourierTracker.DeliveredStartTime = nowClk
             CourierTracker.IsGoingToStash = false
+            if ToggleOn(UI and UI.Combat and UI.Combat.CourierFaceID) and not FightTracker.Active and not PauseTracker.IsPaused and Impl.FaceStart("ok", 0.6) then
+                CourierTracker.FaceFor = nowClk
+                Success.Fired["courier" .. nowClk] = true
+                Success.Fired["sat_courier" .. nowClk] = true
+            end
             if StateMachine.TargetState ~= StateMachine.States.COURIER_DELIVERED then
                 TriggerStateTransition(StateMachine.States.COURIER_DELIVERED)
             end
@@ -8438,12 +8449,12 @@ Impl.Face = { At = nil, Result = "ok", Scan = 1, Total = 0, Fired = false }
 
 function Impl.FaceLive()
     local F = Impl.Face
-    return F.At ~= nil and (os.clock() - F.At) / AnimScale() < F.Total
+    return F.At ~= nil and (os.clock() - F.At) * 1.5 / AnimScale() < F.Total
 end
 
 function Impl.FaceT()
     local F = Impl.Face
-    return F.At and (os.clock() - F.At) / AnimScale() or nil
+    return F.At and (os.clock() - F.At) * 1.5 / AnimScale() or nil
 end
 
 function Impl.FaceStart(result, scan)
@@ -9734,7 +9745,7 @@ function Impl.RenderSecondarySatelliteBubble(layout)
             local c = Vec2(x1 + d / 2, (y1 + y2) / 2)
             local ringR = d / 2 - 4 * scale
             if delivered then
-                Success.Draw("sat_courier" .. CourierTracker.DeliveredStartTime, c, ringR, now - CourierTracker.DeliveredStartTime, ca, scale)
+                Success.Draw("sat_courier" .. CourierTracker.DeliveredStartTime, c, ringR, CourierTracker.FaceFor == CourierTracker.DeliveredStartTime and 99 or now - CourierTracker.DeliveredStartTime, ca, scale)
             else
                 local rt = math.max(1.2, 1.5 * scale)
                 Render.Circle(c, ringR, FadeColor(Config.Colors.FillTertiary, ca), rt, 0, 1.0, false, 48)
@@ -10886,6 +10897,7 @@ function Impl.RenderCourierDeliveredPill(layout, alphaMul, yOffset)
 
     local nowClk = os.clock()
     local elapsed = math.max(0, nowClk - CourierTracker.DeliveredStartTime)
+    if CourierTracker.FaceFor == CourierTracker.DeliveredStartTime then elapsed = 99 end
     local iconSize = math.floor(18 * scale)
     local delivText = L("di_courier_delivered")
     local tSize = Render.TextSize(fH, sH, delivText)
