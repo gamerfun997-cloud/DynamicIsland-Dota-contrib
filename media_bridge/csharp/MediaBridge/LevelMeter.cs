@@ -254,7 +254,7 @@ public static class LevelMeter
                 return;
             }
             string fam = MediaSessionService.CurrentFamily;
-            if (fam != family || now - acquiredAt > 1500)
+            if (fam != family || now - acquiredAt > (meters.Count == 0 ? 1500 : 6000))
             {
                 ReleaseAll(meters);
                 if (endpoint != IntPtr.Zero)

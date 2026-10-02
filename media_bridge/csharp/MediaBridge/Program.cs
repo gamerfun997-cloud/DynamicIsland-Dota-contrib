@@ -84,7 +84,7 @@ internal static class Program
                 continue;
             }
 
-            _ = HandleRequestAsync(context);
+            _ = Task.Run(() => HandleRequestAsync(context));
         }
     }
 

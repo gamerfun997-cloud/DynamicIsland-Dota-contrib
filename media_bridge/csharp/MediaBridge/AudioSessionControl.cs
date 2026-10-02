@@ -78,6 +78,8 @@ public static class AppAudioControl
         }
         catch { }
 
+        uint lastPid = 0;
+        bool lastDota = false;
         while (true)
         {
             try
@@ -88,8 +90,13 @@ public static class AppAudioControl
                     GetWindowThreadProcessId(fg, out uint pid);
                     if (pid > 0)
                     {
-                        var p = Process.GetProcessById((int)pid);
-                        _isDotaFocused = p.ProcessName.Contains("dota2", StringComparison.OrdinalIgnoreCase);
+                        if (pid != lastPid)
+                        {
+                            lastPid = pid;
+                            using var p = Process.GetProcessById((int)pid);
+                            lastDota = p.ProcessName.Contains("dota2", StringComparison.OrdinalIgnoreCase);
+                        }
+                        _isDotaFocused = lastDota;
                     }
                     else
                     {
@@ -103,9 +110,10 @@ public static class AppAudioControl
             }
             catch
             {
+                lastPid = 0;
                 _isDotaFocused = false;
             }
-            Thread.Sleep(100);
+            Thread.Sleep(150);
         }
     }
 
@@ -261,9 +269,49 @@ public static class AppAudioControl
         return list;
     }
 
+    private static volatile List<SessionEntry> _sessionCache = new();
+    private static long _sessionCacheAt;
+    private static int _sessionBusy;
+    private const int SessionCacheMs = 700;
+
+    public static List<SessionEntry> CachedSessions()
+    {
+        long now = Environment.TickCount64;
+        if (Interlocked.Read(ref _sessionCacheAt) == 0)
+        {
+            var first = EnumerateAllSessions();
+            _sessionCache = first;
+            Interlocked.Exchange(ref _sessionCacheAt, Math.Max(1, Environment.TickCount64));
+            return first;
+        }
+        if (now - Interlocked.Read(ref _sessionCacheAt) > SessionCacheMs && Interlocked.CompareExchange(ref _sessionBusy, 1, 0) == 0)
+        {
+            _ = Task.Run(() =>
+            {
+                try
+                {
+                    var fresh = EnumerateAllSessions();
+                    _sessionCache = fresh;
+                    Interlocked.Exchange(ref _sessionCacheAt, Math.Max(1, Environment.TickCount64));
+                }
+                catch { }
+                finally { Volatile.Write(ref _sessionBusy, 0); }
+            });
+        }
+        return _sessionCache;
+    }
+
+    private static void PatchCachedVolume(string family, float vol)
+    {
+        foreach (var s in _sessionCache)
+        {
+            if (s.Family == family) s.Volume = vol;
+        }
+    }
+
     public static string ResolveTargetFamily(string preferredFamily)
     {
-        var sessions = EnumerateAllSessions();
+        var sessions = CachedSessions();
         if (!string.IsNullOrEmpty(preferredFamily))
         {
             foreach (var s in sessions)
@@ -290,7 +338,7 @@ public static class AppAudioControl
     public static int GetFamilyAudioState(string preferredFamily)
     {
         if (string.IsNullOrEmpty(preferredFamily)) return -1;
-        var sessions = EnumerateAllSessions();
+        var sessions = CachedSessions();
         bool found = false;
         foreach (var s in sessions)
         {
@@ -308,7 +356,7 @@ public static class AppAudioControl
         string targetFam = ResolveTargetFamily(preferredFamily);
         if (string.IsNullOrEmpty(targetFam)) return -1.0f;
 
-        foreach (var s in EnumerateAllSessions())
+        foreach (var s in CachedSessions())
         {
             if (s.Family == targetFam) return s.Volume;
         }
@@ -348,6 +396,7 @@ public static class AppAudioControl
         }
         if (curVol < 0.0f) curVol = 1.0f;
         float newVol = Math.Min(1.0f, Math.Max(0.0f, curVol + delta));
+        PatchCachedVolume(targetFam, newVol);
 
         try
         {
@@ -412,23 +461,62 @@ public static class AppAudioControl
         }
     }
 
-    private static void ApplyDuckLevel(float duckFrac)
+    private sealed class DuckTarget
     {
+        public IntPtr Vol;
+        public string Key = "";
+    }
+
+    private static List<DuckTarget> _duckTargets = new();
+
+    private static void AcquireDuckTargets()
+    {
+        ReleaseDuckTargets();
+        var list = new List<DuckTarget>();
         try
         {
             uint currentPid = (uint)Environment.ProcessId;
             RawAudio.ForEachSession((ses, i, pid, displayName, iconPath, state) =>
             {
                 if (pid != 0 && pid == currentPid) return;
-                string sessionKey = pid + "_" + i;
-                if (!_savedSessionVolumes.TryGetValue(sessionKey, out float origVol))
+                var qi = Marshal.GetDelegateForFunctionPointer<QueryInterfaceDelegate>(Marshal.ReadIntPtr(Marshal.ReadIntPtr(ses), 0));
+                var iidVol = IID_ISimpleAudioVolume;
+                if (qi(ses, ref iidVol, out IntPtr pVol) != 0 || pVol == IntPtr.Zero) return;
+                list.Add(new DuckTarget { Vol = pVol, Key = pid + "_" + i });
+            });
+        }
+        catch { }
+        _duckTargets = list;
+    }
+
+    private static void ReleaseDuckTargets()
+    {
+        var old = _duckTargets;
+        _duckTargets = new List<DuckTarget>();
+        foreach (var t in old)
+        {
+            try { Marshal.Release(t.Vol); } catch { }
+        }
+    }
+
+    private static void ApplyDuckLevel(float duckFrac)
+    {
+        try
+        {
+            foreach (var t in _duckTargets)
+            {
+                var vtbl = Marshal.ReadIntPtr(t.Vol);
+                if (!_savedSessionVolumes.TryGetValue(t.Key, out float origVol))
                 {
-                    if (!TryGetVolume(ses, out float cur)) return;
-                    _savedSessionVolumes[sessionKey] = cur;
+                    var getVol = Marshal.GetDelegateForFunctionPointer<GetMasterVolumeDelegate>(Marshal.ReadIntPtr(vtbl, 4 * IntPtr.Size));
+                    if (getVol(t.Vol, out float cur) != 0) continue;
+                    _savedSessionVolumes[t.Key] = cur;
                     origVol = cur;
                 }
-                TrySetVolume(ses, Math.Max(0.0f, Math.Min(1.0f, origVol * (1.0f - duckFrac))));
-            });
+                var setVol = Marshal.GetDelegateForFunctionPointer<SetMasterVolumeDelegate>(Marshal.ReadIntPtr(vtbl, 3 * IntPtr.Size));
+                Guid g = Guid.Empty;
+                setVol(t.Vol, Math.Max(0.0f, Math.Min(1.0f, origVol * (1.0f - duckFrac))), ref g);
+            }
         }
         catch { }
     }
@@ -437,6 +525,7 @@ public static class AppAudioControl
     {
         try
         {
+            AcquireDuckTargets();
             for (int step = 1; step <= 3; step++)
             {
                 float t = step / 3.0f;
@@ -493,6 +582,7 @@ public static class AppAudioControl
                 _duckResetRequested = false;
                 _workerThread = null;
             }
+            ReleaseDuckTargets();
         }
     }
 

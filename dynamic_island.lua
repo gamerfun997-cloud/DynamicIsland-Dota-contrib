@@ -2242,7 +2242,7 @@ local Success = { Fired = {} }
 local Odometer = { States = {}, Widths = {}, WidthCount = 0, Digit = {}, Layouts = {}, LayoutCount = 0 }
 local SeekDrag = { Active = false, Frac = 0, Grow = 0, GrowVel = 0, HoldUntil = 0, HoldPos = 0, HoldStart = 0 }
 
-local SCRIPT_VERSION = "2.5.0"
+local SCRIPT_VERSION = "2.5.1"
 
 local BridgeStatus = { FirstPoll = 0, LastPoll = 0, LastOk = 0, Version = "", Latest = "", MediaSessions = "" }
 local SystemState = { LastPoll = 0, Seen = false }
@@ -4581,8 +4581,8 @@ function Impl.PollLevel()
     local st = StateMachine.TargetState
     if st ~= S.COMPACT_MEDIA and st ~= S.LARGE_MEDIA and Satellite.Right.kind ~= "combat" and Satellite.Right.kind ~= "media" then return end
     local now = os.clock()
-    if now - (MediaData.LevelPoll or 0) < 0.04 then return end
-    if MediaData.LevelBusy and now - MediaData.LevelBusy < 0.5 then return end
+    if now - (MediaData.LevelPoll or 0) < 0.055 then return end
+    if MediaData.LevelBusy and now - MediaData.LevelBusy < 1.5 then return end
     MediaData.LevelPoll = now
     MediaData.LevelBusy = now
     pcall(HTTP.Request, "GET", "http://127.0.0.1:45455/level", {}, function(res)
@@ -4605,7 +4605,9 @@ function Impl.PollMediaBridge()
     if not UI or not UI.Media.Enabled:Get() or Demo.Active then return end
     local clk = os.clock()
     if clk - MediaData.LastPollTime < MediaData.PollInterval then return end
+    if MediaData.PollBusy and clk - MediaData.PollBusy < 2.0 then return end
     MediaData.LastPollTime = clk
+    MediaData.PollBusy = clk
 
     local port = 45455
     if not Impl.MediaQuery then
@@ -4620,6 +4622,7 @@ function Impl.PollMediaBridge()
     local url = string.format("http://127.0.0.1:%d/media", port) .. Impl.MediaQuery .. (Impl.MediaQuery == "" and "?" or "&") .. "likes=" .. likes
 
     pcall(HTTP.Request, "GET", url, {}, function(res)
+        MediaData.PollBusy = nil
         if not res or not res.response or res.response == "" then return end
         local body = res.response
 
@@ -4780,9 +4783,12 @@ end
 function Impl.PollBridgeStatus()
     local clk = os.clock()
     if clk - BridgeStatus.LastPoll < 3.0 then return end
+    if BridgeStatus.Busy and clk - BridgeStatus.Busy < 4.0 then return end
     BridgeStatus.LastPoll = clk
+    BridgeStatus.Busy = clk
     if BridgeStatus.FirstPoll == 0 then BridgeStatus.FirstPoll = clk end
     pcall(HTTP.Request, "GET", "http://127.0.0.1:45455/status", {}, function(res)
+        BridgeStatus.Busy = nil
         if not res or not res.response or res.response == "" then return end
         local body = res.response
         if not string.find(body, '"status"', 1, true) then return end
@@ -4814,9 +4820,12 @@ function Impl.PollSystem()
     local sys = UI and UI.System
     if not sys or not (ToggleOn(sys.Output) or ToggleOn(sys.Mute) or ToggleOn(sys.Battery)) then return end
     local clk = os.clock()
-    if clk - SystemState.LastPoll < 0.5 then return end
+    if clk - SystemState.LastPoll < 0.6 then return end
+    if SystemState.Busy and clk - SystemState.Busy < 3.0 then return end
     SystemState.LastPoll = clk
+    SystemState.Busy = clk
     pcall(HTTP.Request, "GET", "http://127.0.0.1:45455/system", {}, function(res)
+        SystemState.Busy = nil
         if not res or not res.response or res.response == "" then return end
         local body = res.response
         local id = string.match(body, '"device_id"%s*:%s*"([^"]*)"')
@@ -11415,7 +11424,7 @@ function Sheet.Pick(now)
     elseif #Sdk.Asks > 0 then
         kind = "sdk_perm"
         Sdk.Prompt = Sdk.Asks[1]
-    elseif Sheet.ConfigLoaded and Sheet.SeenVer ~= SCRIPT_VERSION then
+    elseif Sheet.ConfigLoaded and string.match(Sheet.SeenVer or "", "^%d+%.%d+") ~= string.match(SCRIPT_VERSION, "^%d+%.%d+") then
         kind = "whatsnew"
     elseif not Sheet.BridgeHintSeen and Sheet.BridgeMissing(now) then
         kind = "bridge"

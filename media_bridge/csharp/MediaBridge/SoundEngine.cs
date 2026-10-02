@@ -12,6 +12,8 @@ public static class SoundEngine
     private static MixingSampleProvider? _mixer;
     private static IWavePlayer? _output;
     private static string _soundDir = "";
+    private static readonly Dictionary<string, long> LastPlayed = new();
+    private static int _voices;
 
     private const int MaxSoundSeconds = 8;
     private const float SilenceThreshold = 0.0015f;
@@ -182,9 +184,14 @@ public static class SoundEngine
         lock (Sync)
         {
             if (!Cache.TryGetValue(name, out data)) return;
+            long tick = Environment.TickCount64;
+            if (LastPlayed.TryGetValue(name, out long prev) && tick - prev < 70) return;
+            if (_voices >= 10) return;
+            LastPlayed[name] = tick;
             EnsureOutput();
             if (_mixer == null) return;
-            _mixer.AddMixerInput(new Voice(data, _mixFormat, (float)Math.Clamp(volume, 0.0, 1.0)));
+            _voices++;
+            _mixer.AddMixerInput(new Voice(data, _mixFormat, (float)Math.Clamp(volume, 0.0, 1.0), () => { lock (Sync) _voices--; }));
         }
     }
 
@@ -192,12 +199,15 @@ public static class SoundEngine
     {
         private readonly float[] _data;
         private readonly float _gain;
+        private readonly Action _done;
         private int _pos;
+        private bool _finished;
 
-        public Voice(float[] data, WaveFormat format, float gain)
+        public Voice(float[] data, WaveFormat format, float gain, Action done)
         {
             _data = data;
             _gain = gain;
+            _done = done;
             WaveFormat = format;
         }
 
@@ -208,6 +218,11 @@ public static class SoundEngine
             int n = Math.Min(count, _data.Length - _pos);
             for (int i = 0; i < n; i++) buffer[offset + i] = _data[_pos + i] * _gain;
             _pos += n;
+            if (_pos >= _data.Length && !_finished)
+            {
+                _finished = true;
+                _done();
+            }
             return n;
         }
     }

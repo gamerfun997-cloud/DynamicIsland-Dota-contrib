@@ -35,23 +35,36 @@ public static class SystemWatcher
     private static void Loop()
     {
         MMDeviceEnumerator? enumerator = null;
+        MMDevice? held = null;
+        string device = "", id = "", kind = "";
         while (true)
         {
-            string device = "", id = "", kind = "";
             bool muted = false;
             try
             {
                 enumerator ??= new MMDeviceEnumerator();
-                using var dev = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-                id = dev.ID;
-                device = dev.DeviceFriendlyName;
-                kind = Kind(dev);
-                muted = dev.AudioEndpointVolume.Mute;
+                var cur = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+                if (held == null || cur.ID != id)
+                {
+                    try { held?.Dispose(); } catch { }
+                    held = cur;
+                    id = cur.ID;
+                    device = cur.DeviceFriendlyName;
+                    kind = Kind(cur);
+                }
+                else
+                {
+                    cur.Dispose();
+                }
+                muted = held.AudioEndpointVolume.Mute;
             }
             catch
             {
+                try { held?.Dispose(); } catch { }
+                held = null;
                 try { enumerator?.Dispose(); } catch { }
                 enumerator = null;
+                device = id = kind = "";
             }
 
             int battery = -1;
@@ -68,7 +81,7 @@ public static class SystemWatcher
             }
 
             _info = new SystemInfo("ok", device, id, kind, muted, battery, charging, onAc);
-            Thread.Sleep(400);
+            Thread.Sleep(500);
         }
     }
 
