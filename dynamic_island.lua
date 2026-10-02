@@ -4395,7 +4395,7 @@ end
 function Impl.TryLoadAlbumImage(coverPath, coverJpg, coverBase64, curVer)
     if not curVer or curVer <= 0 then return nil end
     if coverBase64 and coverBase64 ~= "" then
-        local vStr = tostring(curVer)
+        local vStr = tostring(curVer) .. "_" .. #coverBase64 .. "_" .. (string.byte(coverBase64, math.floor(#coverBase64 / 2)) or 0) .. (string.byte(coverBase64, #coverBase64 - 3) or 0)
         local svgPng = string.format('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><image href="data:image/png;base64,%s" width="100" height="100"/></svg>', coverBase64)
         local ok1, handle1 = pcall(Render.LoadSvgString, svgPng, Vec2(100, 100), "album_cover_png_" .. vStr)
         if ok1 and handle1 and handle1 > 0 then
@@ -4687,6 +4687,7 @@ function Impl.PollMediaBridge()
             TrackTransition.OldCoverColor = MediaData.CoverColor
             MediaData.CoverImageHandle = nil
             MediaData.CoverVersion = -1
+            MediaData.CoverSig = nil
         end
 
         if cleanTitle ~= "" then
@@ -4759,7 +4760,9 @@ function Impl.PollMediaBridge()
         end
 
         local curVer = tonumber(coverVerStr) or 0
-        if curVer ~= MediaData.CoverVersion or not MediaData.CoverImageHandle then
+        local sig = tostring(curVer) .. ":" .. #coverBase64 .. ":" .. (coverBase64 ~= "" and ((string.byte(coverBase64, math.floor(#coverBase64 / 2)) or 0) .. "." .. (string.byte(coverBase64, #coverBase64 - 3) or 0)) or coverPath)
+        if sig ~= MediaData.CoverSig or curVer ~= MediaData.CoverVersion or not MediaData.CoverImageHandle then
+            MediaData.CoverSig = sig
             MediaData.CoverVersion = curVer
             if hasCover and curVer > 0 then
                 local img = Impl.TryLoadAlbumImage(coverPath, coverJpg, coverBase64, curVer)

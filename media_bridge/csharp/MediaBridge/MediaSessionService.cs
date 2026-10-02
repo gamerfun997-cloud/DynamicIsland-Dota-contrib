@@ -110,7 +110,7 @@ public static class MediaSessionService
     private static string _coverJpg = "";
     private static string _coverPng = "";
     private static string _lastSavedTrack = "";
-    private static int _coverVersion;
+    private static int _coverVersion = (int)Math.Max(1, (DateTime.UtcNow - new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds);
     private static string _coverBase64 = "";
     private static int[] _coverColor = { 255, 45, 85 };
     private static bool _hasCover;
