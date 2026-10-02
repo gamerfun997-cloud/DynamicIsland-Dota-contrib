@@ -166,6 +166,12 @@ public static class AppAudioControl
     {
         string combined = (pName + " " + displayName + " " + iconPath).ToLowerInvariant();
         if (combined.Contains("dotify")) return "dotify";
+        if (combined.Contains("cider")) return "cider";
+        if (combined.Contains("musicbee")) return "musicbee";
+        if (combined.Contains("winamp")) return "winamp";
+        if (combined.Contains("qobuz")) return "qobuz";
+        if (combined.Contains("amazon music") || combined.Contains("amazonmusic")) return "amazon";
+        if (combined.Contains("ytmdesktop") || combined.Contains("youtube music")) return "ytmusic";
         if (combined.Contains("spotify")) return "spotify";
         if (combined.Contains("yandex") || combined.Contains("яндекс") || combined.Contains("Яндекс")) return "yandex";
         if (combined.Contains("aimp")) return "aimp";
@@ -186,7 +192,7 @@ public static class AppAudioControl
 
     public static bool IsMusicPlayerFamily(string fam)
     {
-        return fam is "dotify" or "spotify" or "yandex" or "aimp" or "foobar" or "apple" or "tidal" or "deezer" or "vlc";
+        return fam is "dotify" or "spotify" or "yandex" or "aimp" or "foobar" or "apple" or "tidal" or "deezer" or "vlc" or "cider" or "musicbee" or "winamp" or "qobuz" or "amazon" or "ytmusic";
     }
 
     private static bool TryGetVolume(IntPtr session, out float vol)
@@ -312,10 +318,12 @@ public static class AppAudioControl
     public static string DescribeSessions()
     {
         var parts = new List<string>();
+        var peaks = RawAudio.SessionPeaks();
         foreach (var s in EnumerateAllSessions(true))
         {
             string state = s.State == 1 ? "active" : s.State == 0 ? "inactive" : "expired";
-            parts.Add((s.Family == "" ? "?" : s.Family) + " = " + (s.ProcessName == "" ? "system" : s.ProcessName) + " pid " + s.Pid + " " + state + " " + (int)Math.Round(s.Volume * 100) + "%");
+            string peak = peaks.TryGetValue((uint)s.Pid, out float pv) ? " peak " + pv.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) : "";
+            parts.Add((s.Family == "" ? "?" : s.Family) + " = " + (s.ProcessName == "" ? "system" : s.ProcessName) + " pid " + s.Pid + " " + state + " " + (int)Math.Round(s.Volume * 100) + "%" + peak);
         }
         return parts.Count > 0 ? string.Join("; ", parts) : "none" + (LastError != "" ? " (" + LastError + ")" : "");
     }

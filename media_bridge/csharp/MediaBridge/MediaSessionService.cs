@@ -187,6 +187,12 @@ public static class MediaSessionService
         if (session == null) return "";
         string appId = session.SourceAppUserModelId?.ToLowerInvariant() ?? "";
         if (appId.Contains("dotify")) return "dotify";
+        if (appId.Contains("cider")) return "cider";
+        if (appId.Contains("musicbee")) return "musicbee";
+        if (appId.Contains("winamp")) return "winamp";
+        if (appId.Contains("qobuz")) return "qobuz";
+        if (appId.Contains("amazonmusic") || appId.Contains("amazon music")) return "amazon";
+        if (appId.Contains("ytmdesktop") || appId.Contains("youtube music")) return "ytmusic";
         if (appId.Contains("spotify")) return "spotify";
         if (appId.Contains("yandex")) return "yandex";
         if (appId.Contains("aimp")) return "aimp";
@@ -228,7 +234,9 @@ public static class MediaSessionService
                                 appId.Contains("itunes") || appId.Contains("aimp") ||
                                 appId.Contains("foobar") || appId.Contains("tidal") ||
                                 appId.Contains("deezer") || appId.Contains("winamp") ||
-                                appId.Contains("musicbee"));
+                                appId.Contains("musicbee") || appId.Contains("cider") ||
+                                appId.Contains("qobuz") || appId.Contains("amazonmusic") ||
+                                appId.Contains("ytmdesktop"));
 
             if (isDedicated)
             {

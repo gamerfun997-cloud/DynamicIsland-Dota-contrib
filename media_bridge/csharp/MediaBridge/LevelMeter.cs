@@ -12,6 +12,7 @@ internal static class RawAudio
     private delegate int GetIntFn(IntPtr self, out int value);
     private delegate int GetSessionFn(IntPtr self, int index, out IntPtr session);
     private delegate int GetPidFn(IntPtr self, out uint pid);
+    private delegate int GetPeakFn(IntPtr self, out float peak);
 
     private static Guid ClsidEnumerator = new("BCDE0395-E52F-467C-8E3D-C4579291692E");
     private static Guid IidEnumerator = new("A95664D2-9614-4F35-A746-DE8DB63617E6");
@@ -113,6 +114,29 @@ internal static class RawAudio
         }
     }
 
+    public static Dictionary<uint, float> SessionPeaks()
+    {
+        var res = new Dictionary<uint, float>();
+        ForEachSession((ses, index, pid, display, icon, state) =>
+        {
+            var qi = Fn<QueryInterfaceFn>(ses, 0);
+            if (qi(ses, ref IidMeter, out IntPtr meter) != 0 || meter == IntPtr.Zero) return;
+            try
+            {
+                var get = Fn<GetPeakFn>(meter, 3);
+                if (get(meter, out float v) == 0)
+                {
+                    res.TryGetValue(pid, out float cur);
+                    if (v > cur) res[pid] = v;
+                    else if (!res.ContainsKey(pid)) res[pid] = v;
+                }
+            }
+            catch { }
+            finally { Marshal.Release(meter); }
+        });
+        return res;
+    }
+
     public static List<IntPtr> FamilyMeters(string family)
     {
         var list = new List<IntPtr>();
@@ -212,12 +236,16 @@ public static class LevelMeter
         var meters = new List<(IntPtr ptr, GetPeakDelegate get)>();
         long acquiredAt = 0;
         string family = "";
+        IntPtr endpoint = IntPtr.Zero;
+        GetPeakDelegate? endpointGet = null;
+        int stuck = 0;
         while (true)
         {
             long now = Environment.TickCount64;
             if (now - Interlocked.Read(ref _lastRequest) > 3000)
             {
                 ReleaseAll(meters);
+                if (endpoint != IntPtr.Zero) Marshal.Release(endpoint);
                 lock (Sync)
                 {
                     _thread = null;
@@ -229,6 +257,11 @@ public static class LevelMeter
             if (fam != family || now - acquiredAt > 1500)
             {
                 ReleaseAll(meters);
+                if (endpoint != IntPtr.Zero)
+                {
+                    Marshal.Release(endpoint);
+                    endpoint = IntPtr.Zero;
+                }
                 foreach (var p in RawAudio.FamilyMeters(fam))
                 {
                     var get = Marshal.GetDelegateForFunctionPointer<GetPeakDelegate>(Marshal.ReadIntPtr(Marshal.ReadIntPtr(p), 3 * IntPtr.Size));
@@ -248,6 +281,34 @@ public static class LevelMeter
                 }
                 catch { }
             }
+            if (peak >= 0.98f) stuck = Math.Min(stuck + 1, 90); else stuck = Math.Max(0, stuck - 3);
+            if (stuck > 20)
+            {
+                if (stuck == 21)
+                {
+                    _fast = 0f;
+                    _slow = 0f;
+                }
+                if (endpoint == IntPtr.Zero)
+                {
+                    endpoint = RawAudio.EndpointMeter();
+                    if (endpoint != IntPtr.Zero)
+                        endpointGet = Marshal.GetDelegateForFunctionPointer<GetPeakDelegate>(Marshal.ReadIntPtr(Marshal.ReadIntPtr(endpoint), 3 * IntPtr.Size));
+                }
+                if (endpoint != IntPtr.Zero && endpointGet != null)
+                {
+                    try
+                    {
+                        if (endpointGet(endpoint, out float ep) == 0) peak = ep;
+                    }
+                    catch { }
+                }
+                Source = fam + "+device";
+            }
+            else
+            {
+                Source = fam;
+            }
             Peak = peak;
             if (_slow < 0.004f && peak > 0.004f)
             {
@@ -256,7 +317,7 @@ public static class LevelMeter
             }
             _fast += (peak - _fast) * (peak > _fast ? 0.6f : 0.18f);
             _slow += (peak - _slow) * (peak > _slow ? 0.07f : 0.012f);
-            float level = _slow < 0.004f ? 0f : Math.Clamp(0.42f + (_fast / _slow - 1f) * 5.5f, 0f, 1f);
+            float level = _slow < 0.004f ? 0f : Math.Clamp(0.42f + (_fast / _slow - 1f) * (stuck > 20 ? 2.4f : 5.5f), 0f, 1f);
             lock (Sync)
             {
                 _head = (_head + 1) % History.Length;
