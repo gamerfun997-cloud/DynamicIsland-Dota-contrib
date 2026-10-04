@@ -14,12 +14,14 @@ public static class SpotifyFlags
     private static DateTime _stateAt = DateTime.MinValue;
     private static volatile bool _enabled = true;
 
+    public static bool Enabled => _enabled;
+
     public static void SetEnabled(string? value)
     {
         if (value == "0") _enabled = false;
         else if (value == "1")
         {
-            if (!_enabled) _ = Task.Run(() => { try { Heal(); } catch { } });
+            if (!_enabled) _ = Task.Run(HealAll);
             _enabled = true;
         }
     }
@@ -30,7 +32,7 @@ public static class SpotifyFlags
         {
             while (true)
             {
-                try { Heal(); } catch { }
+                HealAll();
                 await Task.Delay(TimeSpan.FromMinutes(10));
             }
         });
@@ -56,9 +58,15 @@ public static class SpotifyFlags
         return _state;
     }
 
-    private static void Heal()
+    private static void HealAll()
     {
         if (!_enabled) return;
+        try { Heal(); } catch { }
+        try { YandexLike.Heal(); } catch { }
+    }
+
+    private static void Heal()
+    {
         string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         if (!File.Exists(Path.Combine(appData, "Spotify", "Spotify.exe"))) return;
 
@@ -72,7 +80,7 @@ public static class SpotifyFlags
         {
             if (File.Exists(link))
             {
-                try { FixShortcut(link); } catch { }
+                try { FixShortcut(link, Flag, target => target.EndsWith("Spotify.exe", StringComparison.OrdinalIgnoreCase)); } catch { }
             }
         }
 
@@ -88,7 +96,7 @@ public static class SpotifyFlags
         }
     }
 
-    private static void FixShortcut(string path)
+    public static void FixShortcut(string path, string flag, Func<string, bool> isTarget)
     {
         var shellType = Type.GetTypeFromProgID("WScript.Shell");
         if (shellType == null) return;
@@ -101,10 +109,10 @@ public static class SpotifyFlags
             if (link == null) return;
             var linkType = link.GetType();
             string target = linkType.InvokeMember("TargetPath", BindingFlags.GetProperty, null, link, null) as string ?? "";
-            if (!target.EndsWith("Spotify.exe", StringComparison.OrdinalIgnoreCase)) return;
+            if (!isTarget(target)) return;
             string current = linkType.InvokeMember("Arguments", BindingFlags.GetProperty, null, link, null) as string ?? "";
             if (current.Contains("remote-debugging-port", StringComparison.OrdinalIgnoreCase)) return;
-            linkType.InvokeMember("Arguments", BindingFlags.SetProperty, null, link, new object[] { (current + " " + Flag).Trim() });
+            linkType.InvokeMember("Arguments", BindingFlags.SetProperty, null, link, new object[] { (current + " " + flag).Trim() });
             linkType.InvokeMember("Save", BindingFlags.InvokeMethod, null, link, null);
         }
         finally

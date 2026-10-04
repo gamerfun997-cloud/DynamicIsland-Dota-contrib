@@ -47,6 +47,27 @@ public static partial class SpotifyLike
         }
     }
 
+    public static async Task<bool?> QueryAsync()
+    {
+        const string js = "(async () => {" +
+            "  try {" +
+            "    if (window.Spicetify && window.Spicetify.Platform && window.Spicetify.Platform.LibraryAPI) {" +
+            "      const item = Spicetify.Player.data.item;" +
+            "      if (!item || !item.uri) return 'NO_ITEM';" +
+            "      const res = await Spicetify.Platform.LibraryAPI.contains(item.uri);" +
+            "      return (Array.isArray(res) ? res[0] : res) ? 'LIKED' : 'PLAIN';" +
+            "    }" +
+            "    return 'NO_SPICETIFY';" +
+            "  } catch { return 'ERR'; }" +
+            "})()";
+
+        string? result = await EvaluateJsAsync(js);
+        if (result == null) return null;
+        if (result.Contains("LIKED")) return true;
+        if (result.Contains("PLAIN")) return false;
+        return null;
+    }
+
     public static async Task<bool?> ToggleLikeAsync()
     {
         const string js = "(async () => {" +

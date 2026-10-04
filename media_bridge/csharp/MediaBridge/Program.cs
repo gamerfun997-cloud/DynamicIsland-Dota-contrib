@@ -14,7 +14,7 @@ public record AudioDiag(string status, string app, string family, string session
 public record FocusResponse(string status, bool focused);
 public record SoundResponse(string status);
 public record LevelResponse(double[] l, string src, int n, double p);
-public record StatusResponse(string status, string version, string latest_version, int sounds_loaded, string sound_output, string sound_error, string media_sessions, string spotify_debug, bool fonts_ok);
+public record StatusResponse(string status, string version, string latest_version, int sounds_loaded, string sound_output, string sound_error, string media_sessions, string spotify_debug, string yandex_debug, bool fonts_ok);
 
 [JsonSerializable(typeof(MediaInfo))]
 [JsonSerializable(typeof(CommandResponse))]
@@ -286,7 +286,7 @@ internal static class Program
             }
             else if (path == "/status")
             {
-                await WriteJsonAsync(response, new StatusResponse("ok", UpdateChecker.BridgeVersion, Updater.TestMode ? "v9.9.9" : UpdateChecker.LatestTag, SoundEngine.LoadedCount, SoundEngine.OutputKind, SoundEngine.LastError, MediaSessionService.ManagerState, await SpotifyFlags.DebugStateAsync(), FontInstaller.Installed), AppJson.Context.StatusResponse);
+                await WriteJsonAsync(response, new StatusResponse("ok", UpdateChecker.BridgeVersion, Updater.TestMode ? "v9.9.9" : UpdateChecker.LatestTag, SoundEngine.LoadedCount, SoundEngine.OutputKind, SoundEngine.LastError, MediaSessionService.ManagerState, await SpotifyFlags.DebugStateAsync(), await YandexLike.DebugStateAsync(), FontInstaller.Installed), AppJson.Context.StatusResponse);
             }
             else
             {

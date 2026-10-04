@@ -559,6 +559,7 @@ public static class MediaSessionService
             string targetFam = GetMediaSessionFamily(session);
             CurrentFamily = targetFam;
             CurrentAppId = appId;
+            LikeState.Tick(LikeState.PlayerOf(targetFam, appId), title != "" ? trackKey : "");
             if (isPlaying && targetFam != "" && AppAudioControl.IsMusicPlayerFamily(targetFam))
             {
                 int audioState = AppAudioControl.GetFamilyAudioState(targetFam);
@@ -579,6 +580,7 @@ public static class MediaSessionService
 
             float[] bars = isPlaying ? Meter.GetBars() : new float[] { 0, 0, 0, 0, 0 };
             float appVol = AppAudioControl.GetAppVolume(targetFam);
+            if (YandexLike.IsApp(appId) && YandexLike.FreshVolume is float inAppVol) appVol = inAppVol;
             int volInt = (int)Math.Round(appVol * 100);
 
             var res = new MediaInfo
@@ -662,13 +664,26 @@ public static class MediaSessionService
             string targetFam = session != null ? GetMediaSessionFamily(session) : "";
             AppAudioControl.LastTarget = "none";
 
-            if (cmd == "volup") return AppAudioControl.StepAppVolume(0.04f, targetFam);
-            if (cmd == "voldown") return AppAudioControl.StepAppVolume(-0.04f, targetFam);
+            if (cmd is "volup" or "voldown")
+            {
+                float delta = cmd == "volup" ? 0.04f : -0.04f;
+                if (YandexLike.IsApp(session?.SourceAppUserModelId ?? ""))
+                {
+                    float? inApp = await YandexLike.StepVolumeAsync(delta);
+                    if (inApp != null)
+                    {
+                        float mixer = AppAudioControl.GetAppVolume(targetFam);
+                        if (mixer >= 0f && mixer < 0.995f) AppAudioControl.StepAppVolume(1.0f, targetFam);
+                        AppAudioControl.LastTarget = "yandex music player volume";
+                        return inApp;
+                    }
+                }
+                return AppAudioControl.StepAppVolume(delta, targetFam);
+            }
 
             if (cmd == "like")
             {
-                bool? res = await SpotifyLike.ToggleLikeAsync();
-                CurrentIsLiked = res ?? !CurrentIsLiked;
+                await LikeState.ToggleAsync(LikeState.PlayerOf(targetFam, session?.SourceAppUserModelId ?? ""));
                 return null;
             }
 
