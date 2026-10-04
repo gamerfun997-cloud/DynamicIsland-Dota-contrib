@@ -2295,7 +2295,7 @@ local Success = { Fired = {} }
 local Odometer = { States = {}, Widths = {}, WidthCount = 0, Digit = {}, Layouts = {}, LayoutCount = 0 }
 local SeekDrag = { Active = false, Frac = 0, Grow = 0, GrowVel = 0, HoldUntil = 0, HoldPos = 0, HoldStart = 0 }
 
-local SCRIPT_VERSION = "2.5.1"
+local SCRIPT_VERSION = "2.5.2"
 
 local BridgeStatus = { FirstPoll = 0, LastPoll = 0, LastOk = 0, Version = "", Latest = "", MediaSessions = "" }
 local SystemState = { LastPoll = 0, Seen = false }
